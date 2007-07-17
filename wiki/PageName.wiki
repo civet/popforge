@@ -1,0 +1,27 @@
+#summary Setting up the Popforge library.
+
+= Introduction =
+
+This manual will guide you through the process of setting up the Popforge library project. In this example we will use FlexBuilder 3 but theoretically all of our projects can be compiled using the command line.
+
+== Requirements ==
+* FlexBuilder 2 or later
+* [http://www.polarion.org/index.php?page=download&project=subversive Subversive]
+
+If you do not have Subversive installed make sure to look at the [http://www.polarion.org/projects/subversive/download/Installation_Instructions.pdf installation instructions].
+
+= Creating the Popforge library project =
+* Go to `File` > `New` and select `Flex Library Project`
+* Name the project "Popforge" 
+* Click `Next`
+* Enter "src" as the `Main source folder`
+* Click `Finish`
+
+= Sharing the project =
+* Locate your Popforge project in the Navigator
+* Right click and select `Team` > `Share Project...`
+* Choose `SVN` as the repository type
+* Click `Next`
+* Select `Create a new repository location`
+* Click `Next`
+* ...
