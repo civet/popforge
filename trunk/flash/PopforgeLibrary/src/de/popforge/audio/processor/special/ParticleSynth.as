@@ -39,14 +39,13 @@ package de.popforge.audio.processor.special
 			var i: int;
 			var j: int;
 			var k: int;
-			var p: int = particles.length;
 			var n: int = samples.length;
+			var p: int = particles.length;
 			
 			var sample: Sample;
 			
 			var p0: Particle;
 			var p1: Particle;
-			
 			var force: Number;
 			
 			var xn: Number;
@@ -75,6 +74,9 @@ package de.popforge.audio.processor.special
 					else
 						volume += 1 / n2;
 				}
+				
+				if( p == 0 )
+					continue;
 				
 				//-- process particle movements
 				for( j = p - 1, k = 0 ; k < p ; j = k, k++ )
@@ -133,11 +135,11 @@ package de.popforge.audio.processor.special
 			chOffset = parameterChannelOffset.getValue();
 			
 			volume = 1;
-			particleCountChangedFlag = false;
+			particleCountChangedFlag = true;
+			
+			particles = new Array();
 			
 			parameterParticlesCount.addChangedCallbacks( onParameterChanged );
-			
-			updatePoles();
 		}
 		
 		private function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
