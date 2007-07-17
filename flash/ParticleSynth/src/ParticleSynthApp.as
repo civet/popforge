@@ -3,10 +3,10 @@ package
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.processor.special.ParticleSynth;
+	import de.popforge.gui.Label;
 	import de.popforge.gui.Slider;
 	
 	import flash.display.Sprite;
-	import de.popforge.gui.Label;
 	
 	[SWF( backgroundColor='0xffffff', frameRate='30', width='480', height='320')]
 
