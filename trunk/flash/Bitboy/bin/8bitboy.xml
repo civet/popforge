@@ -1,0 +1,31 @@
+<8bitboy>
+	<parameter>
+		<!-- colors in hexformat -->
+		<param name="background" value="00000000" />
+		<param name="foreground" value="ff000000" />
+		<!-- [true,false] -->
+		<param name="autostart" value="false" />
+		<!-- [0-1] -->
+		<param name="volume" value=".80" />
+	</parameter>
+	<!--
+	     SERVER GENERATED PLAYLIST
+	<playlist phpPath="read_mods.php?d=./mods/"/>
+	-->
+	<!-- MANUEL PLAYLIST -->
+	<playlist>
+		<!--
+			In most mods, the waveforms title are credits
+			If they don't have any or just *real* waveform title,
+			you can surpress displaying them
+		-->
+		<song url="mod/agnostic.mod" hasCredits="true" />
+		<song url="mod/CLASS06.MOD" hasCredits="true" />
+		<song url="mod/blue3.mod" hasCredits="true" />
+		<song url="mod/ownage.mod" hasCredits="true" />
+		<song url="mod/short.mod" hasCredits="true" />
+		<song url="mod/accelerator.mod" hasCredits="true" />
+		<song url="mod/complex.mod" hasCredits="false" />
+		<song url="mod/delicate.mod" hasCredits="true" />
+	</playlist>
+</8bitboy>
