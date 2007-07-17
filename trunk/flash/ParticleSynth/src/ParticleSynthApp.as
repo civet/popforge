@@ -9,6 +9,27 @@ package
 	import flash.display.Sprite;
 	
 	[SWF( backgroundColor='0xffffff', frameRate='30', width='480', height='320')]
+	
+	/**
+	 * The ParticleSynth based on attraction of an array of particles.
+	 * The waveform is shaped by passing all particles each cycle(Linear Interpolation).
+	 * 
+	 * Frequency
+	 * How fast the playback header moves over the waveform.
+	 * 
+	 * ChannelOffset
+	 * An offset is adjustable to separate left and right.
+	 * 
+	 * Attraction
+	 * The strength of the force between two particles.
+	 * 
+	 * ParticlesCount
+	 * Defines, how many particle are beaded.
+	 * 
+	 * HEADPHONES REQUIRED!
+	 * 
+	 * @author Andre Michelle
+	 */
 
 	public class ParticleSynthApp extends Sprite
 	{
