@@ -6,6 +6,7 @@ package
 	import de.popforge.gui.Slider;
 	
 	import flash.display.Sprite;
+	import de.popforge.gui.Label;
 	
 	[SWF( backgroundColor='0xffffff', frameRate='30', width='480', height='320')]
 
@@ -45,22 +46,63 @@ package
 		
 		private function buildUI(): void
 		{
+			var container: Sprite = new Sprite();
+			
+			var label: Label;
 			var slider: Slider;
+			
+			var y: int = 0;
+			
+			label = new Label( 'FREQUENCY', 100 );
+			label.x = 8;
+			label.y = y;
+			container.addChild( label );
 			
 			slider = new Slider( synth.parameterFrequency, 100 );
 			slider.x = 8;
-			slider.y = 8;
-			addChild( slider );
+			slider.y = y + 20;
+			container.addChild( slider );
+			
+			y += 48;
+			
+			label = new Label( 'STEREO OFFSET', 100 );
+			label.x = 8;
+			label.y = y;
+			container.addChild( label );
 			
 			slider = new Slider( synth.parameterChannelOffset, 100 );
 			slider.x = 8;
-			slider.y = 32;
-			addChild( slider );
+			slider.y = y + 20;
+			container.addChild( slider );
+			
+			y += 48;
+			
+			label = new Label( 'ATTRACTION', 100 );
+			label.x = 8;
+			label.y = y;
+			container.addChild( label );
 			
 			slider = new Slider( synth.parameterAttraction, 100 );
 			slider.x = 8;
-			slider.y = 56;
-			addChild( slider );
+			slider.y = y + 20;
+			container.addChild( slider );
+			
+			y += 48;
+			
+			label = new Label( 'PARTICLE COUNT', 100 );
+			label.x = 8;
+			label.y = y;
+			container.addChild( label );
+			
+			slider = new Slider( synth.parameterParticlesCount, 100 );
+			slider.x = 8;
+			slider.y = y + 20;
+			container.addChild( slider );
+			
+			container.x = ( stage.stageWidth - container.width ) >> 1;
+			container.y = ( stage.stageHeight - container.height ) >> 1;
+			
+			addChild( container );
 		}
 	}
 }
