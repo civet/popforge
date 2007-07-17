@@ -3,19 +3,19 @@ package de.popforge.audio.processor.special
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.IAudioProcessor;
+	import de.popforge.math.Random;
 	import de.popforge.parameter.MappingIntLinear;
 	import de.popforge.parameter.MappingNumberExponential;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
-	import de.popforge.math.Random;
 	
 	public class ParticleSynth
 		implements IAudioProcessor
 	{
-		public const parameterFrequency: Parameter = new Parameter( new MappingNumberExponential( .0001, 10 ), .0001 );
+		public const parameterFrequency: Parameter = new Parameter( new MappingNumberExponential( .001, 8 ), .001 );
 		public const parameterAttraction: Parameter = new Parameter( new MappingNumberLinear( 0.00001, 0.005 ), .001 );
 		public const parameterChannelOffset: Parameter = new Parameter( new MappingNumberLinear( 0, .25 ), 0 );
-		public const parameterParticlesCount: Parameter = new Parameter( new MappingIntLinear( 3, 64 ), 64 );
+		public const parameterParticlesCount: Parameter = new Parameter( new MappingIntLinear( 3, 64 ), 32 );
 		public const parameterSeed: Parameter = new Parameter( new MappingIntLinear( 1, 0xfff ), 1 );
 				
 		private var particles: Array;
@@ -25,6 +25,9 @@ package de.popforge.audio.processor.special
 		private var frequency: Number;
 		private var attraction: Number;
 		private var chOffset: Number;
+		
+		private var volume: Number;
+		private var particleCountChangedFlag: Boolean;
 		
 		public function ParticleSynth()
 		{
@@ -57,6 +60,22 @@ package de.popforge.audio.processor.special
 			{
 				sample = samples[i];
 				
+				//-- smooth fadeIn-fadeOut to avoid amplitude jumps (click noises)
+				if( particleCountChangedFlag )
+				{
+					var n2: int = n >> 1;
+					
+					if( i < n2 )
+						volume -= 1 / n2;
+					else if( i == n2 )
+					{
+						updatePoles();
+						p = particles.length;
+					}
+					else
+						volume += 1 / n2;
+				}
+				
 				//-- process particle movements
 				for( j = p - 1, k = 0 ; k < p ; j = k, k++ )
 				{
@@ -81,7 +100,7 @@ package de.popforge.audio.processor.special
 				if( j == p ) p1 = particles[0];
 				else p1 = particles[j];
 				alpha = xn - int(xn);
-				sample.left = p0.amplitude * ( 1 - alpha ) + p1.amplitude * alpha;
+				sample.left = ( p0.amplitude * ( 1 - alpha ) + p1.amplitude * alpha ) * volume;
 				
 				//-- RIGHT (OFFSET)
 				xn = ( phase + this.chOffset ) * p;
@@ -92,7 +111,7 @@ package de.popforge.audio.processor.special
 				if( j == p ) p1 = particles[0];
 				else p1 = particles[j];
 				alpha = xn - int(xn);
-				sample.right = p0.amplitude * ( 1 - alpha ) + p1.amplitude * alpha;
+				sample.right = ( p0.amplitude * ( 1 - alpha ) + p1.amplitude * alpha ) * volume;
 				
 				//-- add frequency
 				phase += this.frequency / Audio.RATE44100;
@@ -103,9 +122,33 @@ package de.popforge.audio.processor.special
 				this.attraction += ( attraction - this.attraction ) * .0005;
 				this.chOffset += ( chOffset - this.chOffset ) * .0005;
 			}
+			
+			particleCountChangedFlag = false;
 		}
 		
 		private function init(): void
+		{
+			frequency = parameterFrequency.getValue();
+			attraction = parameterAttraction.getValue();
+			chOffset = parameterChannelOffset.getValue();
+			
+			volume = 1;
+			particleCountChangedFlag = false;
+			
+			parameterParticlesCount.addChangedCallbacks( onParameterChanged );
+			
+			updatePoles();
+		}
+		
+		private function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
+		{
+			if( parameter == parameterParticlesCount )
+			{
+				particleCountChangedFlag = true;
+			}
+		}
+		
+		private function updatePoles(): void
 		{
 			particles = new Array();
 			
@@ -125,10 +168,6 @@ package de.popforge.audio.processor.special
 			}
 			
 			phase = 0;
-			
-			frequency = parameterFrequency.getValue();
-			attraction = parameterAttraction.getValue();
-			chOffset = parameterChannelOffset.getValue();
 		}
 	}
 }
