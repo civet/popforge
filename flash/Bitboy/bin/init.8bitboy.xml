@@ -19,13 +19,10 @@
 			If they don't have any or just *real* waveform title,
 			you can surpress displaying them
 		-->
-		<song url="mod/agnostic.mod" hasCredits="true" />
-		<song url="mod/CLASS06.MOD" hasCredits="true" />
-		<song url="mod/blue3.mod" hasCredits="true" />
-		<song url="mod/ownage.mod" hasCredits="true" />
-		<song url="mod/short.mod" hasCredits="true" />
-		<song url="mod/accelerator.mod" hasCredits="true" />
-		<song url="mod/complex.mod" hasCredits="false" />
 		<song url="mod/delicate.mod" hasCredits="true" />
+		<song url="mod/class11.mod" hasCredits="true" />
+		<song url="mod/complex.mod" hasCredits="true" />
+		<song url="mod/sac14.mod" hasCredits="true" />
+		
 	</playlist>
 </8bitboy>
