@@ -16,7 +16,7 @@ If you do not have Subversive installed make sure to look at the [http://www.pol
 Follow these steps to create a library project in FlexBuilder:
 
   * Go to `File` > `New` and select `Flex Library Project`
-  * Name the project "Popforge" 
+  * Name the project "PopforgeLibrary" 
   * Click `Next`
   * Enter "src" as the `Main source folder`
   * Click `Finish`
