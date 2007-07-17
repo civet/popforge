@@ -1,8 +1,8 @@
 <8bitboy>
 	<parameter>
 		<!-- colors in hexformat -->
-		<param name="background" value="00000000" />
-		<param name="foreground" value="ff000000" />
+		<param name="background" value="ff000000" />
+		<param name="foreground" value="00000000" />
 		<!-- [true,false] -->
 		<param name="autostart" value="true" />
 		<!-- [0-1] -->
