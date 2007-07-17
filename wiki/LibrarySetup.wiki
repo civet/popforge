@@ -53,3 +53,5 @@ When the download process is finished you have to specify the classes that shoul
   * Click `Ok`
 
 It is important to remember this step. After each update you should make sure to include all classes to the library. They are not added automatically.
+
+Now to make sure everything is working check the "bin" directory of the PopforgeLibrary project. If you see a "PopforgeLibrary.swc" file there you are ready to go.
