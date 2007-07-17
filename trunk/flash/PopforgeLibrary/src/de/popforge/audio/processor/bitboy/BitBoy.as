@@ -1,16 +1,13 @@
 package de.popforge.audio.processor.bitboy
 {
 	import de.popforge.audio.output.Audio;
-	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModFormat;
+	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
 	import de.popforge.parameter.MappingBoolean;
 	import de.popforge.parameter.MappingIntLinear;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
-	
-	import flash.utils.getTimer;
-	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
 	
 	/**
 	 * TODO LIST:
@@ -327,6 +324,8 @@ package de.popforge.audio.processor.bitboy
 		
 		private function computeLengthInSeconds(): int
 		{
+			return 0;
+			
 			reset();
 			
 			var channel: ModChannel;
