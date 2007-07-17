@@ -41,10 +41,15 @@ By following these instructions your library project will be connected to our co
   * Click `Yes` if a warning message pops up
 
 Now Subversive should download the PopforgeLibrary project into your workspace.
-When the download process is finished you have to specify the classes that should be added to the library. 
+
+= Selecting the classes to include =
+
+When the download process is finished you have to specify the classes that should be included in the library. 
 
   * Locate your Popforge project in the Navigator
   * Right click and select `Properties`
   * Go to `Flex Library Build Path`
   * Check the "src" folder in the `Classes` tab
   * Click `Ok`
+
+It is important to remember this step. After each update you should make sure to include all classes to the library. They are not added automatically.
