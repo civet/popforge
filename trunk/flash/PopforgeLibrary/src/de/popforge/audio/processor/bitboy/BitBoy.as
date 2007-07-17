@@ -9,6 +9,8 @@ package de.popforge.audio.processor.bitboy
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
 	
+	import flash.utils.getTimer;
+	
 	/**
 	 * TODO LIST:
 	 * implement missing effects in Channel
