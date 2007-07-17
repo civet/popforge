@@ -1,0 +1,25 @@
+#summary Setting up the Bitboy application.
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+This manual will guide you through the process of setting up the Bitboy application. In this example we will use FlexBuilder 3 but theoretically all of our projects can be compiled using the command line.
+
+== Requirements ==
+
+We assume you went through the LibrarySetup and have the following already set up:
+
+  * A working PopforgeLibrary project
+  * Subversive and the Popforge repositoy (you created it while setting up the library)
+
+= Creating the Bitboy project =
+
+  * Go to `File` > `New` and select `ActionScript Project`
+  * Name the project "Bitboy"
+  * Click Next
+  * Enter "src" as the `Main source folder`
+  * Enter "Main.as" as the `Main application file`
+  * Switch to the `Library path` tab
+  * Click `Add Project...`
+  * Select "PopforgeLibrary" and click `Ok`
+  * Click `Finish`
