@@ -11,6 +11,9 @@ package
 	[SWF( backgroundColor='0xffffff', frameRate='30', width='480', height='320')]
 	
 	/**
+	 * *    EXPERIMENT    *
+	 * HEADPHONES REQUIRED!
+	 * 
 	 * The ParticleSynth based on attraction of an array of particles.
 	 * The waveform is shaped by passing all particles each cycle(Linear Interpolation).
 	 * 
@@ -25,8 +28,6 @@ package
 	 * 
 	 * ParticlesCount
 	 * Defines, how many particle are beaded.
-	 * 
-	 * HEADPHONES REQUIRED!
 	 * 
 	 * @author Andre Michelle
 	 */
