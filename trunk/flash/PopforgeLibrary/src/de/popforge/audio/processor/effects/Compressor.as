@@ -5,6 +5,10 @@ package de.popforge.audio.processor.effects
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
 	
+	/**
+	 * TEST DRIVE
+	 */
+	
 	public class Compressor
 		implements IAudioProcessor
 	{
