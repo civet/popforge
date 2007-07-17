@@ -14,7 +14,7 @@ package de.popforge.audio.processor.special
 	{
 		public const parameterFrequency: Parameter = new Parameter( new MappingNumberExponential( .001, 8 ), .001 );
 		public const parameterAttraction: Parameter = new Parameter( new MappingNumberLinear( 0.00001, 0.005 ), .001 );
-		public const parameterChannelOffset: Parameter = new Parameter( new MappingNumberLinear( 0, .25 ), 0 );
+		public const parameterChannelOffset: Parameter = new Parameter( new MappingNumberLinear( 0, .25 ), .125 );
 		public const parameterParticlesCount: Parameter = new Parameter( new MappingIntLinear( 3, 64 ), 32 );
 		public const parameterSeed: Parameter = new Parameter( new MappingIntLinear( 1, 0xfff ), 1 );
 				
@@ -163,9 +163,7 @@ package de.popforge.audio.processor.special
 			for( var i: int = 0 ; i < num ; ++i )
 			{
 				particle = new Particle();
-				
-				particle.amplitude = random.getNumber( -.5, .5 );
-				
+				particle.amplitude = random.getNumber( -.25, .25 );
 				particles[i] = particle;
 			}
 			
