@@ -12,6 +12,9 @@ This manual will guide you through the process of setting up the Popforge librar
 If you do not have Subversive installed make sure to look at the [http://www.polarion.org/projects/subversive/download/Installation_Instructions.pdf installation instructions].
 
 = Creating the Popforge library project =
+
+Follow these steps to create a library project in FlexBuilder:
+
   * Go to `File` > `New` and select `Flex Library Project`
   * Name the project "Popforge" 
   * Click `Next`
@@ -19,10 +22,22 @@ If you do not have Subversive installed make sure to look at the [http://www.pol
   * Click `Finish`
 
 = Sharing the project =
+
+By following these instructions your library project will be connected to our code repository at Google Code.
+
   * Locate your Popforge project in the Navigator
   * Right click and select `Team` > `Share Project...`
   * Choose `SVN` as the repository type
   * Click `Next`
   * Select `Create a new repository location`
   * Click `Next`
-  * ...
+  * Enter "http://popforge.googlecode.com/svn/" in the `URL` textbox
+  * Click `Next`
+  * Select `Use specified name` in the `Name on Repository` group
+  * Enter "flash/PopforgeLibrary" in the textbox
+  * Click `Next`
+  * Uncheck `Launch the Commit Dialog for the shared resources`
+  * Click `Finish`
+  * Click `Yes` if a warning message pops up
+
+Now Subversive should download the PopforgeLibrary project into your workspace.
