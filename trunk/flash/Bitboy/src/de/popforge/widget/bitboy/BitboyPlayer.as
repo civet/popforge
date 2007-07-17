@@ -288,8 +288,8 @@ package de.popforge.widget.bitboy
 		private function tintUI(): void
 		{
 			//-- Replace Placeholder Colors [blue,green]
-			var color0: uint = parseInt( xmlConfig.getParamValue( 'foreground' ), 16 );
-			var color1: uint = parseInt( xmlConfig.getParamValue( 'background' ), 16 );
+			var color0: uint = parseInt( xmlConfig.getParamValue( 'background' ), 16 );
+			var color1: uint = parseInt( xmlConfig.getParamValue( 'foreground' ), 16 );
 			
 			//-- compute colorcomponents
 			var a0: Number = ( color0 >> 24 & 0xff ) / 0xff;
