@@ -1,4 +1,4 @@
-#summary A guide how to hide .svn files
+#summary A guide how to hide .svn files.
 
 = Introduction =
 
