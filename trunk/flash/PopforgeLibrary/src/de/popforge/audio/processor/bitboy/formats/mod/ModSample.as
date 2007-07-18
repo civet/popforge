@@ -35,7 +35,7 @@ package de.popforge.audio.processor.bitboy.formats.mod
 			
 			for( var i: int = 0 ; i < length ; i++ )
 			{
-				wave.push( int( stream.readByte() ) );
+				wave.push( stream.readByte() / 0xff );
 			}
 		}
 		
