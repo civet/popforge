@@ -13,7 +13,9 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		/* PITCH */
 		protected var tone: int;
-		protected var period: int;
+		protected var period: Number;
+		
+		protected var linearPeriod: Number = 0;
 		
 		/* EFFECT */
 		protected var effect: int;

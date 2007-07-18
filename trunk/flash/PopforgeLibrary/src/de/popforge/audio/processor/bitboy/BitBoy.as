@@ -51,7 +51,6 @@ package de.popforge.audio.processor.bitboy
 		 */
 		public function BitBoy()
 		{
-			//init();
 		}
 		
 		/**
@@ -118,8 +117,6 @@ package de.popforge.audio.processor.bitboy
 			//-- procees complete tick duration
 			while( samplesAvailable >= samplesPerTick )
 			{
-				nextTick();
-				
 				subset = samples.slice( sampleIndex, sampleIndex + samplesPerTick );
 
 				for each( channel in channels )
@@ -127,6 +124,8 @@ package de.popforge.audio.processor.bitboy
 
 				samplesAvailable -= samplesPerTick;
 				sampleIndex += samplesPerTick;
+				
+				nextTick();
 			}
 			
 			//-- procees remaining samples
@@ -209,12 +208,6 @@ package de.popforge.audio.processor.bitboy
 		private function init(): void
 		{
 			channels = format.getChannels( this );
-			/*[
-				new ModChannel( this, 0, -1 ),
-				new ModChannel( this, 1, 1 ),
-				new ModChannel( this, 2, 1 ),
-				new ModChannel( this, 3, -1 )
-			];*/
 		}
 		
 		private function nextTick(): void
@@ -260,12 +253,7 @@ package de.popforge.audio.processor.bitboy
 					
 					channel.setMute( ( mutes & ( 1 << i ) ) == 0 );
 				}
-				/*
-				ModChannel( channels[0] ).setMute( ( mutes & 0x1 ) == 0 );
-				ModChannel( channels[1] ).setMute( ( mutes & 0x2 ) == 0 );
-				ModChannel( channels[2] ).setMute( ( mutes & 0x4 ) == 0 );
-				ModChannel( channels[3] ).setMute( ( mutes & 0x8 ) == 0 );
-				*/
+				
 				nextRow();
 			}
 			else
