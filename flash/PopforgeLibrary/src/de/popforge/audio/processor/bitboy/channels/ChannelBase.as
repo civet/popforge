@@ -7,20 +7,9 @@ package de.popforge.audio.processor.bitboy.channels
 	{
 		protected var bitboy: BitBoy;
 		protected var id: int;
-		
 		protected var pan: Number;
 		
 		protected var trigger: TriggerBase;
-		
-		/* WAVE */
-		
-		protected var wave: Array;
-		protected var repeatStart: int;
-		protected var repeatEnd: int;
-		protected var volume: int;
-		protected var position: int;
-		
-		protected var sampleOffset: int = 0;
 		
 		/* PITCH */
 		protected var tone: int;
