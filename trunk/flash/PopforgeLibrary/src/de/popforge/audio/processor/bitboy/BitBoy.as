@@ -124,6 +124,8 @@ package de.popforge.audio.processor.bitboy
 			//-- procees complete tick duration
 			while( samplesAvailable >= samplesPerTick )
 			{
+				nextTick();
+				
 				subset = samples.slice( sampleIndex, sampleIndex + samplesPerTick );
 
 				for each( channel in channels )
@@ -131,8 +133,6 @@ package de.popforge.audio.processor.bitboy
 
 				samplesAvailable -= samplesPerTick;
 				sampleIndex += samplesPerTick;
-
-				nextTick();
 			}
 			
 			//-- procees remaining samples
@@ -233,9 +233,9 @@ package de.popforge.audio.processor.bitboy
 				}
 				else
 				{
-					amigaTick = speed;
-
 					rowComplete();
+					
+					amigaTick = speed;
 				}
 			}
 			else
