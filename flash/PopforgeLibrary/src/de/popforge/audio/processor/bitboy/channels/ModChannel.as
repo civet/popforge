@@ -47,8 +47,11 @@ package de.popforge.audio.processor.bitboy.channels
 	 		-180,-161,-141,-120,-97,-74,-49,-24
 		];
 		
-		private var modSample: ModSample;
-		private var position: int;
+		private var wave: Array;
+		private var wavePhase: Number;
+		private var repeatStart: int;
+		private var repeatLength: int;
+		private var volume: int;
 		
 		private var appegio: Appegio;
 		
@@ -77,8 +80,11 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		public override function reset(): void
 		{
-			modSample = null;
-			position = 0;
+			wave = null;
+			wavePhase = 0.0;
+			repeatStart = 0;
+			repeatLength = 0;
+			volume = 0;
 		
 			trigger = null;
 			
@@ -173,11 +179,11 @@ package de.popforge.audio.processor.bitboy.channels
 					{
 						case 0x9: //-- retrigger note
 							if ( tick % extParam == 0 )
-								position = 0;
+								wavePhase = 0.0;
 							break;
 						
 						case 0xc: //-- cut note
-							modSample = null;
+							wave = null;
 							break;
 					}
 
@@ -187,65 +193,45 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		public override function processAudioAdd( samples: Array ): void
 		{
-			if( modSample == null || mute )
+			if( wave == null || mute )
 				return;
-			
-			var wave: Array = modSample.wave;
-			var repeatStart: int  = modSample.repeatStart;
-			var repeatLength: int = modSample.repeatLength;
-			var volume: int = modSample.volume;
 			
 			var sample: Sample;
 			
-			var pos: int;
 			var len: int = wave.length;
 			var rate: int = bitboy.getRate();
-			var posIncr: int;
-			
-			if( rate == 44100 ) posIncr = 1;
-			else if( rate == 22050 ) posIncr = 2;
-			else if( rate == 11025 ) posIncr = 4;
-			else posIncr = 8;
 			
 			var gain: Number = bitboy.parameterGain.getValue();
 			var amplitude: Number;
 			
 			var n: int = samples.length;
 			
-			var linearPeriodAdd: Number = ( period - linearPeriod ) / n;
-			
 			for( var i: int = 0 ; i < n ; ++i )
 			{
 				sample = samples[i];
 				
-				//linearPeriod += linearPeriodAdd;
+				// PAL machine clock
+				wavePhase += ( 3546894.6 / 22050 ) / period;
 				
-				pos = position * PITCH / period;
-				
-				if( pos >= len ) // first run complete
+				if( wavePhase >= len ) // first run complete
 				{
 					if( repeatLength == 0 ) // stop channel
 					{
-						modSample = null;
+						wave = null;
 						return;
 					}
-					else if( repeatLength > 0 ) //-- truncate
+					else if( repeatLength != len ) //-- truncate
 					{
 						wave = wave.slice( repeatStart, repeatStart + repeatLength );
-						len = wave.length;
-						repeatLength = -1;
+						len = repeatLength;
 					}
 				}
 				
-				position += posIncr;
-
-				amplitude = wave[ pos % len ] / 0xff * ( volume / 64 ) * gain;
+				amplitude = wave[ int( wavePhase ) % len ] / 0xff * ( volume / 64 ) * gain;
 				
 				sample.left += amplitude * ( 1 - pan ) / 2;
 				sample.right += amplitude * ( pan + 1 ) / 2;
 			}
-			
-			linearPeriod = period;
 		}
 
 		private function initEffect(): void
@@ -337,13 +323,13 @@ package de.popforge.audio.processor.bitboy.channels
 						
 						case 0x9: //-- retrigger note
 
-							position = 0;
+							wavePhase = 0;
 							break;
 						
 						case 0xc: //-- cut note
 
 							if( extParam == 0 )
-								modSample = null;
+								wave = null;
 							break;
 						
 						default:
@@ -364,8 +350,7 @@ package de.popforge.audio.processor.bitboy.channels
 				case SET_VOLUME:
 				
 					volumeSlide = 0;
-					
-					if( modSample ) modSample.volume = effectParam;
+					volume = effectParam;
 					break;
 
 				case POSITION_JUMP:
@@ -403,8 +388,13 @@ package de.popforge.audio.processor.bitboy.channels
 			if( modSample == null || trigger.period <= 0 )
 				return;
 
-			this.modSample = modSample.clone();
-			position = 0;
+			wave = modSample.wave;
+			wavePhase = 0.0;
+			repeatStart = modSample.repeatStart;
+			repeatLength = modSample.repeatLength;
+			volume = modSample.volume;
+			
+			trace( modSample );
 		}
 		
 		private function initApeggio(): void
@@ -436,14 +426,12 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		private function updateVolumeSlide(): void
 		{
-			if( modSample == null ) return; 
-			
-			var newVolume: int = modSample.volume + volumeSlide;
+			var newVolume: int = volume + volumeSlide;
 
 			if( newVolume < 0 ) newVolume = 0;
 			else if( newVolume > 64 ) newVolume = 64;
 			
-			modSample.volume = newVolume;
+			volume = newVolume;
 		}
 		
 		private function initTonePortamento(): void
