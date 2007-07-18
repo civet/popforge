@@ -3,7 +3,7 @@ package de.popforge.widget.bitboy
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.processor.bitboy.BitBoy;
-	import de.popforge.audio.processor.bitboy.formats.mod.ModFormat;
+	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	import de.popforge.bitboy.assets.Background;
 	import de.popforge.ui.KeyboardShortcut;
 	
@@ -153,7 +153,7 @@ package de.popforge.widget.bitboy
 			{
 				if( fader.proceesAudio( samples ) )
 				{
-					startTime = int.MAX_VALUE
+					startTime = int.MAX_VALUE;
 					fader = null;
 					next();
 				}
@@ -181,11 +181,11 @@ package de.popforge.widget.bitboy
 			display.updateSong( songList.getCurrentSong() );
 		}
 		
-		private function onModLoad( format: ModFormat ): void
+		private function onModLoad( format: FormatBase ): void
 		{
-			bitboy.setModFormat( format );
+			bitboy.setFormat( format );
 			
-			songList.getCurrentSong().setModFormat( format );
+			songList.getCurrentSong().setFormat( format );
 			
 			display.showPlayListSongInfo();
 			
@@ -204,8 +204,9 @@ package de.popforge.widget.bitboy
 		private function onModComplete(): void
 		{
 			if( stereoEnhancer )
-				stereoEnhancer.clear();
+				stereoEnhancer.reset();
 			
+			startTime = int.MAX_VALUE;
 			bitboy.parameterPause.setValue( true );
 			songList.next();
 			loadMod();

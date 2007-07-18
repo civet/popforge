@@ -20,7 +20,7 @@ package de.popforge.widget.bitboy
 			init();
 		}
 		
-		public function clear(): void
+		public function reset(): void
 		{
 			for( var i: int = 0 ; i < 0xffff ; i++ )
 			{
