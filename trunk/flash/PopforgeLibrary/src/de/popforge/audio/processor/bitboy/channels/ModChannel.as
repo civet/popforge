@@ -26,8 +26,6 @@ package de.popforge.audio.processor.bitboy.channels
 		static private const EXTENDED_EFFECTS: int = 0xe;
 		static private const SET_SPEED: int = 0xf;
 		
-		static private const PITCH: Number = 80;
-		
 		static private const TONE_TABLE: Array =
 		[
 			856,808,762,720,678,640,604,570,538,508,480,453,
