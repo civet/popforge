@@ -6,9 +6,9 @@ package de.popforge.audio.processor.bitboy.formats
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public final class FormatUtil
+	public final class FormatFactory
 	{
-		public static function getFormat( file: ByteArray ): FormatBase 
+		public static function createFormat( file: ByteArray ): FormatBase 
 		{
 			var id: String;
 			
@@ -44,6 +44,8 @@ package de.popforge.audio.processor.bitboy.formats
 			//-- NO SUCCESS			
 			
 			throw new Error( 'Unsupported format.' );
+			
+			return null;
 		}
 	}
 }

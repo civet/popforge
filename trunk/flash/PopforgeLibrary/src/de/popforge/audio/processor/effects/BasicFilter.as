@@ -39,6 +39,11 @@ package de.popforge.audio.processor.effects
 		
 		public function BasicFilter()
 		{
+			reset();
+		}
+		
+		public function reset(): void
+		{
 			velL = velR = 0;
 			outL = outR = 0;
 		}

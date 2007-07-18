@@ -36,6 +36,10 @@ package de.popforge.audio.processor.effects
 			tmp = 0;
 		}
 		
+		public function reset(): void
+		{
+		}
+		
 		public function processAudio( samples: Array ): void
 		{
 			var n: int = samples.length;
