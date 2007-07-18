@@ -1,12 +1,12 @@
 package de.popforge.widget.bitboy
 {
-	import de.popforge.audio.processor.bitboy.formats.mod.ModFormat;
+	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	
 	public class SongItem
 	{
 		private var xml: XML;
 		private var id: int;
-		private var format: ModFormat;
+		private var format: FormatBase;
 		
 		public function SongItem( xml: XML, id: int )
 		{
@@ -14,12 +14,12 @@ package de.popforge.widget.bitboy
 			this.id = id;
 		}
 		
-		public function setModFormat( format: ModFormat ): void
+		public function setFormat( format: FormatBase ): void
 		{
 			this.format = format;
 		}
 		
-		public function getModFormat(): ModFormat
+		public function getFormat(): FormatBase
 		{
 			return format;
 		}

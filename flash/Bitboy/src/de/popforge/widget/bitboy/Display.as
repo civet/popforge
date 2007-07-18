@@ -1,8 +1,7 @@
 package de.popforge.widget.bitboy
 {
 	import de.popforge.audio.processor.bitboy.BitBoy;
-	import de.popforge.audio.processor.bitboy.formats.mod.ModFormat;
-	import de.popforge.audio.processor.bitboy.formats.mod.ModSample;
+	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	
 	import flash.display.Sprite;
 	import flash.events.ProgressEvent;
@@ -46,7 +45,7 @@ package de.popforge.widget.bitboy
 		
 		public function showPlayListSongInfo(): void
 		{
-			var format: ModFormat = song.getModFormat();
+			var format: FormatBase = song.getFormat();
 			
 			var length: int = bitboy.getLengthSeconds();
 			var duration: String;
@@ -63,19 +62,7 @@ package de.popforge.widget.bitboy
 				duration = ( mm < 10 ? '0' + mm : mm ) + ':' + ( ss < 10 ? '0' + ss : ss );
 			}
 			
-			songCredits = [ format.title + ' (' + duration + ')' ];
-			
-			var modSample: ModSample;
-			
-			for( var i: int = 1 ; i < format.modSamples.length ; i++ )
-			{
-				modSample = format.modSamples[i];
-				
-				if( modSample.title != '' )
-				{
-					songCredits.push( modSample.title );
-				}
-			}
+			songCredits = [ format.title + ' (' + duration + ')' ].concat( format.credits );
 			
 			infoIndex = 0;
 			

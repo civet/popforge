@@ -3,7 +3,8 @@ package de.popforge.widget.bitboy
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.audio.output.Sample;
 	
-	public final class BassBoost implements IAudioProcessor
+	public final class BassBoost
+		implements IAudioProcessor
 	{
 		private var rate: uint;
 		private var freq: uint;
@@ -35,6 +36,10 @@ package de.popforge.widget.bitboy
 			dB = 7;
 			
 			init();
+		}
+		
+		public function reset(): void
+		{
 		}
 		
 		private function init(): void
