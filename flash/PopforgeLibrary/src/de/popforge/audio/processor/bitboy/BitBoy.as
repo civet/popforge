@@ -2,6 +2,7 @@ package de.popforge.audio.processor.bitboy
 {
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.processor.IAudioProcessor;
+	import de.popforge.audio.processor.bitboy.channels.ChannelBase;
 	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.parameter.MappingBoolean;
@@ -247,7 +248,7 @@ package de.popforge.audio.processor.bitboy
 		
 		private function rowComplete(): void
 		{
-			var channel: ModChannel;
+			var channel: ChannelBase;
 			//-- sync all parameter changes for smooth cuttings
 			//
 			
