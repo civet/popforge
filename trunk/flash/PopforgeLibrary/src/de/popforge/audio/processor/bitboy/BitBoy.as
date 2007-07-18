@@ -37,7 +37,7 @@ package de.popforge.audio.processor.bitboy
 		private var bpm: Number;
 		private var speed: int;
 
-		private var amigaTick: int;
+		private var tick: int;
 		private var rowIndex: int;
 		private var patIndex: int;
 		
@@ -147,7 +147,7 @@ package de.popforge.audio.processor.bitboy
 		{
 			rate = Audio.RATE22050;
 			speed = format.defaultSpeed;
-			amigaTick = 0;
+			tick = 0;
 
 			setBPM( format.defaultBpm );
 
@@ -225,7 +225,7 @@ package de.popforge.audio.processor.bitboy
 		
 		private function nextTick(): void
 		{
-			if( --amigaTick <= 0 )
+			if( --tick <= 0 )
 			{
 				if( lastRow )
 				{
@@ -235,13 +235,13 @@ package de.popforge.audio.processor.bitboy
 				{
 					rowComplete();
 					
-					amigaTick = speed;
+					tick = speed;
 				}
 			}
 			else
 			{
 				for each( var channel: ModChannel in channels )
-					channel.onTick( amigaTick );
+					channel.onTick( tick );
 			}
 		}
 		
