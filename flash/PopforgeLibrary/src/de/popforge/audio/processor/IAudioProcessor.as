@@ -24,5 +24,6 @@ package de.popforge.audio.processor
 	public interface IAudioProcessor
 	{
 		function processAudio( samples: Array ): void;
+		function reset(): void;
 	}
 }

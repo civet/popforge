@@ -24,6 +24,11 @@ package de.popforge.audio.processor.effects
 			init();
 		}
 		
+		public function reset(): void
+		{
+			//-- clear delay lines
+		}
+			
 		public function processAudio( samples: Array ): void
 		{
 			var n: int = samples.length;

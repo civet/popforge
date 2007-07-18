@@ -34,6 +34,10 @@ package de.popforge.audio.processor.special
 			init();
 		}
 		
+		public function reset(): void
+		{
+		}
+		
 		public function processAudio( samples: Array ): void
 		{
 			var i: int;
