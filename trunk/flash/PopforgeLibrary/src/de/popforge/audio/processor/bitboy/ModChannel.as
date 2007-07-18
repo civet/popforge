@@ -46,6 +46,9 @@ package de.popforge.audio.processor.bitboy
 	 		-180,-161,-141,-120,-97,-74,-49,-24
 		];
 		
+		private var modSample: ModSample;
+		private var position: int;
+		
 		private var appegio: Appegio;
 		
 		private var volumeSlide: int;
@@ -73,14 +76,10 @@ package de.popforge.audio.processor.bitboy
 		
 		public override function reset(): void
 		{
-			wave = null;
-			repeatStart = 0;
-			repeatEnd = 0;
-			volume = 0;
+			modSample = null;
 			position = 0;
 		
 			trigger = null;
-			sampleOffset = 0;
 			
 			patternLoop = false;
 			patternLoopCount = 0;
@@ -177,7 +176,7 @@ package de.popforge.audio.processor.bitboy
 							break;
 						
 						case 0xc: //-- cut note
-							wave = null;
+							modSample = null;
 							break;
 					}
 
@@ -187,10 +186,13 @@ package de.popforge.audio.processor.bitboy
 		
 		public override function processAudioAdd( samples: Array ): void
 		{
-			var n: int = samples.length;
-			
-			if( wave == null || mute )
+			if( modSample == null || mute )
 				return;
+			
+			var wave: Array = modSample.wave;
+			var repeatStart: int  = modSample.repeatStart;
+			var repeatLength: int = modSample.repeatLength;
+			var volume: int = modSample.volume;
 			
 			var sample: Sample;
 			
@@ -205,27 +207,28 @@ package de.popforge.audio.processor.bitboy
 			else posIncr = 8;
 			
 			var gain: Number = bitboy.parameterGain.getValue();
-				
 			var amplitude: Number;
+			
+			var n: int = samples.length;
 			
 			for( var i: int = 0 ; i < n ; ++i )
 			{
 				sample = samples[i];
 				
-				pos = sampleOffset + position * PITCH / period;
+				pos = position * PITCH / period;
 				
 				if( pos >= len ) // first run complete
 				{
-					if( repeatEnd == 0 ) // stop channel
+					if( repeatLength == 0 ) // stop channel
 					{
-						wave = null;
+						modSample = null;
 						return;
 					}
-					else if( repeatEnd > 0 ) //-- truncate
+					else if( repeatLength > 0 ) //-- truncate
 					{
-						wave = wave.slice( repeatStart, repeatStart + repeatEnd );
+						wave = wave.slice( repeatStart, repeatStart + repeatLength );
 						len = wave.length;
-						repeatEnd = -1;
+						repeatLength = -1;
 					}
 				}
 				
@@ -246,10 +249,6 @@ package de.popforge.audio.processor.bitboy
 			effect = trigger.effect;
 			effectParam = trigger.effectParam;
 
-			//-- reset certain effects
-			if ( effect != SAMPLE_OFFSET )
-				sampleOffset = 0;
-						
 			if( effect != VIBRATO )
 				vibratoSpeed = 0;
 
@@ -337,7 +336,7 @@ package de.popforge.audio.processor.bitboy
 						case 0xc: //-- cut note
 
 							if( extParam == 0 )
-								wave = null;
+								modSample = null;
 							break;
 						
 						default:
@@ -358,7 +357,8 @@ package de.popforge.audio.processor.bitboy
 				case SET_VOLUME:
 				
 					volumeSlide = 0;
-					volume = effectParam;
+					
+					if( modSample ) modSample.volume = effectParam;
 					break;
 
 				case POSITION_JUMP:
@@ -396,10 +396,7 @@ package de.popforge.audio.processor.bitboy
 			if( modSample == null || trigger.period <= 0 )
 				return;
 
-			wave = modSample.wave;
-			repeatStart = modSample.repeatStart;
-			repeatEnd = modSample.repeatEnd;
-			volume = modSample.volume;
+			this.modSample = modSample.clone();
 			position = 0;
 		}
 		
@@ -432,12 +429,14 @@ package de.popforge.audio.processor.bitboy
 		
 		private function updateVolumeSlide(): void
 		{
-			var newVolume: int = volume + volumeSlide;
+			if( modSample == null ) return; 
+			
+			var newVolume: int = modSample.volume + volumeSlide;
 
 			if( newVolume < 0 ) newVolume = 0;
 			else if( newVolume > 64 ) newVolume = 64;
 			
-			volume = newVolume;
+			modSample.volume = newVolume;
 		}
 		
 		private function initTonePortamento(): void

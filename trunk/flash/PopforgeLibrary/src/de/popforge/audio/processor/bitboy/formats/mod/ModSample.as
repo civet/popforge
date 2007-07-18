@@ -14,13 +14,14 @@ package de.popforge.audio.processor.bitboy.formats.mod
 		public var tone: int;
 		public var volume: int;
 		public var repeatStart: int;
-		public var repeatEnd: int;
+		public var repeatLength: int;
 		public var waveform: ByteArray;
 		public var wave: Array;
 		
 		public function ModSample( stream: ByteArray )
 		{
-			parse( stream );
+			if( stream )
+				parse( stream );
 		}
 		
 		public function loadWaveform( stream: ByteArray ): void
@@ -36,11 +37,6 @@ package de.popforge.audio.processor.bitboy.formats.mod
 			{
 				wave.push( int( stream.readByte() ) );
 			}
-			
-			//if( repeatEnd == 0 )
-				//stream.readBytes( waveform, 0, length );
-			//else
-				//stream.readBytes( waveform, repeatStart, repeatEnd );
 		}
 		
 		private function parse( stream: ByteArray ): void
@@ -62,12 +58,28 @@ package de.popforge.audio.processor.bitboy.formats.mod
 			tone = stream.readUnsignedByte(); //everytime 0
 			volume = stream.readUnsignedByte();
 			repeatStart = stream.readUnsignedShort();
-			repeatEnd = stream.readUnsignedShort();
+			repeatLength = stream.readUnsignedShort();
 
 			//-- turn it into bytes
 			length <<= 1;
 			repeatStart <<= 1;
-			repeatEnd <<= 1;
+			repeatLength <<= 1;
+		}
+		
+		public function clone(): ModSample
+		{
+			var sample: ModSample = new ModSample( null );
+			
+			sample.title = title;
+			sample.length = length;
+			sample.tone = tone;
+			sample.volume = volume;
+			sample.repeatStart = repeatStart;
+			sample.repeatLength = repeatLength;
+			sample.waveform = waveform;
+			sample.wave = wave;
+			
+			return sample;
 		}
 		
 		public function toString(): String
@@ -78,7 +90,7 @@ package de.popforge.audio.processor.bitboy.formats.mod
 				+ ', tone: ' + tone
 				+ ', volume: ' + volume
 				+ ', repeatStart: ' + repeatStart
-				+ ', repeatEnd: ' + repeatEnd
+				+ ', repeatLength: ' + repeatLength
 				+ ']';
 		}
 	}
