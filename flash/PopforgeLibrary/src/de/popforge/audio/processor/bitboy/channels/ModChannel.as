@@ -51,6 +51,7 @@ package de.popforge.audio.processor.bitboy.channels
 		private var wavePhase: Number;
 		private var repeatStart: int;
 		private var repeatLength: int;
+		private var firstRun: Boolean;
 		private var volume: int;
 		
 		private var appegio: Appegio;
@@ -64,9 +65,9 @@ package de.popforge.audio.processor.bitboy.channels
 		private var vibratoPosition: Number;
 		
 		//-- EXT EFFECT
-		private var patternLoop: Boolean;
-		private var patternLoopCount: int;
-		private var patternLoopPosition: int;
+		private var patternfirstRun: Boolean;
+		private var patternfirstRunCount: int;
+		private var patternfirstRunPosition: int;
 
 		public function ModChannel( bitboy: BitBoy, id: int, pan: Number )
 		{
@@ -84,13 +85,14 @@ package de.popforge.audio.processor.bitboy.channels
 			wavePhase = 0.0;
 			repeatStart = 0;
 			repeatLength = 0;
+			firstRun = true;
 			volume = 0;
 		
 			trigger = null;
 			
-			patternLoop = false;
-			patternLoopCount = 0;
-			patternLoopPosition = 0;
+			patternfirstRun = false;
+			patternfirstRunCount = 0;
+			patternfirstRunPosition = 0;
 			
 			volumeSlide = 0;
 			portamentoSpeed = 0;
@@ -199,10 +201,14 @@ package de.popforge.audio.processor.bitboy.channels
 			var sample: Sample;
 			
 			var len: int = wave.length;
-			var rate: int = bitboy.getRate();
 			
-			var gain: Number = bitboy.parameterGain.getValue();
-			var amplitude: Number;
+			var volT: Number = ( volume / 64 ) * bitboy.parameterGain.getValue();
+			var volL: Number = volT * ( 1 - pan ) / 2;
+			var volR: Number = volT * ( pan + 1 ) / 2;
+			
+			var amp: Number;
+			
+			var waveSpeed: Number = ( 3546894.6 / bitboy.getRate() ) / period; // PAL machine clock (Magic Number)
 			
 			var n: int = samples.length;
 			
@@ -210,27 +216,30 @@ package de.popforge.audio.processor.bitboy.channels
 			{
 				sample = samples[i];
 				
-				// PAL machine clock
-				wavePhase += ( 3546894.6 / 22050 ) / period;
-				
-				if( wavePhase >= len ) // first run complete
+				if( firstRun )
 				{
-					if( repeatLength == 0 ) // stop channel
+					if( wavePhase >= len ) // first run complete
 					{
-						wave = null;
-						return;
-					}
-					else if( repeatLength != len ) //-- truncate
-					{
-						wave = wave.slice( repeatStart, repeatStart + repeatLength );
-						len = repeatLength;
+						if( repeatLength == 0 ) // stop channel
+						{
+							wave = null;
+							return;
+						}
+						else if( repeatLength != len ) //-- truncate
+						{
+							wave = wave.slice( repeatStart, repeatStart + repeatLength );
+							len = wave.length;
+							firstRun = false;
+						}
 					}
 				}
 				
-				amplitude = wave[ int( wavePhase ) % len ] / 0xff * ( volume / 64 ) * gain;
+				amp = wave[ int( wavePhase ) % len ];
 				
-				sample.left += amplitude * ( 1 - pan ) / 2;
-				sample.right += amplitude * ( pan + 1 ) / 2;
+				sample.left += amp * volL;
+				sample.right += amp * volR;
+				
+				wavePhase += waveSpeed;
 			}
 		}
 
@@ -295,27 +304,27 @@ package de.popforge.audio.processor.bitboy.channels
 				
 					switch ( extEffect )
 					{
-						case 0x6: //-- pattern loop
+						case 0x6: //-- pattern firstRun
 							
 								if( extParam == 0 )
 								{
-									patternLoopPosition = bitboy.getRowIndex() - 1;
+									patternfirstRunPosition = bitboy.getRowIndex() - 1;
 								}
 								else
 								{
-									if( !patternLoop )
+									if( !patternfirstRun )
 									{
-										patternLoopCount = extParam;
-										patternLoop = true;
+										patternfirstRunCount = extParam;
+										patternfirstRun = true;
 									}
 									
-									if( --patternLoopCount >= 0 )
+									if( --patternfirstRunCount >= 0 )
 									{
-										bitboy.setRowIndex( patternLoopPosition );
+										bitboy.setRowIndex( patternfirstRunPosition );
 									}
 									else
 									{
-										patternLoop = false;
+										patternfirstRun = false;
 									}
 								}
 								
@@ -394,7 +403,7 @@ package de.popforge.audio.processor.bitboy.channels
 			repeatLength = modSample.repeatLength;
 			volume = modSample.volume;
 			
-			trace( modSample );
+			firstRun = true;
 		}
 		
 		private function initApeggio(): void
@@ -482,7 +491,7 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			vibratoPosition += vibratoSpeed;
 			
-			period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
+			//period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
 		}
 	}
 }
