@@ -31,14 +31,14 @@ package de.popforge.audio.processor.bitboy.formats.mod
 		
 		public function ModFormat( stream: ByteArray )
 		{
-			super();
+			super( stream );
 			
 			modSamples = new Array( 32 );
 			format = '';
 
 			numChannels = 4;
 					
-			restartPoisition = 0;
+			restartPosition = 0;
 
 			defaultBpm = 125;
 			defaultSpeed = 6;
@@ -56,7 +56,7 @@ package de.popforge.audio.processor.bitboy.formats.mod
 				];
 		}
 		
-		private function parse( stream: ByteArray ): void
+		override protected function parse( stream: ByteArray ): void
 		{
 			stream.endian = Endian.LITTLE_ENDIAN;
 			stream.position = P_FORMAT;
