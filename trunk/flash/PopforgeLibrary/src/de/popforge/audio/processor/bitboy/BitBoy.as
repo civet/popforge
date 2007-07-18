@@ -12,12 +12,6 @@ package de.popforge.audio.processor.bitboy
 	
 	import flash.utils.getTimer;
 	
-	/**
-	 * TODO LIST:
-	 * implement missing effects in Channel
-	 * small bugs also
-	 */
-	
 	public class BitBoy
 		implements IAudioProcessor
 	{
