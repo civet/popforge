@@ -3,14 +3,12 @@ package de.popforge.audio.processor.bitboy
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.audio.processor.bitboy.formats.FormatBase;
-	import de.popforge.audio.processor.bitboy.formats.FormatFactory;
-	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
+	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.parameter.MappingBoolean;
 	import de.popforge.parameter.MappingIntLinear;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
 	
-	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	
 	/**
@@ -243,7 +241,7 @@ package de.popforge.audio.processor.bitboy
 			else
 			{
 				for each( var channel: ModChannel in channels )
-					channel.amigaTick( amigaTick );
+					channel.onTick( amigaTick );
 			}
 		}
 		
@@ -298,7 +296,7 @@ package de.popforge.audio.processor.bitboy
 				channel = channels[ channelIndex ];
 				
 				//UPDATE channel.modTrigger( modFormat.patterns[ modFormat.sequence[ currentPatIndex ] ][ currentRowIndex ][ channelIndex ] );
-				channel.modTrigger( ModTrigger( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
+				channel.onTrigger( TriggerBase( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
 			}
 			
 			if( incrementPatIndex )
@@ -354,7 +352,7 @@ package de.popforge.audio.processor.bitboy
 				{
 					channel = channels[ channelIndex ];
 					//UPDATE channel.modTrigger( modFormat.patterns[ modFormat.sequence[ currentPatIndex ] ][ currentRowIndex ][ channelIndex ] );
-					channel.modTrigger( ModTrigger( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
+					channel.onTrigger( TriggerBase( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
 				}
 				
 				if ( loop )
