@@ -97,11 +97,10 @@ package de.popforge.audio.processor.bitboy
 				return;
 			}
 			
+			var channel: ChannelBase;
+			
 			var samplesAvailable: int = samples.length;
 			var sampleIndex: int = rest;
-
-			var channel: ModChannel;
-
 			var subset: Array;
 			
 			//-- process rest, if any
@@ -155,40 +154,40 @@ package de.popforge.audio.processor.bitboy
 			loop = false;
 			incrementPatIndex = false;
 			
-			var channel: ModChannel;
+			var channel: ChannelBase;
 			
 			for each( channel in channels )
 				channel.reset();
 		}
 		
-		internal function setBPM( bpm: int ): void
+		public function setBPM( bpm: int ): void
 		{
 			samplesPerTick = rate * RATIO / bpm;
 			
 			this.bpm = bpm;
 		}
 		
-		internal function setSpeed( speed: int ): void
+		public function setSpeed( speed: int ): void
 		{
 			this.speed = speed;
 		}
 		
-		internal function setRowIndex( rowIndex: int ): void
+		public function setRowIndex( rowIndex: int ): void
 		{
 			this.rowIndex = rowIndex;
 		}
 		
-		internal function getRowIndex(): int
+		public function getRowIndex(): int
 		{
 			return rowIndex;
 		}
 		
-		internal function getRate(): Number
+		public function getRate(): Number
 		{
 			return rate;
 		}
 		
-		internal function patternJump( patIndex: int ): void
+		public function patternJump( patIndex: int ): void
 		{
 			if( patIndex <= this.patIndex )
 			{
@@ -200,7 +199,7 @@ package de.popforge.audio.processor.bitboy
 			setRowIndex( 0 );
 		}
 		
-		internal function patternBreak( rowIndex: int ): void
+		public function patternBreak( rowIndex: int ): void
 		{
 			setRowIndex( rowIndex );
 			
@@ -235,7 +234,7 @@ package de.popforge.audio.processor.bitboy
 			}
 			else
 			{
-				for each( var channel: ModChannel in channels )
+				for each( var channel: ChannelBase in channels )
 					channel.onTick( tick );
 			}
 		}
@@ -278,7 +277,7 @@ package de.popforge.audio.processor.bitboy
 		
 		private function nextRow(): void
 		{
-			var channel: ModChannel;
+			var channel: ChannelBase;
 			var channelIndex: int;
 			
 			var currentPatIndex: int = patIndex;
@@ -323,7 +322,7 @@ package de.popforge.audio.processor.bitboy
 		{
 			reset();
 			
-			var channel: ModChannel;
+			var channel: ChannelBase;
 			var channelIndex: int;
 			
 			var currentPatIndex: int;

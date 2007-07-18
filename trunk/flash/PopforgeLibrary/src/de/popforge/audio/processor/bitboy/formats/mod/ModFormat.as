@@ -1,10 +1,11 @@
 package de.popforge.audio.processor.bitboy.formats.mod
 {
+	import de.popforge.audio.processor.bitboy.BitBoy;
+	import de.popforge.audio.processor.bitboy.channels.ModChannel;
+	import de.popforge.audio.processor.bitboy.formats.FormatBase;
+	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import de.popforge.audio.processor.bitboy.formats.FormatBase;
-	import de.popforge.audio.processor.bitboy.BitBoy;
-	import de.popforge.audio.processor.bitboy.ModChannel;
 
 	/**
 	 * @private

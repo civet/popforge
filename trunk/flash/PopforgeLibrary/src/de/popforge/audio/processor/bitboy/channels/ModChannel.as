@@ -1,7 +1,7 @@
-package de.popforge.audio.processor.bitboy
+package de.popforge.audio.processor.bitboy.channels
 {
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.bitboy.channels.ChannelBase;
+	import de.popforge.audio.processor.bitboy.BitBoy;
 	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModSample;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
