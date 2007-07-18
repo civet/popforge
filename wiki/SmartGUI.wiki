@@ -1,4 +1,4 @@
-#summary A solution for easy graphical user interface creation.
+#summary A solution to easy graphical user interface creation.
 
 =SmartGUI=
 
