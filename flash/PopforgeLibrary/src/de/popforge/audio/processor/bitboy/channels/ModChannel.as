@@ -235,7 +235,7 @@ package de.popforge.audio.processor.bitboy.channels
 					}
 				}
 				
-				amp = wave[ int( wavePhase ) % len ];
+				amp = wave[ int( wavePhase % len ) ];
 				
 				sample.left += amp * volL;
 				sample.right += amp * volR;
