@@ -8,7 +8,7 @@ package de.popforge.audio.processor.bitboy.channels
 		protected var bitboy: BitBoy;
 		protected var id: int;
 		
-		protected var defaultPanning: Number;
+		protected var pan: Number;
 		
 		protected var trigger: TriggerBase;
 		
@@ -32,10 +32,10 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		protected var mute: Boolean;
 		
-		public function ChannelBase( bitboy: BitBoy, id: int, defaultPanning: Number )
+		public function ChannelBase( bitboy: BitBoy, id: int, pan: Number )
 		{
 			this.bitboy = bitboy;
-			this.defaultPanning = defaultPanning;
+			this.pan = pan;
 			this.id = id;
 		}
 		
@@ -46,17 +46,22 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		public function reset(): void
 		{
-			
+			throw new Error( 'Override Implementation!' );
 		}
 		
 		public function onTrigger( trigger: TriggerBase ): void
 		{
-			
+			throw new Error( 'Override Implementation!' );
+		}
+		
+		public function onTick( tick: int ): void
+		{
+			throw new Error( 'Override Implementation!' );
 		}
 		
 		public function processAudioAdd( samples: Array ): void
 		{
-			
+			throw new Error( 'Override Implementation!' );
 		}
 			
 		public function toString(): String

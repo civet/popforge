@@ -1,11 +1,12 @@
 package de.popforge.audio.processor.bitboy
 {
 	import de.popforge.audio.output.Sample;
+	import de.popforge.audio.processor.bitboy.channels.ChannelBase;
+	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModSample;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
-	import de.popforge.math.rint;
 	
-	public class ModChannel
+	public class ModChannel extends ChannelBase
 	{
 		static private const ARPEGGIO: int = 0x0;
 		static private const PORTAMENTO_UP: int = 0x1;
@@ -45,30 +46,7 @@ package de.popforge.audio.processor.bitboy
 	 		-180,-161,-141,-120,-97,-74,-49,-24
 		];
 		
-		private var bitboy: BitBoy;
-		private var pan: Number;
-		private var id: int;
-		
-		private var trigger: ModTrigger;
-		
-		//-- WAVE
-		private var wave: Array;
-		private var repeatStart: int;
-		private var repeatEnd: int;
-		private var volume: int;
-		private var position: int;
-		
-		private var sampleOffset: int = 0;
-		
-		//-- PITCH
-		private var tone: int;
-		private var period: int;
-		
 		private var appegio: Appegio;
-		
-		//-- EFFECT
-		private var effect: int;
-		private var effectParam: int;
 		
 		private var volumeSlide: int;
 		private var portamentoSpeed: int;
@@ -83,21 +61,17 @@ package de.popforge.audio.processor.bitboy
 		private var patternLoopCount: int;
 		private var patternLoopPosition: int;
 
-		private var mute: Boolean;
-		
 		public function ModChannel( bitboy: BitBoy, id: int, pan: Number )
 		{
-			this.bitboy = bitboy;
-			this.pan = pan;
-			this.id = id;
+			super( bitboy, id, pan );
 		}
 		
-		internal function setMute( value: Boolean ): void
+		public override function setMute( value: Boolean ): void
 		{
 			mute = value;
 		}
 		
-		internal function reset(): void
+		public override function reset(): void
 		{
 			wave = null;
 			repeatStart = 0;
@@ -124,7 +98,7 @@ package de.popforge.audio.processor.bitboy
 			effectParam = 0;
 		}
 		
-		internal function modTrigger( trigger: ModTrigger ): void
+		public override function onTrigger( trigger: TriggerBase ): void
 		{
 			this.trigger = trigger;
 			
@@ -148,7 +122,7 @@ package de.popforge.audio.processor.bitboy
 			initEffect();
 		}
 		
-		internal function amigaTick( tick: int ): void
+		public override function onTick( tick: int ): void
 		{
 			switch( effect )
 			{
@@ -211,7 +185,7 @@ package de.popforge.audio.processor.bitboy
 			}
 		}
 		
-		internal function processAudioAdd( samples: Array ): void
+		public override function processAudioAdd( samples: Array ): void
 		{
 			var n: int = samples.length;
 			
@@ -417,7 +391,7 @@ package de.popforge.audio.processor.bitboy
 			if( trigger == null )
 				return;
 
-			var modSample: ModSample = trigger.modSample;
+			var modSample: ModSample = ModTrigger( trigger ).modSample;
 			
 			if( modSample == null || trigger.period <= 0 )
 				return;
