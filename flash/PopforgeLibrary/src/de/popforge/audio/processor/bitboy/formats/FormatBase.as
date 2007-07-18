@@ -1,6 +1,7 @@
 package de.popforge.audio.processor.bitboy.formats
 {
 	import de.popforge.audio.processor.bitboy.BitBoy;
+	import flash.utils.ByteArray;
 	
 	/**
 	 * The FormatBase class is an abstract descriptor for formats that are read by a tracker.
@@ -62,7 +63,7 @@ package de.popforge.audio.processor.bitboy.formats
 		/**
 		* Default restart position in sequence once song is completed.
 		*/		
-		public var restartPoisition: uint;
+		public var restartPosition: uint;
 		
 		/**
 		 * Default bpm.
@@ -79,7 +80,7 @@ package de.popforge.audio.processor.bitboy.formats
 		 * 
 		 * Each property of the FormatBase will be set to its default value.
 		 */	
-		public function FormatBase()
+		public function FormatBase( stream: ByteArray )
 		{
 			patterns = new Array;
 			sequence = new Array;
@@ -91,6 +92,11 @@ package de.popforge.audio.processor.bitboy.formats
 			numPatterns = 0;
 			
 			credits = new Array;
+		}
+		
+		protected function parse( stream: ByteArray ): void 
+		{
+			
 		}
 		
 		/**
