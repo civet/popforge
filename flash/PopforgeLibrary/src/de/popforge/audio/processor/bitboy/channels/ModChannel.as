@@ -5,6 +5,7 @@ package de.popforge.audio.processor.bitboy.channels
 	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModSample;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
+	import de.popforge.math.rint;
 	
 	public class ModChannel extends ChannelBase
 	{
@@ -105,7 +106,7 @@ package de.popforge.audio.processor.bitboy.channels
 			
 			if( trigger.period > 0 )
 			{
-				period = trigger.period;
+				period = linearPeriod = trigger.period;
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 				
@@ -113,7 +114,7 @@ package de.popforge.audio.processor.bitboy.channels
 			}
 			else if( appegio != null )
 			{
-				period = appegio.p0;
+				period = linearPeriod = appegio.p0;
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 			}
@@ -211,9 +212,13 @@ package de.popforge.audio.processor.bitboy.channels
 			
 			var n: int = samples.length;
 			
+			var linearPeriodAdd: Number = ( period - linearPeriod ) / n;
+			
 			for( var i: int = 0 ; i < n ; ++i )
 			{
 				sample = samples[i];
+				
+				//linearPeriod += linearPeriodAdd;
 				
 				pos = position * PITCH / period;
 				
@@ -239,6 +244,8 @@ package de.popforge.audio.processor.bitboy.channels
 				sample.left += amplitude * ( 1 - pan ) / 2;
 				sample.right += amplitude * ( pan + 1 ) / 2;
 			}
+			
+			linearPeriod = period;
 		}
 
 		private function initEffect(): void
@@ -487,7 +494,7 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			vibratoPosition += vibratoSpeed;
 			
-			//period = TONE_TABLE[ tone ] + SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128;
+			period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
 		}
 	}
 }
