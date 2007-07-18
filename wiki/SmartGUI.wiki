@@ -1,9 +1,12 @@
+#summary A solution for easy graphical user interface creation.
+
 =SmartGUI=
 
-To bring more fun in developing synthesizer, effect devices and stuff, it would be nice to have a fast option to create graphical user interface within a few clicks. As you know, GUI programming is a pain in the ass and takes often much more time, then the actual application logic.
+To bring more fun in developing synthesizer, effect devices and stuff it would be nice to have a powerful tool that helps creating a graphical user interface within a few clicks. As you know GUI programming is a pain in the ass and takes often much more time then the actual application logic.
 
-==Solution==
-We will create a grid based UI Editor with certain UI elements (listed below) plus a simple framework to connect the custom UI with the parameters (de.popforge.parameter) of your objects (synth, effect,...). Each element can only occupy a certain rectangular area in the tilemap. Overlapping is not allowed.
+==Idea==
+
+We will create a grid based UI editor with certain UI elements (listed below) plus a simple framework to connect the custom UI with the parameters (`de.popforge.parameter`) of your objects (synth, effect, ...). Each element can only occupy a certain rectangular area in the tilemap. Overlapping is not allowed.
 
 Imagine:
 {{{
@@ -17,7 +20,7 @@ addChild( gui );
 
 = Elements =
 
-We only think in terms of devices, so there is no need for input-textfields or flying windows. This makes it a lot of easier to keep it easy.
+We only think in terms of devices, so there is no need for input fields or flying windows. This makes it a lot of easier to keep it clean and simple.
 
   * Input Elements
     # Trigger Button
@@ -28,6 +31,6 @@ We only think in terms of devices, so there is no need for input-textfields or f
   * Output Elements
     # Label
     # Digit Display
+    # Oscilloscope
 
-
-more to come
+More to come soon ...
