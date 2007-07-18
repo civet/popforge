@@ -318,7 +318,7 @@ package de.popforge.audio.processor.bitboy
 			{
 				if( parameterLoopMode.getValue() )
 					//UPDATE patIndex = 0;
-					patIndex = modFormat.restartPoisition;
+					patIndex = modFormat.restartPosition;
 				else
 					lastRow = true;
 			}
