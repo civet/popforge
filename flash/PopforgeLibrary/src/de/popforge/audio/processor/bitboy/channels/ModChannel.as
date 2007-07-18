@@ -225,8 +225,9 @@ package de.popforge.audio.processor.bitboy.channels
 							wave = null;
 							return;
 						}
-						else if( repeatLength != len ) //-- truncate
+						else
 						{
+							//-- truncate
 							wave = wave.slice( repeatStart, repeatStart + repeatLength );
 							len = wave.length;
 							firstRun = false;
