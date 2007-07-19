@@ -273,9 +273,7 @@ package de.popforge.audio.processor.bitboy
 			
 			incrementPatIndex = false;
 			
-			trace( "nextRow", currentRowIndex );
-			
-			for ( channelIndex = 0; channelIndex < /*format.numChannels*/1; ++channelIndex )
+			for ( channelIndex = 0; channelIndex < format.numChannels; ++channelIndex )
 			{
 				channel = channels[ channelIndex ];
 				
