@@ -112,7 +112,7 @@ package de.popforge.widget.bitboy
 		{
 			bitboy = new BitBoy();
 			
-			buffer = new AudioBuffer( 4, Audio.STEREO, Audio.BIT16, Audio.RATE22050 );
+			buffer = new AudioBuffer( 4, Audio.STEREO, Audio.BIT16, Audio.RATE44100 );
 			buffer.onInit = onAudioBufferInit;
 			buffer.onComplete = onAudioBufferComplete;
 		}
