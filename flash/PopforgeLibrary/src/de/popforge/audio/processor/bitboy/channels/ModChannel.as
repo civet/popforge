@@ -60,7 +60,7 @@ package de.popforge.audio.processor.bitboy.channels
 		private var vibratoSpeed: int;
 		private var vibratoDepth: int;
 		private var vibratoPosition: int;
-		private var vibratoOffset: Number;
+		private var vibratoOffset: int;
 		
 		//-- EXT EFFECT
 		private var patternfirstRun: Boolean;
@@ -203,7 +203,7 @@ package de.popforge.audio.processor.bitboy.channels
 			
 			var amp: Number;
 			
-			var waveSpeed: Number = ( 3546894.6 / bitboy.getRate() ) / ( period + vibratoOffset ); // PAL machine clock (Magic Number)
+			var waveSpeed: Number = ( ( 7159090.5 / 2 ) / bitboy.getRate() ) / ( period + vibratoOffset ); // PAL machine clock (Magic Number)
 			
 			var n: int = samples.length;
 			
