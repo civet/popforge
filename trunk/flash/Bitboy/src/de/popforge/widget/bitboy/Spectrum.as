@@ -2,28 +2,35 @@ package de.popforge.widget.bitboy
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
+	import flash.events.TimerEvent;
 	import flash.media.SoundMixer;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 	
 	public class Spectrum extends Bitmap
 	{
 		private var output: BitmapData;
 		private var outputBitmap: Bitmap;
 		private var outputArray: ByteArray;
+		private var peaks: Array;
 				
 		public function Spectrum()
 		{
 			super( output = new BitmapData( 142, 13, false, 0x00ff00 ) );
 			
 			outputArray = new ByteArray();
+			
+			peaks = new Array();
+			
+			for( var i: int = 0 ; i < 16 ; i++ )
+				peaks[i] = 0.0;
 
-			addEventListener( Event.ENTER_FRAME, update );
+			var timer: Timer = new Timer( 25 );
+			timer.addEventListener( TimerEvent.TIMER, onTimer );
+			timer.start();
 		}
 		
-		private function update( event: Event ): void
+		private function onTimer( event: TimerEvent ): void
 		{
 			try
 			{
@@ -57,10 +64,20 @@ package de.popforge.widget.bitboy
 					a += outputArray.readFloat();
 				}
 				
-				h = 12 - a / 32 * 12;
-				y = 12;
+				a /= 32;
 				
-				if( h < 0 ) h = 0;
+				if( a > 1 )
+					a = 1;
+				
+				if( a > peaks[i] )
+				{
+					peaks[i] = a;
+				}
+				
+				h = 12 - peaks[i] * 12;
+				y = 11;
+				
+				peaks[i] *= .8;
 				
 				while( y > h )
 				{
@@ -70,34 +87,17 @@ package de.popforge.widget.bitboy
 				}
 			}
 			
-			/*var x: int = 0;
-			var i: int = 0;
-			var value: Number;
-			
-			for (i;i<0x100;i+=(0x100/143))
-			{
-				//-- mix stereo to mono
-				outputArray.position = i << 2;
-				value = outputArray.readFloat();
-				outputArray.position = ( i | 0x100 ) << 2;
-				value += outputArray.readFloat();
-				
-				//-- draw
-				output.setPixel( x++, 6 - value * 5, 0x0000ff );
-			}*/
-			
 			output.unlock();
 		}
 		
 		private function drawBlock( x: int, y: int ): void
 		{
 			output.setPixel( x++, y, 0x0000ff );
+			x++
 			output.setPixel( x++, y, 0x0000ff );
+			x++
 			output.setPixel( x++, y, 0x0000ff );
-			output.setPixel( x++, y, 0x0000ff );
-			output.setPixel( x++, y, 0x0000ff );
-			output.setPixel( x++, y, 0x0000ff );
-			output.setPixel( x++, y, 0x0000ff );
+			x++
 			output.setPixel( x, y, 0x0000ff );
 		}
 	}
