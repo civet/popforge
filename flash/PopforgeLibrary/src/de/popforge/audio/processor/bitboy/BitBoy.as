@@ -273,11 +273,12 @@ package de.popforge.audio.processor.bitboy
 			
 			incrementPatIndex = false;
 			
-			for ( channelIndex = 0; channelIndex < format.numChannels; ++channelIndex )
+			trace( "nextRow", currentRowIndex );
+			
+			for ( channelIndex = 0; channelIndex < /*format.numChannels*/1; ++channelIndex )
 			{
 				channel = channels[ channelIndex ];
 				
-				//UPDATE channel.modTrigger( modFormat.patterns[ modFormat.sequence[ currentPatIndex ] ][ currentRowIndex ][ channelIndex ] );
 				channel.onTrigger( TriggerBase( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
 			}
 			
@@ -308,6 +309,8 @@ package de.popforge.audio.processor.bitboy
 		
 		private function computeLengthInSeconds(): int
 		{
+			return 0;
+			
 			reset();
 			
 			var channel: ChannelBase;

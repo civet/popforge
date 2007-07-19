@@ -84,7 +84,6 @@ package de.popforge.audio.processor.bitboy.channels
 			repeatLength = 0;
 			firstRun = true;
 			volume = 0;
-		
 			trigger = null;
 			
 			patternfirstRun = false;
@@ -107,22 +106,30 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			this.trigger = trigger;
 			
+			trace( 'onTrigger' );
+			
 			updateWave();
 			
-			if( trigger.period > 0 )
+			if( effect == TONE_PORTAMENTO )
 			{
-				period = linearPeriod = trigger.period;
+				trace( "TONE_PORTAMENTO" );
+				initTonePortamento();
+			}
+			else if( trigger.period > 0 )
+			{
+				period = trigger.period;
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
-				
 				appegio = null;
 			}
 			else if( appegio != null )
 			{
-				period = linearPeriod = appegio.p0;
+				period = appegio.p0;
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 			}
+			
+			trace( period );
 			
 			initEffect();
 		}
@@ -233,7 +240,7 @@ package de.popforge.audio.processor.bitboy.channels
 				}
 				
 				amp = wave[ int( wavePhase % len ) ];
-				
+
 				sample.left += amp * volL;
 				sample.right += amp * volR;
 				
@@ -279,7 +286,7 @@ package de.popforge.audio.processor.bitboy.channels
 					
 				case TONE_PORTAMENTO:
 				
-					initTonePortamento();
+					//initTonePortamento();
 					break;
 				
 				case VIBRATO:
@@ -400,7 +407,6 @@ package de.popforge.audio.processor.bitboy.channels
 			repeatStart = modSample.repeatStart;
 			repeatLength = modSample.repeatLength;
 			volume = modSample.volume;
-			
 			firstRun = true;
 		}
 		
@@ -451,7 +457,7 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		private function updateTonePortamento(): void
 		{
-			if( period > tonePortamentoPeriod )
+			/*if( period > tonePortamentoPeriod )
 			{
 				period -= tonePortamentoSpeed;
 				if( period < tonePortamentoPeriod )
@@ -462,7 +468,7 @@ package de.popforge.audio.processor.bitboy.channels
 				period += tonePortamentoSpeed;
 				if( period > tonePortamentoPeriod )
 					period = tonePortamentoPeriod;
-			}
+			}*/
 		}
 		
 		private function initPortamento( portamentoSpeed: int ): void
