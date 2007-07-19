@@ -247,7 +247,7 @@ package de.popforge.audio.processor.bitboy.channels
 			effect = trigger.effect;
 			effectParam = trigger.effectParam;
 
-			if( effect != VIBRATO )
+			if( effect != VIBRATO && effect != VIBRATO_VOLUME_SLIDE )
 			{
 				vibratoSpeed = 0;
 				vibratoOffset = 0;
