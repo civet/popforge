@@ -237,14 +237,14 @@ package de.popforge.audio.processor.bitboy.channels
 				else
 					wavePhase %= len;
 				
+				//-- LINEAR INTERPOLATION
+				//
 				phaseInt = wavePhase;
-				
 				alpha = wavePhase - phaseInt;
-				
 				amp = wave[ phaseInt ] * ( 1 - alpha );
 				if( ++phaseInt == len ) phaseInt = 0;
 				amp += wave[ phaseInt ] * alpha;
-
+				
 				sample.left += amp * volL;
 				sample.right += amp * volR;
 				
