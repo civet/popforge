@@ -206,6 +206,9 @@ package de.popforge.audio.processor.bitboy.channels
 			
 			var waveSpeed: Number = ( ( 7159090.5 / 2 ) / bitboy.getRate() ) / ( period + vibratoOffset ); // PAL machine clock (Magic Number)
 			
+			var phaseInt: int;
+			var alpha: Number;
+			
 			var n: int = samples.length;
 			
 			for( var i: int = 0 ; i < n ; ++i )
@@ -226,12 +229,19 @@ package de.popforge.audio.processor.bitboy.channels
 							//-- truncate
 							wave = wave.slice( repeatStart, repeatStart + repeatLength );
 							len = wave.length;
+							wavePhase %= len;
 							firstRun = false;
 						}
 					}
 				}
+				else
+					wavePhase %= len;
 				
-				amp = wave[ int( wavePhase % len ) ];
+				phaseInt = wavePhase;
+				
+				alpha = wavePhase - phaseInt;
+				
+				amp = wave[ phaseInt ] * ( 1 - alpha ) + wave[ ( phaseInt + 1 ) % len ] * alpha;
 
 				sample.left += amp * volL;
 				sample.right += amp * volR;
@@ -425,7 +435,7 @@ package de.popforge.audio.processor.bitboy.channels
 		private function initVolumeSlide(): void
 		{
 			if( ModTrigger( trigger ).modSample )
-			volume = ModTrigger( trigger ).modSample.volume;
+				volume = ModTrigger( trigger ).modSample.volume;
 			volumeSlide =  effectParam >> 4;
 			volumeSlide -= effectParam & 0xf;
 		}

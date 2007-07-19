@@ -300,8 +300,6 @@ package de.popforge.audio.processor.bitboy
 		
 		private function computeLengthInSeconds(): int
 		{
-			return 0;
-			
 			reset();
 			
 			var channel: ChannelBase;
