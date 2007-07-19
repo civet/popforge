@@ -129,6 +129,11 @@ package de.popforge.audio.processor.bitboy.formats.mod
 					for ( var k: int = 0; k < 4; k++ )
 					{
 						patterns[ i ][ j ][ k ] = new ModTrigger( stream, modSamples );
+						
+						//if( k == 0 )
+						//{
+						//	trace( j, patterns[ i ][ j ][ k ] );
+						//}
 					}
 				}
 			}
