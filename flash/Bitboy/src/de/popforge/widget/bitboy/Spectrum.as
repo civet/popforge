@@ -27,7 +27,7 @@ package de.popforge.widget.bitboy
 		{
 			try
 			{
-				SoundMixer.computeSpectrum( outputArray, false );
+				SoundMixer.computeSpectrum( outputArray, true, 3 );
 			}
 			catch( e: Error )
 			{
@@ -37,7 +37,40 @@ package de.popforge.widget.bitboy
 			output.lock();
 			output.fillRect( output.rect, 0x00ff00 );
 			
-			var x: int = 0;
+			var x: int;
+			var y: int;
+			var h: int;
+			var f: int;
+			var a: Number;
+			
+			for( var i: int = 0 ; i < 16 ; i++ )
+			{
+				x = i * 9;
+				
+				a = 0;
+				
+				for( f = 0 ; f < 16 ; f++ )
+				{
+					outputArray.position = ( i * 16 + f ) << 2;
+					a += outputArray.readFloat();
+					outputArray.position = ( 256 + i * 16 + f ) << 2;
+					a += outputArray.readFloat();
+				}
+				
+				h = 12 - a / 32 * 12;
+				y = 12;
+				
+				if( h < 0 ) h = 0;
+				
+				while( y > h )
+				{
+					drawBlock( x, y );
+					
+					y -= 2;
+				}
+			}
+			
+			/*var x: int = 0;
 			var i: int = 0;
 			var value: Number;
 			
@@ -51,9 +84,21 @@ package de.popforge.widget.bitboy
 				
 				//-- draw
 				output.setPixel( x++, 6 - value * 5, 0x0000ff );
-			}
+			}*/
 			
 			output.unlock();
+		}
+		
+		private function drawBlock( x: int, y: int ): void
+		{
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x++, y, 0x0000ff );
+			output.setPixel( x, y, 0x0000ff );
 		}
 	}
 }
