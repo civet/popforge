@@ -250,7 +250,6 @@ package de.popforge.audio.processor.bitboy.channels
 
 			if( effect != VIBRATO && effect != VIBRATO_VOLUME_SLIDE )
 			{
-				vibratoSpeed = 0;
 				vibratoOffset = 0;
 			}
 
