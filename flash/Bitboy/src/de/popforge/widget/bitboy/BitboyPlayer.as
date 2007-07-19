@@ -264,7 +264,7 @@ package de.popforge.widget.bitboy
 			
 			spectrum = new Spectrum();
 			spectrum.x = 4;
-			spectrum.y = 28;
+			spectrum.y = 29;
 			addChild( spectrum );
 			
 			//-- AVOID ContextMenu Bug (otherwise contextMenu isn't enabled on bitmaps)
