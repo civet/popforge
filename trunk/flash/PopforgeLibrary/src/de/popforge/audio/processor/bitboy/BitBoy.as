@@ -23,11 +23,9 @@ package de.popforge.audio.processor.bitboy
 		public const parameterChannel: Parameter = new Parameter( new MappingIntLinear( 0, 0xf ), 0xf );
 		public const parameterLoopMode: Parameter = new Parameter( new MappingBoolean(), false );
 				
-		private var length: int;
-		
 		private var format: FormatBase;
 		private var channels: Array;
-
+		private var length: int;
 		private var rate: Number;
 		private var bpm: Number;
 		private var speed: int;
@@ -110,9 +108,9 @@ package de.popforge.audio.processor.bitboy
 					channel.processAudioAdd( subset );
 
 				samplesAvailable -= rest;
-				
-				nextTick();
 			}
+			
+			nextTick();
 			
 			//-- procees complete tick duration
 			while( samplesAvailable >= samplesPerTick )
@@ -125,7 +123,8 @@ package de.popforge.audio.processor.bitboy
 				samplesAvailable -= samplesPerTick;
 				sampleIndex += samplesPerTick;
 				
-				nextTick();
+				if( samplesAvailable > 0 )
+					nextTick();
 			}
 			
 			//-- procees remaining samples
@@ -153,9 +152,7 @@ package de.popforge.audio.processor.bitboy
 			loop = false;
 			incrementPatIndex = false;
 			
-			var channel: ChannelBase;
-			
-			for each( channel in channels )
+			for each( var channel: ChannelBase in channels )
 				channel.reset();
 		}
 		

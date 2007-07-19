@@ -98,6 +98,7 @@ package de.popforge.audio.processor.bitboy.channels
 			vibratoSpeed = 0.0;
 			vibratoDepth = 0.0;
 			vibratoPosition = 0.0;
+			vibratoOffset = 0.0;
 			
 			effect = 0;
 			effectParam = 0;
@@ -119,13 +120,6 @@ package de.popforge.audio.processor.bitboy.channels
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 				appegio = null;
-			}
-			else if( appegio != null )
-			{
-				period = appegio.p0;
-				appegio = null;
-				tone = TONE_TABLE.indexOf( period );
-				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 			}
 			
 			initEffect();
