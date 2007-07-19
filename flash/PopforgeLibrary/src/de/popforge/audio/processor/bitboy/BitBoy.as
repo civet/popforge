@@ -137,7 +137,7 @@ package de.popforge.audio.processor.bitboy
 		
 		public function reset(): void
 		{
-			rate = Audio.RATE22050;
+			rate = Audio.RATE44100;
 			speed = format.defaultSpeed;
 			tick = 0;
 
