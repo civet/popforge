@@ -424,6 +424,8 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		private function initVolumeSlide(): void
 		{
+			if( ModTrigger( trigger ).modSample )
+			volume = ModTrigger( trigger ).modSample.volume;
 			volumeSlide =  effectParam >> 4;
 			volumeSlide -= effectParam & 0xf;
 		}
