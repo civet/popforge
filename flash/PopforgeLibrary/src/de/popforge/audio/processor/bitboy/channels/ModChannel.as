@@ -57,9 +57,10 @@ package de.popforge.audio.processor.bitboy.channels
 		private var portamentoSpeed: int;
 		private var tonePortamentoSpeed: int = 0;
 		private var tonePortamentoPeriod: int;
-		private var vibratoSpeed: Number;
-		private var vibratoDepth: Number;
-		private var vibratoPosition: Number;
+		private var vibratoSpeed: int;
+		private var vibratoDepth: int;
+		private var vibratoPosition: int;
+		private var vibratoOffset: Number;
 		
 		//-- EXT EFFECT
 		private var patternfirstRun: Boolean;
@@ -106,13 +107,10 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			this.trigger = trigger;
 			
-			trace( 'onTrigger' );
-			
 			updateWave();
 			
-			if( effect == TONE_PORTAMENTO )
+			if( trigger.effect == TONE_PORTAMENTO  )
 			{
-				trace( "TONE_PORTAMENTO" );
 				initTonePortamento();
 			}
 			else if( trigger.period > 0 )
@@ -125,11 +123,10 @@ package de.popforge.audio.processor.bitboy.channels
 			else if( appegio != null )
 			{
 				period = appegio.p0;
+				appegio = null;
 				tone = TONE_TABLE.indexOf( period );
 				tonePortamentoPeriod = period; // fix for 'delicate.mod'
 			}
-			
-			trace( period );
 			
 			initEffect();
 		}
@@ -212,7 +209,7 @@ package de.popforge.audio.processor.bitboy.channels
 			
 			var amp: Number;
 			
-			var waveSpeed: Number = ( 3546894.6 / bitboy.getRate() ) / period; // PAL machine clock (Magic Number)
+			var waveSpeed: Number = ( 3546894.6 / bitboy.getRate() ) / ( period + vibratoOffset ); // PAL machine clock (Magic Number)
 			
 			var n: int = samples.length;
 			
@@ -257,7 +254,10 @@ package de.popforge.audio.processor.bitboy.channels
 			effectParam = trigger.effectParam;
 
 			if( effect != VIBRATO )
+			{
 				vibratoSpeed = 0;
+				vibratoOffset = 0;
+			}
 
 			switch( effect )
 			{
@@ -285,8 +285,6 @@ package de.popforge.audio.processor.bitboy.channels
 					break;
 					
 				case TONE_PORTAMENTO:
-				
-					//initTonePortamento();
 					break;
 				
 				case VIBRATO:
@@ -358,7 +356,6 @@ package de.popforge.audio.processor.bitboy.channels
 				case VOLUME_SLIDE:
 				
 					initVolumeSlide();
-					initTonePortamento();
 					break;
 				
 				case SET_VOLUME:
@@ -449,15 +446,19 @@ package de.popforge.audio.processor.bitboy.channels
 		
 		private function initTonePortamento(): void
 		{
-			if( trigger.period > 0 )
-				tonePortamentoPeriod = trigger.period;
-			if( effectParam > 0 )
-				tonePortamentoSpeed = effectParam;
+			if( trigger.effectParam > 0 )
+			{
+				tonePortamentoSpeed = trigger.effectParam;
+				if( trigger.period > 0 )
+				{
+					tonePortamentoPeriod = trigger.period;
+				}
+			}
 		}
 		
 		private function updateTonePortamento(): void
 		{
-			/*if( period > tonePortamentoPeriod )
+			if( period > tonePortamentoPeriod )
 			{
 				period -= tonePortamentoSpeed;
 				if( period < tonePortamentoPeriod )
@@ -468,7 +469,7 @@ package de.popforge.audio.processor.bitboy.channels
 				period += tonePortamentoSpeed;
 				if( period > tonePortamentoPeriod )
 					period = tonePortamentoPeriod;
-			}*/
+			}
 		}
 		
 		private function initPortamento( portamentoSpeed: int ): void
@@ -495,7 +496,7 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			vibratoPosition += vibratoSpeed;
 			
-			period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
+			vibratoOffset = SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128;
 		}
 	}
 }
