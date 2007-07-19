@@ -5,7 +5,6 @@ package de.popforge.audio.processor.bitboy.channels
 	import de.popforge.audio.processor.bitboy.formats.TriggerBase;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModSample;
 	import de.popforge.audio.processor.bitboy.formats.mod.ModTrigger;
-	import de.popforge.math.rint;
 	
 	public class ModChannel extends ChannelBase
 	{
@@ -490,7 +489,7 @@ package de.popforge.audio.processor.bitboy.channels
 		{
 			vibratoPosition += vibratoSpeed;
 			
-			//period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
+			period = TONE_TABLE[ tone ] + ( SINE_TABLE[ vibratoPosition % SINE_TABLE.length ] * vibratoDepth / 128 );
 		}
 	}
 }
