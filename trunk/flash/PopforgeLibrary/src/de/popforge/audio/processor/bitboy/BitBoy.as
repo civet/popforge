@@ -273,7 +273,6 @@ package de.popforge.audio.processor.bitboy
 			for ( channelIndex = 0; channelIndex < format.numChannels; ++channelIndex )
 			{
 				channel = channels[ channelIndex ];
-				
 				channel.onTrigger( TriggerBase( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
 			}
 			
@@ -281,7 +280,6 @@ package de.popforge.audio.processor.bitboy
 			{
 				nextPattern();
 			}
-			//UPDATE else if( rowIndex > 63 )
 			else if ( rowIndex == format.getPatternLength( format.getSequenceAt( currentPatIndex ) ) )
 			{
 				rowIndex = 0;
@@ -291,11 +289,9 @@ package de.popforge.audio.processor.bitboy
 		
 		private function nextPattern(): void
 		{
-			//UPDATE if( ++patIndex == modFormat.sequence.length )
 			if( ++patIndex == format.length )
 			{
 				if( parameterLoopMode.getValue() )
-					//UPDATE patIndex = 0;
 					patIndex = format.restartPosition;
 				else
 					lastRow = true;
@@ -327,11 +323,9 @@ package de.popforge.audio.processor.bitboy
 				currentRowIndex = rowIndex++;
 				incrementPatIndex = false;
 				
-				//UPDATE for( channelIndex = 0; channelIndex < 4; ++channelIndex )
 				for ( channelIndex = 0; channelIndex < format.numChannels; ++channelIndex )				
 				{
 					channel = channels[ channelIndex ];
-					//UPDATE channel.modTrigger( modFormat.patterns[ modFormat.sequence[ currentPatIndex ] ][ currentRowIndex ][ channelIndex ] );
 					channel.onTrigger( TriggerBase( format.getTriggerAt( format.getSequenceAt( currentPatIndex ), currentRowIndex, channelIndex ) ) );
 				}
 				
@@ -341,7 +335,6 @@ package de.popforge.audio.processor.bitboy
 				if ( incrementPatIndex )
 					nextPattern();
 				
-				//UPDATE if( rowIndex > 63 )
 				if ( rowIndex == format.getPatternLength( format.getSequenceAt( currentPatIndex ) ) )
 				{
 					rowIndex = 0;
