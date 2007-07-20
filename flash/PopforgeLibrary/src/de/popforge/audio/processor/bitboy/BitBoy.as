@@ -128,9 +128,12 @@ package de.popforge.audio.processor.bitboy
 			}
 			
 			//-- procees remaining samples
-			subset = samples.slice( -samplesAvailable );
-			for each( channel in channels )
-				channel.processAudioAdd( subset );
+			if( samplesAvailable > 0 )
+			{
+				subset = samples.slice( -samplesAvailable );
+				for each( channel in channels )
+					channel.processAudioAdd( subset );
+			}
 			
 			rest = samplesPerTick - samplesAvailable;
 		}
@@ -186,9 +189,7 @@ package de.popforge.audio.processor.bitboy
 		public function patternJump( patIndex: int ): void
 		{
 			if( patIndex <= this.patIndex )
-			{
 				loop = true;
-			}
 			
 			this.patIndex = patIndex;
 			
@@ -212,13 +213,10 @@ package de.popforge.audio.processor.bitboy
 			if( --tick <= 0 )
 			{
 				if( lastRow )
-				{
 					complete = true;
-				}
 				else
 				{
 					rowComplete();
-					
 					tick = speed;
 				}
 			}
@@ -300,6 +298,7 @@ package de.popforge.audio.processor.bitboy
 		
 		private function computeLengthInSeconds(): int
 		{
+			return 0;
 			reset();
 			
 			var channel: ChannelBase;
