@@ -60,5 +60,10 @@ package de.popforge.audio.output
 		{
 			return new Sample( left, right );
 		}
+		
+		public function toString(): String
+		{
+			return '{ left: ' + left + ' right: ' + right + ' }';
+		}
 	}
 }

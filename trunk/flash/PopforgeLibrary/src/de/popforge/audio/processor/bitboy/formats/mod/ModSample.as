@@ -33,10 +33,26 @@ package de.popforge.audio.processor.bitboy.formats.mod
 			
 			wave = new Array();
 			
-			for( var i: int = 0 ; i < length ; i++ )
+			var value: Number;
+			var min: Number = 1;
+			var max: Number = -1;
+			
+			var i: int;
+			
+			for( i = 0 ; i < length ; i++ )
 			{
-				wave.push( stream.readByte() / 0xff );
+				value = ( stream.readByte() + .5 ) / 127.5;
+				
+				if( value < min ) min = value;
+				if( value > max ) max = value;
+				
+				wave.push( value );
 			}
+			
+			var base: Number = ( min + max ) / 2;
+			
+			for( i = 0 ; i < length ; i++ )
+				wave[i] -= base;
 		}
 		
 		private function parse( stream: ByteArray ): void

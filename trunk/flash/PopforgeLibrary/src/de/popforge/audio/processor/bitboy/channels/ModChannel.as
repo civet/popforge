@@ -52,8 +52,6 @@ package de.popforge.audio.processor.bitboy.channels
 		private var firstRun: Boolean;
 		private var volume: int;
 		
-		private var appegio: Appegio;
-		
 		private var volumeSlide: int;
 		private var portamentoSpeed: int;
 		private var tonePortamentoSpeed: int = 0;
@@ -62,12 +60,13 @@ package de.popforge.audio.processor.bitboy.channels
 		private var vibratoDepth: int;
 		private var vibratoPosition: int;
 		private var vibratoOffset: int;
+		private var appegio: Appegio;
 		
 		//-- EXT EFFECT
 		private var patternfirstRun: Boolean;
 		private var patternfirstRunCount: int;
 		private var patternfirstRunPosition: int;
-
+		
 		public function ModChannel( bitboy: BitBoy, id: int, pan: Number )
 		{
 			super( bitboy, id, pan );
@@ -84,7 +83,7 @@ package de.popforge.audio.processor.bitboy.channels
 			wavePhase = 0.0;
 			repeatStart = 0;
 			repeatLength = 0;
-			firstRun = true;
+			firstRun = false;
 			volume = 0;
 			trigger = null;
 			
@@ -194,6 +193,10 @@ package de.popforge.audio.processor.bitboy.channels
 			if( wave == null || mute )
 				return;
 			
+			var n: int = samples.length;
+			
+			if( n == 0 ) return;
+			
 			var sample: Sample;
 			
 			var len: int = wave.length;
@@ -202,19 +205,14 @@ package de.popforge.audio.processor.bitboy.channels
 			var volL: Number = volT * ( 1 - pan ) / 2;
 			var volR: Number = volT * ( pan + 1 ) / 2;
 			
-			var amp: Number;
-			
-			var waveSpeed: Number = ( ( 7159090.5 / 2 ) / bitboy.getRate() ) / ( period + vibratoOffset ); // PAL machine clock (Magic Number)
+			var waveSpeed: Number = ( ( 7159090.5 / 2 ) / bitboy.getRate() ) / ( period + vibratoOffset ); // NTSC machine clock (Magic Number)
 			
 			var phaseInt: int;
 			var alpha: Number;
-			
-			var n: int = samples.length;
+			var amp: Number;
 			
 			for( var i: int = 0 ; i < n ; ++i )
 			{
-				sample = samples[i];
-				
 				if( firstRun )
 				{
 					if( wavePhase >= len ) // first run complete
@@ -241,10 +239,12 @@ package de.popforge.audio.processor.bitboy.channels
 				//
 				phaseInt = wavePhase;
 				alpha = wavePhase - phaseInt;
+
 				amp = wave[ phaseInt ] * ( 1 - alpha );
 				if( ++phaseInt == len ) phaseInt = 0;
 				amp += wave[ phaseInt ] * alpha;
 				
+				sample = samples[i];
 				sample.left += amp * volL;
 				sample.right += amp * volR;
 				
@@ -341,7 +341,7 @@ package de.popforge.audio.processor.bitboy.channels
 						
 						case 0x9: //-- retrigger note
 
-							wavePhase = 0;
+							wavePhase = .0;
 							break;
 						
 						case 0xc: //-- cut note
