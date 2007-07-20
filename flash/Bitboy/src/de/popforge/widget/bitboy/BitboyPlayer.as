@@ -135,11 +135,11 @@ package de.popforge.widget.bitboy
 			
 			bitboy.processAudio( samples );
 			
-			if( stereoEnhancer )
-				stereoEnhancer.processAudio( samples );
-			
 			if( bassBoost )
 				bassBoost.processAudio( samples );
+			
+			if( stereoEnhancer )
+				stereoEnhancer.processAudio( samples );
 			
 			if( lastBuffer )
 			{
@@ -153,7 +153,6 @@ package de.popforge.widget.bitboy
 			{
 				if( fader.proceesAudio( samples ) )
 				{
-					startTime = int.MAX_VALUE;
 					fader = null;
 					next();
 				}
@@ -179,6 +178,8 @@ package de.popforge.widget.bitboy
 			display.showPreloadingInformation( modLoader );
 			
 			display.updateSong( songList.getCurrentSong() );
+			
+			startTime = int.MAX_VALUE;
 		}
 		
 		private function onModLoad( format: FormatBase ): void

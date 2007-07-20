@@ -39,6 +39,9 @@ package de.popforge.widget.bitboy
 			var readIndex: int;
 			var offset: int = rate / 55;
 			
+			var dL: Number;
+			var dR: Number;
+			
 			for( var i: int = 0 ; i < n ; i++ )
 			{
 				stream = samples[i];
@@ -49,8 +52,14 @@ package de.popforge.widget.bitboy
 				readIndex = writeIndex - offset;
 				if( readIndex < 0 ) readIndex += 0xffff;
 				
-				stream.right += delayL[readIndex] * .5;
-				stream.left += delayR[readIndex] * .5;
+				dL = delayL[readIndex] * .25;
+				dR = delayR[readIndex] * .25;
+				
+				stream.right += dL;
+				stream.left += dR;
+				
+				delayL[writeIndex] += dL;
+				delayR[writeIndex] += dR;
 				
 				if( ++writeIndex == 0xffff )
 					writeIndex = 0;
