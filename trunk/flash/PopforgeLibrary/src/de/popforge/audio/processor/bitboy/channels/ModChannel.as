@@ -157,7 +157,7 @@ package de.popforge.audio.processor.bitboy.channels
 					break;
 				
 				case VIBRATO:
-				
+					
 					updateVibrato();
 					break;
 				
@@ -294,7 +294,8 @@ package de.popforge.audio.processor.bitboy.channels
 					break;
 				
 				case VIBRATO:
-				
+					if ( ModTrigger( trigger ).modSample != null )
+						volume = ModTrigger( trigger ).modSample.volume;
 					initVibrato();
 					break;
 
