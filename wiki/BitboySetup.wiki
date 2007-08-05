@@ -46,7 +46,7 @@ By following these instructions your library project will be connected to our co
 
 The 8bitboy comes with its own assets library that is stored in the repository and you have to include manually.
 
-  * Locate your PopforgeLibrary project in the Navigator
+  * Locate your Bitboy project in the Navigator
   * Right click and select `Properties`
   * Go to `ActionScript Build Path`
   * Switch to the `Library path` tab
@@ -58,7 +58,7 @@ The 8bitboy comes with its own assets library that is stored in the repository a
 
 8bitboy needs a configuration XML. We provide a basic XML template. You have create a local copy of that XML in order to run 8bitboy.
 
-  * Locate your PopforgeLibrary project in the Navigator
+  * Locate your Bitboy project in the Navigator
   * Open the "bin" directory
   * Create a copy of "init.8bitboy.xml"
   * Name the copy "8bitboy.xml"
