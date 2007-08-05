@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/processing/processing-0125-expert/lib/core.jar"/>
+	<classpathentry kind="lib" path="D:/processing/processing-0125-expert/libraries/net/library/net.jar"/>
+	<classpathentry kind="lib" path="D:/flex3/workspace/AS3ProControll/library/procontroll.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
