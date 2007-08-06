@@ -3,11 +3,15 @@ package
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
+	import de.popforge.audio.processor.effects.QuirkFilter;
 	import de.popforge.format.Wav;
 	import de.popforge.gui.Label;
 	import de.popforge.gui.Slider;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
+	import de.popforge.ui.procontroll.ProcontrollControl;
+	import de.popforge.ui.procontroll.ProcontrollDevice;
+	import de.popforge.ui.procontroll.ProcontrollStick;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -30,24 +34,65 @@ package
 		private var wav: Wav;
 		private var phase: Number;
 		
-		private var sliderPitch: Slider;
+		private var pcc: ProcontrollControl;
+		private var filter: QuirkFilter;
+		
 		private var parameterPitch: Parameter;
 		
 		public function PlayWavfile()
 		{
-			parameterPitch = new Parameter( new MappingNumberLinear( -2, 2 ), 1 );
+			parameterPitch = new Parameter( new MappingNumberLinear( -1, 3 ), 1 );
 			
-			sliderPitch = new Slider( parameterPitch, 100 );
-			sliderPitch.x = ( stage.stageWidth - sliderPitch.width ) >> 1;
-			sliderPitch.y = ( stage.stageHeight - sliderPitch.height ) >> 1;
-			addChild( sliderPitch );
+			filter = new QuirkFilter();
 			
-			var label: Label = new Label( 'PITCH CONTROL', 100 );
-			label.x = sliderPitch.x;
-			label.y = sliderPitch.y - 20;
+			var x: int = 100;
+			var y: int = 64;
+			var label: Label;
+			var slider: Slider;
+			
+			slider = new Slider( parameterPitch, 100 );
+			slider.x = x;
+			slider.y = y;
+			addChild( slider );
+			
+			label = new Label( 'PITCH CONTROL', 100 );
+			label.x = x;
+			label.y = slider.y - 20;
 			addChild( label );
 			
+			y += 64;
+
+			slider = new Slider( filter.parameterX, 100 );
+			slider.x = x;
+			slider.y = y;
+			addChild( slider );
+			
+			label = new Label( 'QUIRK FILTER', 100 );
+			label.x = x;
+			label.y = slider.y - 20;
+			addChild( label );
+			
+			/**
+			 * You need to have the Java server running and
+			 * a Joystick with 'analogue sticks'
+			 * Otherwise it is simply ignored.
+			 */
+			pcc = new ProcontrollControl( 'localhost', 10002 );
+			//pcc.addEventListener( Event.INIT, onControlsInit );
+			
 			loadWave();
+		}
+		
+		private function onControlsInit( event: Event ): void
+		{
+			var device: ProcontrollDevice = pcc.getDeviceByName( 'Logitech Dual Action' );
+			
+			if( device != null )
+			{
+				ProcontrollStick( device.sticks[0] ).setParameterX( parameterPitch );
+				ProcontrollStick( device.sticks[1] ).setParameterX( filter.parameterX );
+				ProcontrollStick( device.sticks[1] ).setParameterY( filter.parameterY );
+			}
 		}
 		
 		private function loadWave(): void
@@ -105,7 +150,7 @@ package
 				//-- store local
 				output = samples[i];
 				input = wav.samples[ int( phase ) ];
-				
+
 				//-- write to sample
 				output.left = input.left;
 				output.right = input.right;
@@ -118,6 +163,8 @@ package
 				else if( phase >= wav.samples.length )
 					phase -= wav.samples.length;
 			}
+			
+			filter.processAudio( samples );
 			
 			//-- update audio buffer
 			buffer.update();
