@@ -9,7 +9,7 @@ import procontroll.*;
 public class AS3ProControll extends PApplet
 {
 	/**
-	 * 
+	 * First approach to get Joystick control into AS3
 	 */
 	private static final long serialVersionUID = 1L;
 	
