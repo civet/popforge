@@ -172,7 +172,7 @@ package de.popforge.format.furnace
 			}
 			
 			_items.push( item );
-			return _library.push( file );
+			return ( _library.push( file ) - 1 );
 		}
 		
 		/**
