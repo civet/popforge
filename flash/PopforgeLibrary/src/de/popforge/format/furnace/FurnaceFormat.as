@@ -82,8 +82,7 @@ package de.popforge.format.furnace
 		}
 		
 		/**
-		 * Returns the number of items.
-		 * @return Number of items.
+		 * The number of items in the package.
 		 */		
 		public function get numFiles(): uint
 		{
@@ -189,6 +188,11 @@ package de.popforge.format.furnace
 			}
 		}
 		
+		/**
+		 * Writes the furnace format to a given <code>IDataOutput</code> stream.
+		 * 
+		 * @param output The stream to write to.
+		 */		
 		public function writeExternal( output: IDataOutput ): void
 		{
 			var i: uint, n: uint;
@@ -249,6 +253,11 @@ package de.popforge.format.furnace
 			}
 		}
 		
+		/**
+		 * Reads the furnace format from a given <code>IDataInput</code> stream.
+		 * 
+		 * @param input The stream to read from.
+		 */		
 		public function readExternal( input: IDataInput ): void
 		{
 			var i: uint, n: uint;
@@ -287,6 +296,9 @@ package de.popforge.format.furnace
 			uncompressLibrary();
 		}
 		
+		/**
+		 * Compresses all objects that are in the library.
+		 */		
 		protected function compressLibrary(): void
 		{
 			var i: uint, n: uint;
@@ -300,6 +312,9 @@ package de.popforge.format.furnace
 			}
 		}
 		
+		/**
+		 * Uncompresses all objects that are in the library.
+		 */		
 		protected function uncompressLibrary(): void
 		{
 			var i: uint, n: uint;
@@ -314,13 +329,17 @@ package de.popforge.format.furnace
 			}
 		}
 		
+		/**
+		 * Creates and returns a string representation of the object.
+		 * 
+		 * @return The string representation of the object.
+		 */		
 		public function toString(): String
 		{
 			return '[FurnaceFormat header: ' + _header.toString() + ']';
 		}
 	}
 }
-
 /*
 	==========================
 	Furnace File Specification
