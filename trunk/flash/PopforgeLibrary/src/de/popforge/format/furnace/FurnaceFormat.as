@@ -47,6 +47,7 @@ package de.popforge.format.furnace
 	 * Data:
 	 * Raw GZip encoded file data.
 	 * </p>
+	 * 
 	 * @author Joa Ebert
 	 */	
 	public class FurnaceFormat implements IExternalizable
@@ -288,7 +289,7 @@ package de.popforge.format.furnace
 			{
 				var bytes: ByteArray = new ByteArray;
 				
-				input.readBytes( bytes, 0, FurnaceItem( _items[ i ] )._size );
+				input.readBytes( bytes, _items[ i ], FurnaceItem( _items[ i ] )._size );
 				
 				_library[ i ] = bytes;
 			}
