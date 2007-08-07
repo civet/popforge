@@ -8,7 +8,7 @@ package de.popforge.format.furnace
 	/**
 	 * The FurnaceFormat class can read and write the popforge furnace format.
 	 * Since the class implements <code>IExternalizable</code> it can be passed
-	 * to a class that implements <coce>IDataInput</code> and <code>IDataOutput</code>.
+	 * to a class that implements <coce>IDataInput</code> or <code>IDataOutput</code>.
 	 * 
 	 * <p>Using <code>registerClassAlias</code> makes calls to <code>IDataInput.readObject()</code>
 	 * or <code>IDataOutput.writeObject()</code> possible.</p>
