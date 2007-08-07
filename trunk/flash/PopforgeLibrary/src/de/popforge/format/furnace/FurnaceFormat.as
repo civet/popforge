@@ -13,7 +13,7 @@ package de.popforge.format.furnace
 	 * <p>Using <code>registerClassAlias</code> makes calls to <code>IDataInput.readObject()</code>
 	 * or <code>IDataOutput.writeObject()</code> possible.</p>
 	 * 
-	 * <p>The furnace file format supports streaming and is optimized for fast and
+	 * <p>The furnace file format supports streaming and has been designed for fast and
 	 * easy read access.</p>
 	 * 
 	 * <p>The file structure is like this:
