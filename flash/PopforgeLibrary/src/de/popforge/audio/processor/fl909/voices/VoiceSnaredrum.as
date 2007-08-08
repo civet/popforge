@@ -9,8 +9,29 @@ package de.popforge.audio.processor.fl909.voices
 		static private const sndBody: Array = Rom.convert16Bit( new Rom.SnareDrumBody() );
 		static private const sndBodyNum: int = sndBody.length - 1;
 		
-		static private const sndNoise: Array = Noise.createSnareNoise();
+		static private const sndNoise: Array = createSnareNoise();
 		static private const sndNoiseNum: int = sndNoise.length - 1;
+		
+		static private function createSnareNoise(): Array
+		{
+			var amplitudes: Array = new Array();
+			var r: Random = new Random( 0xffff );
+			var a: Number;
+			var v: Number = 0;
+			var o: Number = 0;
+			var i: int = 11025;
+			
+			while( --i > -1 )
+			{
+				a = r.getNumber( -2, 2 );
+				v *= .3;
+				v += ( a - o ) * .2;
+				o += v;
+				amplitudes[i] = a - o;
+			}
+			
+			return amplitudes;
+		}
 		
 		private var bodyEnv: Number;
 		private var noiseEnv: Number;
