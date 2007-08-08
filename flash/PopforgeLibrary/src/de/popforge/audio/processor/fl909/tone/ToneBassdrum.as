@@ -7,7 +7,7 @@ package de.popforge.audio.processor.fl909.tone
 	public class ToneBassdrum
 	{
 		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .75 );
-		public const tune: Parameter = new Parameter( new MappingNumberLinear( 1, 5 ), 3 );
+		public const tune: Parameter = new Parameter( new MappingNumberLinear( 1, 5 ), 5 );
 		public const attack: Parameter = new Parameter( new MappingNumberLinear( 1, 0 ), 1 );
 		public const decay: Parameter = new Parameter( new MappingNumberExponential( 512, 8192 ), 4096 );
 	}

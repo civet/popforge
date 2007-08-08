@@ -11,17 +11,32 @@ package de.popforge.audio.processor.fl909.voices
 		static private const sndCLLength: int = sndCL.length - 1;
 		static private const sndOPLength: int = sndOP.length - 1;
 
-		private var tone: ToneHighHat;
 		private var closed: Boolean;
+		
+		private var volEnv: Number;
+		private var levelValue: Number;
+		private var decayValue: int;
 		
 		public function VoiceHiHat( start: int, tone: ToneHighHat, closed: Boolean )
 		{
 			super( start );
 			
-			this.tone = tone;
 			this.closed = closed;
 			
-			length = closed ? sndCLLength : sndOPLength;
+			if( closed )
+			{
+				length = sndCLLength;
+				levelValue = tone.levelCL.getValue();
+				decayValue = tone.decayCL.getValue();
+			}
+			else
+			{
+				length = sndOPLength;
+				levelValue = tone.levelOP.getValue();
+				decayValue = tone.decayOP.getValue();
+			}
+			
+			volEnv = 1;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -44,17 +59,25 @@ package de.popforge.audio.processor.fl909.voices
 			var sample: Sample;
 			var amplitude: Number;
 			
-			var level: Number = 1;
-			
 			for( var i: int = start ; i < n ; i++ )
 			{
 				sample = samples[i];
 				
-				amplitude = sndCL[ position++ ] * level;
+				amplitude = sndCL[ position++ ] * levelValue * volEnv;
 
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
+				
+				//-- DECAY
+				if( position > decayValue )
+				{
+					//-- observed value
+					volEnv *= .998;
+
+					if( volEnv < .001 )
+						return true;
+				}
 
 				if( position >= length )
 					return true;
@@ -72,17 +95,25 @@ package de.popforge.audio.processor.fl909.voices
 			var sample: Sample;
 			var amplitude: Number;
 			
-			var level: Number = 1;
-			
 			for( var i: int = start ; i < n ; i++ )
 			{
 				sample = samples[i];
 				
-				amplitude = sndOP[ position++ ] * level;
+				amplitude = sndOP[ position++ ] * levelValue;
 
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
+
+				//-- DECAY
+				if( position > decayValue )
+				{
+					//-- observed value
+					volEnv -= .0002;
+
+					if( volEnv < 0 )
+						return true;
+				}
 
 				if( position >= length )
 					return true;
