@@ -5,15 +5,15 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.memory.Trigger;
 	import de.popforge.audio.processor.fl909.tone.ToneBassdrum;
 	import de.popforge.audio.processor.fl909.tone.ToneClap;
-	import de.popforge.audio.processor.fl909.tone.ToneCrash;
+	import de.popforge.audio.processor.fl909.tone.ToneCymbal;
 	import de.popforge.audio.processor.fl909.tone.ToneHighHat;
-	import de.popforge.audio.processor.fl909.tone.ToneRide;
 	import de.popforge.audio.processor.fl909.tone.ToneRimshot;
 	import de.popforge.audio.processor.fl909.tone.ToneSnaredrum;
 	import de.popforge.audio.processor.fl909.tone.ToneTom;
 	import de.popforge.audio.processor.fl909.voices.Voice;
 	import de.popforge.audio.processor.fl909.voices.VoiceBassdrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceClap;
+	import de.popforge.audio.processor.fl909.voices.VoiceCymbal;
 	import de.popforge.audio.processor.fl909.voices.VoiceHiHat;
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
 	import de.popforge.audio.processor.fl909.voices.VoiceTom;
@@ -48,8 +48,7 @@ package de.popforge.audio.processor.fl909
 		public const toneRimshot: ToneRimshot = new ToneRimshot();
 		public const toneClap: ToneClap = new ToneClap();
 		public const toneHighHat: ToneHighHat = new ToneHighHat();
-		public const toneRide: ToneRide = new ToneRide();
-		public const toneCrash: ToneCrash = new ToneCrash();
+		public const toneCymbal: ToneCymbal = new ToneCymbal();
 
 		/**
 		 * SEQUENCER
@@ -122,6 +121,8 @@ package de.popforge.audio.processor.fl909
 							case 6: addVoice( new VoiceClap( sampleOffset, relVol, toneClap ) ); break;
 							case 7:	addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.CLOSED ) ); break;
 							case 8: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.OPEN ) ); break;
+							case 9: addVoice( new VoiceCymbal( sampleOffset, relVol, toneCymbal, VoiceCymbal.CRASH ) ); break;
+							case 10: addVoice( new VoiceCymbal( sampleOffset, relVol, toneCymbal, VoiceCymbal.RIDE ) ); break;
 						}
 					}
 				}
