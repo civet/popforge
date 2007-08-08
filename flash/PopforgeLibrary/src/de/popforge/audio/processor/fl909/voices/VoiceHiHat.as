@@ -12,9 +12,6 @@ package de.popforge.audio.processor.fl909.voices
 		static private const sndOP: Array = Rom.convert8Bit( new Rom.HighhatOpen() );
 		
 		private var snd: Array;
-
-		private var closed: Boolean;
-		
 		private var volEnv: Number;
 		private var levelValue: Number;
 		private var decayValue: int;
@@ -22,8 +19,6 @@ package de.popforge.audio.processor.fl909.voices
 		public function VoiceHiHat( start: int, volume: Number, tone: ToneHighHat, closed: Boolean )
 		{
 			super( start );
-			
-			this.closed = closed;
 			
 			if( closed )
 			{
