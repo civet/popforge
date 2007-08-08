@@ -5,12 +5,12 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public final class VoiceBassdrum extends Voice
 	{
-		static private var smpNoise: Array = Rom.convert16Bit( new Rom.BassDrumNoise() );
-		static private var smpBody: Array = Rom.convert16Bit( new Rom.BassDrumBody() );
+		static private var sndNoise: Array = Rom.convert16Bit( new Rom.BassDrumNoise() );
+		static private var sndBody: Array = Rom.convert16Bit( new Rom.BassDrumBody() );
 		
-		static private var smpBodyNum: int = smpBody.length - 1;
+		static private var sndBodyNum: int = sndBody.length - 1;
 			
-		private var volEnv: Number;
+		private var env: Number;
 		private var posBody: Number;
 		
 		private var tuneValue: Number;
@@ -22,7 +22,7 @@ package de.popforge.audio.processor.fl909.voices
 		{
 			super( start );
 			
-			volEnv = 1;
+			env = 1;
 			posBody = 0;
 			
 			tuneValue = tone.tune.getValue();
@@ -48,21 +48,21 @@ package de.popforge.audio.processor.fl909.voices
 				//-- BODY GRAIN (INTERPOLATED)
 				posBodyInt = posBody;
 				alpha = posBody - posBodyInt;
-				amplitude = smpBody[ posBodyInt ] * ( 1 - alpha );
-				amplitude += smpBody[ posBodyInt + 1 ] * alpha;
-				amplitude *= volEnv * levelValue;
+				amplitude = sndBody[ posBodyInt ] * ( 1 - alpha );
+				amplitude += sndBody[ posBodyInt + 1 ] * alpha;
+				amplitude *= env * levelValue;
 				
 				//-- CLICK NOISE
-				if( position < smpNoise.length )
-					amplitude += smpNoise[ position ] * attackValue * levelValue;
+				if( position < sndNoise.length )
+					amplitude += sndNoise[ position ] * attackValue * levelValue;
 				
 				//-- DECAY
 				if( position > decayValue )
 				{
 					//-- observed value
-					volEnv *= .9995;
+					env *= .9995;
 
-					if( volEnv < .001 )
+					if( env < .001 )
 						return true;
 				}
 				
@@ -75,8 +75,8 @@ package de.popforge.audio.processor.fl909.voices
 
 				//-- ADVANCE WAVEFORMS
 				posBody += tuneValue;
-				if( posBody >= smpBodyNum )
-					posBody -= smpBodyNum;
+				if( posBody >= sndBodyNum )
+					posBody -= sndBodyNum;
 
 				//-- observed value
 				tuneValue += ( 1 - tuneValue ) * .0011;
