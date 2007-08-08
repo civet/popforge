@@ -66,7 +66,7 @@ package de.popforge.audio.processor.fl909.voices
 				if( position > decayValue )
 				{
 					//-- observed value
-					volEnv *= .9988;
+					volEnv *= .999;
 
 					if( volEnv < .001 )
 						return true;

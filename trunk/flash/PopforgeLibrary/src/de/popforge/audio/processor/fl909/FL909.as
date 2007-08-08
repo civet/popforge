@@ -16,6 +16,7 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.voices.VoiceCymbal;
 	import de.popforge.audio.processor.fl909.voices.VoiceHiHat;
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
+	import de.popforge.audio.processor.fl909.voices.VoiceSnaredrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceTom;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
@@ -113,7 +114,7 @@ package de.popforge.audio.processor.fl909
 						switch( trigger.voiceIndex )
 						{
 							case 0: addVoice( new VoiceBassdrum( sampleOffset, relVol, toneBassdrum ) ); break;
-							case 1: break;
+							case 1: addVoice( new VoiceSnaredrum( sampleOffset, relVol, toneSnaredrum ) ); break;
 							case 2: addVoice( new VoiceTom( sampleOffset, relVol, toneTomLow, VoiceTom.SIZE_LOW ) ); break;
 							case 3: addVoice( new VoiceTom( sampleOffset, relVol, toneTomMid, VoiceTom.SIZE_MED ) ); break;
 							case 4: addVoice( new VoiceTom( sampleOffset, relVol, toneTomHigh, VoiceTom.SIZE_HIGH ) ); break;
