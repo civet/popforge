@@ -5,11 +5,13 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public final class VoiceHiHat extends Voice
 	{
+		static public const CLOSED: Boolean = true;
+		static public const OPEN: Boolean = false;
+		
 		static private const sndCL: Array = Rom.convert16Bit( new Rom.HighhatClosed() );
 		static private const sndOP: Array = Rom.convert8Bit( new Rom.HighhatOpen() );
 		
-		static private const sndCLLength: int = sndCL.length - 1;
-		static private const sndOPLength: int = sndOP.length - 1;
+		private var snd: Array;
 
 		private var closed: Boolean;
 		
@@ -25,102 +27,68 @@ package de.popforge.audio.processor.fl909.voices
 			
 			if( closed )
 			{
-				length = sndCLLength;
-				decayValue = tone.decayCL.getValue();
+				snd = sndCL;
+				length = snd.length - 1;
+				decayValue = length * tone.decayCL.getValue();
 			}
 			else
 			{
-				length = sndOPLength;
-				decayValue = tone.decayOP.getValue();
+				snd = sndOP;
+				length = snd.length - 1;
+				decayValue = length * tone.decayOP.getValue();
 			}
 			
 			volEnv = 1;
 			levelValue = tone.level.getValue() * volume;
 		}
 		
+		public override function stop( offset: int ): void
+		{
+			length = position + offset;
+			
+			if( length > snd.length - 1 )
+				length = snd.length - 1;
+		}		
+		
 		public override function processAudioAdd( samples: Array ): Boolean
 		{
-			if( closed )
-				return processClosed( samples );
+			var n: int = samples.length;
+			
+			var sample: Sample;
+			var amplitude: Number;
+			
+			for( var i: int = start ; i < n ; i++ )
+			{
+				sample = samples[i];
+				
+				amplitude = snd[ position++ ] * levelValue * volEnv;
 
-			return processOpen( samples );
+				//-- ADD AMPLITUDE (MONO)
+				sample.left += amplitude;
+				sample.right += amplitude;
+				
+				//-- DECAY
+				if( position > decayValue )
+				{
+					//-- observed value
+					volEnv *= .9988;
+
+					if( volEnv < .001 )
+						return true;
+				}
+
+				if( position >= length )
+					return true;
+			}
+			
+			start = 0;
+			
+			return false;
 		}
 		
 		public override function isMonophone(): Boolean
 		{
 			return true;
-		}
-		
-		private function processClosed( samples: Array ): Boolean
-		{
-			var n: int = samples.length;
-			
-			var sample: Sample;
-			var amplitude: Number;
-			
-			for( var i: int = start ; i < n ; i++ )
-			{
-				sample = samples[i];
-				
-				amplitude = sndCL[ position++ ] * levelValue * volEnv;
-
-				//-- ADD AMPLITUDE (MONO)
-				sample.left += amplitude;
-				sample.right += amplitude;
-				
-				//-- DECAY
-				if( position > decayValue )
-				{
-					//-- observed value
-					volEnv *= .9986;
-
-					if( volEnv < .001 )
-						return true;
-				}
-
-				if( position >= length )
-					return true;
-			}
-			
-			start = 0;
-			
-			return false;
-		}
-		
-		private function processOpen( samples: Array ): Boolean
-		{
-			var n: int = samples.length;
-			
-			var sample: Sample;
-			var amplitude: Number;
-			
-			for( var i: int = start ; i < n ; i++ )
-			{
-				sample = samples[i];
-				
-				amplitude = sndOP[ position++ ] * levelValue * volEnv;
-
-				//-- ADD AMPLITUDE (MONO)
-				sample.left += amplitude;
-				sample.right += amplitude;
-
-				//-- DECAY
-				if( position > decayValue )
-				{
-					//-- observed value
-					volEnv *= .998;
-
-					if( volEnv < .001 )
-						return true;
-				}
-
-				if( position >= length )
-					return true;
-			}
-			
-			start = 0;
-			
-			return false;
 		}
 	}
 }

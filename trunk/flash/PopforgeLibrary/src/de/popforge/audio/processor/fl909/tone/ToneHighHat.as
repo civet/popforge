@@ -1,13 +1,14 @@
 package de.popforge.audio.processor.fl909.tone
 {
-	import de.popforge.parameter.Parameter;
+	import de.popforge.parameter.MappingNumberExponential;
 	import de.popforge.parameter.MappingNumberLinear;
+	import de.popforge.parameter.Parameter;
 	
 	public class ToneHighHat
 	{
 		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .75 );
-		
-		public const decayCL: Parameter = new Parameter( new MappingNumberLinear( 0, 7978 ), 1024 );
-		public const decayOP: Parameter = new Parameter( new MappingNumberLinear( 0, 33777 ), 16888 );
+		public const tune: Parameter = new Parameter( new MappingNumberExponential( .75, 1.3 ), .8 );
+		public const decayCL: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .5 );
+		public const decayOP: Parameter = new Parameter( new MappingNumberLinear( .1, 1 ), .7 );
 	}
 }

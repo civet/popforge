@@ -24,7 +24,6 @@ package de.popforge.audio.processor.fl909.voices
 			
 			volEnv = 1;
 			posBody = 0;
-			position = 0;
 			
 			tuneValue = tone.tune.getValue();
 			attackValue = tone.attack.getValue();
@@ -69,7 +68,7 @@ package de.popforge.audio.processor.fl909.voices
 				
 				if( ++position >= length )
 					return true;
-
+				
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
