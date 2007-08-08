@@ -5,6 +5,6 @@ package de.popforge.audio.processor.fl909.tone
 	
 	public class ToneRimshot
 	{
-		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .75 );
+		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .7 );
 	}
 }

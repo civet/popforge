@@ -18,6 +18,7 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.parameter.Parameter;
 	
 	import flash.utils.getQualifiedClassName;
+	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
 	
 	/**
 	 * UNDER DEVELOPMENT
@@ -106,6 +107,7 @@ package de.popforge.audio.processor.fl909
 							case 1:	addVoice( new VoiceHiHat( sampleOffset, toneHighHat, true ) ); break;
 							case 2: addVoice( new VoiceHiHat( sampleOffset, toneHighHat, false ) ); break;
 							case 3: addVoice( new VoiceClap( sampleOffset, toneClap ) ); break;
+							case 4: addVoice( new VoiceRimshot( sampleOffset, toneRimshot ) ); break;
 						}
 					}
 				}

@@ -26,8 +26,8 @@ package de.popforge.audio.processor.fl909.memory
 			pattern = new Pattern( 8 );
 			
 			pattern.steps[0] = [ new Trigger( 0, false ) ];
+			pattern.steps[1] = [ new Trigger( 4, false ) ];
 			pattern.steps[2] = [ new Trigger( 2, false ) ];
-			pattern.steps[3] = [ new Trigger( 1, false ) ];
 			pattern.steps[4] = [ new Trigger( 0, false ), new Trigger( 3, false ) ];
 			pattern.steps[6] = [ new Trigger( 2, false ) ];
 		}
