@@ -13,7 +13,7 @@ package de.popforge.audio.processor.bitboy.formats.xm
 		public var pingPong: Boolean;
 		
 		public var volume: uint;
-		public var fineTune: int;
+		public var fineTone: int;
 		
 		public var type: uint;
 		
@@ -46,7 +46,7 @@ package de.popforge.audio.processor.bitboy.formats.xm
 			//NOTE: if sampleLoopLength == 0 then sample is NOT looping (even if sampleType or smth has it set)
 			
 			volume = stream.readUnsignedByte();
-			fineTune = stream.readByte();
+			fineTone = stream.readByte();
 			
 			type = stream.readUnsignedByte();
 			panning = stream.readUnsignedByte();
@@ -115,7 +115,7 @@ package de.popforge.audio.processor.bitboy.formats.xm
 				'loop',
 				'pingPong',
 				'volume',
-				'fineTune',
+				'fineTone',
 				'type',
 				'panning',
 				'relativeNote',
