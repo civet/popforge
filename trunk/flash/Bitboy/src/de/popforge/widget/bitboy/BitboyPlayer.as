@@ -18,7 +18,7 @@ package de.popforge.widget.bitboy
 		static public const LOOP_PLAY_TIME_SEC: uint = 120;
 		
 		{
-			[Embed(source='/../assets/04B_03__.TTF', fontName='bitboy_font', unicodeRange='U+0020-U+007E' )]
+			[Embed(source='/../assets/font/04B_03__.TTF', fontName='bitboy_font', unicodeRange='U+0020-U+007E' )]
 				static private const Font04B_03: Class;
 		}
 		
