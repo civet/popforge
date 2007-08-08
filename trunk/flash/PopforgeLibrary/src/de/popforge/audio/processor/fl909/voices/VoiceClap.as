@@ -10,11 +10,11 @@ package de.popforge.audio.processor.fl909.voices
 		
 		private var level: Number;
 		
-		public function VoiceClap( start: int, tone: ToneClap )
+		public function VoiceClap( start: int, volume: Number, tone: ToneClap )
 		{
 			super( start );
 			
-			level = tone.level.getValue();
+			level = tone.level.getValue() * volume;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean

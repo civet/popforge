@@ -17,7 +17,7 @@ package de.popforge.audio.processor.fl909.voices
 		private var levelValue: Number;
 		private var decayValue: int;
 		
-		public function VoiceHiHat( start: int, tone: ToneHighHat, closed: Boolean )
+		public function VoiceHiHat( start: int, volume: Number, tone: ToneHighHat, closed: Boolean )
 		{
 			super( start );
 			
@@ -26,17 +26,16 @@ package de.popforge.audio.processor.fl909.voices
 			if( closed )
 			{
 				length = sndCLLength;
-				levelValue = tone.levelCL.getValue();
 				decayValue = tone.decayCL.getValue();
 			}
 			else
 			{
 				length = sndOPLength;
-				levelValue = tone.levelOP.getValue();
 				decayValue = tone.decayOP.getValue();
 			}
 			
 			volEnv = 1;
+			levelValue = tone.level.getValue() * volume;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -73,7 +72,7 @@ package de.popforge.audio.processor.fl909.voices
 				if( position > decayValue )
 				{
 					//-- observed value
-					volEnv *= .998;
+					volEnv *= .9986;
 
 					if( volEnv < .001 )
 						return true;
@@ -99,7 +98,7 @@ package de.popforge.audio.processor.fl909.voices
 			{
 				sample = samples[i];
 				
-				amplitude = sndOP[ position++ ] * levelValue;
+				amplitude = sndOP[ position++ ] * levelValue * volEnv;
 
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
@@ -109,9 +108,9 @@ package de.popforge.audio.processor.fl909.voices
 				if( position > decayValue )
 				{
 					//-- observed value
-					volEnv -= .0002;
+					volEnv *= .998;
 
-					if( volEnv < 0 )
+					if( volEnv < .001 )
 						return true;
 				}
 

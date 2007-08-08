@@ -19,6 +19,8 @@ package de.popforge.audio.processor.fl909
 	
 	import flash.utils.getQualifiedClassName;
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
+	import de.popforge.audio.processor.fl909.tone.ToneRide;
+	import de.popforge.audio.processor.fl909.tone.ToneCrash;
 	
 	/**
 	 * UNDER DEVELOPMENT
@@ -46,6 +48,8 @@ package de.popforge.audio.processor.fl909
 		public const toneRimshot: ToneRimshot = new ToneRimshot();
 		public const toneClap: ToneClap = new ToneClap();
 		public const toneHighHat: ToneHighHat = new ToneHighHat();
+		public const toneRide: ToneRide = new ToneRide();
+		public const toneCrash: ToneCrash = new ToneCrash();
 
 		/**
 		 * SEQUENCER
@@ -91,6 +95,10 @@ package de.popforge.audio.processor.fl909
 			
 			var triggers: Array;
 			var trigger: Trigger;
+			
+			var relVol: Number;
+			var absVol: Number = volume.getValue();
+			var accentValue: Number = accent.getValue() * absVol;
 
 			//-- Collect all triggers within buffer length
 			while( sampleOffset < samplesNum )
@@ -101,13 +109,16 @@ package de.popforge.audio.processor.fl909
 				{
 					for each( trigger in triggers )
 					{
+						relVol = trigger.accent ? absVol : accentValue;
+						
 						switch( trigger.voiceIndex )
 						{
-							case 0: addVoice( new VoiceBassdrum( sampleOffset, toneBassdrum ) ); break;
-							case 1:	addVoice( new VoiceHiHat( sampleOffset, toneHighHat, true ) ); break;
-							case 2: addVoice( new VoiceHiHat( sampleOffset, toneHighHat, false ) ); break;
-							case 3: addVoice( new VoiceClap( sampleOffset, toneClap ) ); break;
-							case 4: addVoice( new VoiceRimshot( sampleOffset, toneRimshot ) ); break;
+							case 0: addVoice( new VoiceBassdrum( sampleOffset, relVol, toneBassdrum ) ); break;
+							
+							case 5: addVoice( new VoiceRimshot( sampleOffset, relVol, toneRimshot ) ); break;
+							case 6: addVoice( new VoiceClap( sampleOffset, relVol, toneClap ) ); break;
+							case 7:	addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, true ) ); break;
+							case 8: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, false ) ); break;
 						}
 					}
 				}
