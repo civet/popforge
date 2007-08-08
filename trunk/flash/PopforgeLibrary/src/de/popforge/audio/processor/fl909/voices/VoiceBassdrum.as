@@ -10,8 +10,10 @@ package de.popforge.audio.processor.fl909.voices
 		
 		static private var sndBodyNum: int = sndBody.length - 1;
 			
-		private var env: Number;
+		private var bodyEnv: Number;
 		private var posBody: Number;
+		
+		private var stopEnv: Number;
 		
 		private var tuneValue: Number;
 		private var levelValue: Number;
@@ -22,13 +24,19 @@ package de.popforge.audio.processor.fl909.voices
 		{
 			super( start );
 			
-			env = 1;
+			bodyEnv = 1;
+			stopEnv = 1;
 			posBody = 0;
 			
 			tuneValue = tone.tune.getValue();
 			attackValue = tone.attack.getValue();
 			levelValue = tone.level.getValue() * volume;
 			decayValue = tone.decay.getValue();
+		}
+		
+		public override function stop( offset: int ): void
+		{
+			length = ( position + offset ) - 1024;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -50,7 +58,7 @@ package de.popforge.audio.processor.fl909.voices
 				alpha = posBody - posBodyInt;
 				amplitude = sndBody[ posBodyInt ] * ( 1 - alpha );
 				amplitude += sndBody[ posBodyInt + 1 ] * alpha;
-				amplitude *= env * levelValue;
+				amplitude *= bodyEnv * levelValue * stopEnv;
 				
 				//-- CLICK NOISE
 				if( position < sndNoise.length )
@@ -60,14 +68,19 @@ package de.popforge.audio.processor.fl909.voices
 				if( position > decayValue )
 				{
 					//-- observed value
-					env *= .9995;
+					bodyEnv *= .9994;
 
-					if( env < .001 )
+					if( bodyEnv < .001 )
 						return true;
 				}
 				
 				if( ++position >= length )
-					return true;
+				{
+					stopEnv *= .994;
+					
+					if( stopEnv < .001 )
+						return true;
+				}
 				
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
@@ -85,6 +98,11 @@ package de.popforge.audio.processor.fl909.voices
 			start = 0;
 			
 			return false;
+		}
+		
+		public override function isMonophone(): Boolean
+		{
+			return true;
 		}
 	}
 }
