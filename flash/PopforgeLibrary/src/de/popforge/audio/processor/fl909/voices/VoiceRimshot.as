@@ -10,11 +10,11 @@ package de.popforge.audio.processor.fl909.voices
 		
 		private var level: Number;
 		
-		public function VoiceRimshot( start: int, tone: ToneRimshot )
+		public function VoiceRimshot( start: int, volume: Number, tone: ToneRimshot )
 		{
 			super( start );
 			
-			level = tone.level.getValue();
+			level = tone.level.getValue() * volume;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean

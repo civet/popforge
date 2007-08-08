@@ -7,7 +7,7 @@ package de.popforge.audio.processor.fl909.memory
 
 		public function Memory()
 		{
-			test();
+			pattern = new Pattern( 16 );
 		}
 		
 		public function stepComplete(): void
@@ -21,15 +21,36 @@ package de.popforge.audio.processor.fl909.memory
 			return pattern.steps[ stepIndex ];
 		}
 		
-		private function test(): void
+		public function getPattern(): Pattern
 		{
-			pattern = new Pattern( 8 );
+			return pattern;
+		}
+		
+		public function createTriggerAt( pattern: Pattern, stepIndex: int, voiceIndex: int, accent: Boolean ): void
+		{
+			if( pattern.steps[ stepIndex ] == null )
+				pattern.steps[ stepIndex ] = new Array();
+
+			var triggers: Array = pattern.steps[ stepIndex ];
+			triggers.push( new Trigger( voiceIndex, accent ) );
+		}
+		
+		public function removeTriggerAt( pattern: Pattern, stepIndex: int, voiceIndex: int ): void
+		{
+			var triggers: Array = pattern.steps[ stepIndex ];
 			
-			pattern.steps[0] = [ new Trigger( 0, false ) ];
-			pattern.steps[1] = [ new Trigger( 4, false ) ];
-			pattern.steps[2] = [ new Trigger( 2, false ) ];
-			pattern.steps[4] = [ new Trigger( 0, false ), new Trigger( 3, false ) ];
-			pattern.steps[6] = [ new Trigger( 2, false ) ];
+			if( triggers == null ) return;
+			
+			var i: int = triggers.length;
+			
+			while( --i > -1 )
+			{
+				if( Trigger( triggers[i] ).voiceIndex == voiceIndex )
+				{
+					triggers.splice( i, 1 );
+					return;
+				}
+			}
 		}
 	}
 }

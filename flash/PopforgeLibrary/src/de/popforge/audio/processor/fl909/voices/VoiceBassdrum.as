@@ -18,7 +18,7 @@ package de.popforge.audio.processor.fl909.voices
 		private var attackValue: Number;
 		private var decayValue: int;
 		
-		public function VoiceBassdrum( start: int, tone: ToneBassdrum )
+		public function VoiceBassdrum( start: int, volume: Number, tone: ToneBassdrum )
 		{
 			super( start );
 			
@@ -28,7 +28,7 @@ package de.popforge.audio.processor.fl909.voices
 			
 			tuneValue = tone.tune.getValue();
 			attackValue = tone.attack.getValue();
-			levelValue = tone.level.getValue();
+			levelValue = tone.level.getValue() * volume;
 			decayValue = tone.decay.getValue();
 		}
 		
