@@ -28,7 +28,7 @@ package de.popforge.audio.processor.fl909.voices
 		[Embed(source="/rom/909.tl.raw", mimeType="application/octet-stream")]
 			static public const TomLow: Class;
 		[Embed(source="/rom/909.tm.raw", mimeType="application/octet-stream")]
-			static public const TomMid: Class;
+			static public const TomMed: Class;
 		[Embed(source="/rom/909.th.raw", mimeType="application/octet-stream")]
 			static public const TomHigh: Class;
 		[Embed(source="/rom/909.bd.noise.raw", mimeType="application/octet-stream")]
