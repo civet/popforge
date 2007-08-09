@@ -8,42 +8,30 @@ package de.popforge.audio.processor.fl909.voices
 		static public const CLOSED: Boolean = true;
 		static public const OPEN: Boolean = false;
 		
-		static private const sndCL: Array = Rom.convert16Bit( new Rom.HighhatClosed() );
-		static private const sndOP: Array = Rom.convert8Bit( new Rom.HighhatOpen() );
+		static private const sndCL: Array = Rom.getAmplitudesByName( '909.ch.raw' );
+		static private const sndOP: Array = Rom.getAmplitudesByName( '909.oh.raw' );
 		
 		private var snd: Array;
 		private var volEnv: Number;
-		private var levelValue: Number;
-		private var decayValue: int;
+		
+		private var tone: ToneHighHat;
+		private var closed: Boolean;
 		
 		public function VoiceHiHat( start: int, volume: Number, tone: ToneHighHat, closed: Boolean )
 		{
-			super( start );
+			super( start, volume );
 			
-			if( closed )
-			{
-				snd = sndCL;
-				length = snd.length - 1;
-				decayValue = length * tone.decayCL.getValue();
-			}
-			else
-			{
-				snd = sndOP;
-				length = snd.length - 1;
-				decayValue = length * tone.decayOP.getValue();
-			}
+			this.tone = tone;
+			this.closed = closed;
+			
+			snd = closed ? sndCL : sndOP;
+			
+			maxLength = length = snd.length << 1;
+			
+			monophone = true;
 			
 			volEnv = 1;
-			levelValue = tone.level.getValue() * volume;
 		}
-		
-		public override function stop( offset: int ): void
-		{
-			length = position + offset;
-			
-			if( length > snd.length - 1 )
-				length = snd.length - 1;
-		}		
 		
 		public override function processAudioAdd( samples: Array ): Boolean
 		{
@@ -52,11 +40,14 @@ package de.popforge.audio.processor.fl909.voices
 			var sample: Sample;
 			var amplitude: Number;
 			
+			var levelValue: Number = tone.level.getValue() * volume;
+			var decayValue: int = maxLength * ( closed ? tone.decayCL.getValue() : tone.decayOP.getValue() );
+			
 			for( var i: int = start ; i < n ; i++ )
 			{
 				sample = samples[i];
 				
-				amplitude = snd[ position++ ] * levelValue * volEnv;
+				amplitude = snd[ int( position >> 1 ) ] * levelValue * volEnv;
 
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
@@ -72,18 +63,13 @@ package de.popforge.audio.processor.fl909.voices
 						return true;
 				}
 
-				if( position >= length )
+				if( ++position >= length )
 					return true;
 			}
 			
 			start = 0;
 			
 			return false;
-		}
-		
-		public override function isMonophone(): Boolean
-		{
-			return true;
 		}
 	}
 }

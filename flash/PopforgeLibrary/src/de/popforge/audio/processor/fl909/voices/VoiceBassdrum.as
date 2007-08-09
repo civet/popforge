@@ -5,38 +5,33 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public final class VoiceBassdrum extends Voice
 	{
-		static private var sndNoise: Array = Rom.convert16Bit( new Rom.BassDrumNoise() );
-		static private var sndBody: Array = Rom.convert16Bit( new Rom.BassDrumBody() );
+		static private const sndNoise: Array = Rom.getAmplitudesByName( '909.bd.noise.raw' );
+		static private const sndBody: Array = Rom.getAmplitudesByName( '909.bd.body.raw' );
 		
-		static private var sndBodyNum: int = sndBody.length - 1;
-			
+		static private var sndBodyNum: int = sndBody.length;
+		
+		private var tone: ToneBassdrum;
+		
+		private var tuneValue: Number;
+		private var attackValue: Number;
+		
 		private var bodyEnv: Number;
 		private var posBody: Number;
 		
-		private var stopEnv: Number;
-		
-		private var tuneValue: Number;
-		private var levelValue: Number;
-		private var attackValue: Number;
-		private var decayValue: int;
-		
 		public function VoiceBassdrum( start: int, volume: Number, tone: ToneBassdrum )
 		{
-			super( start );
+			super( start, volume );
+			
+			this.tone = tone;
+			
+			monophone = true;
 			
 			bodyEnv = 1;
-			stopEnv = 1;
 			posBody = 0;
 			
+			//-- static for one cycle
 			tuneValue = tone.tune.getValue();
-			attackValue = tone.attack.getValue();
-			levelValue = tone.level.getValue() * volume;
-			decayValue = tone.decay.getValue();
-		}
-		
-		public override function stop( offset: int ): void
-		{
-			length = ( position + offset ) - 1024;
+			attackValue = tone.attack.getValue() * volume;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -48,6 +43,9 @@ package de.popforge.audio.processor.fl909.voices
 			
 			var alpha: Number;
 			var posBodyInt: int;
+			
+			var levelValue: Number = tone.level.getValue();
+			var decayValue: int = tone.decay.getValue();
 
 			for( var i: int = start ; i < n ; i++ )
 			{
@@ -57,8 +55,8 @@ package de.popforge.audio.processor.fl909.voices
 				posBodyInt = posBody;
 				alpha = posBody - posBodyInt;
 				amplitude = sndBody[ posBodyInt ] * ( 1 - alpha );
-				amplitude += sndBody[ posBodyInt + 1 ] * alpha;
-				amplitude *= bodyEnv * levelValue * stopEnv;
+				amplitude += sndBody[ int( posBodyInt + 1 ) ] * alpha;
+				amplitude *= bodyEnv * levelValue;
 				
 				//-- CLICK NOISE
 				if( position < sndNoise.length )
@@ -75,12 +73,7 @@ package de.popforge.audio.processor.fl909.voices
 				}
 				
 				if( ++position >= length )
-				{
-					stopEnv *= .994;
-					
-					if( stopEnv < .001 )
-						return true;
-				}
+					return true;
 				
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
@@ -98,11 +91,6 @@ package de.popforge.audio.processor.fl909.voices
 			start = 0;
 			
 			return false;
-		}
-		
-		public override function isMonophone(): Boolean
-		{
-			return true;
 		}
 	}
 }

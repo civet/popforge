@@ -5,7 +5,6 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.memory.Trigger;
 	import de.popforge.audio.processor.fl909.tone.ToneBassdrum;
 	import de.popforge.audio.processor.fl909.tone.ToneClap;
-	import de.popforge.audio.processor.fl909.tone.ToneCymbal;
 	import de.popforge.audio.processor.fl909.tone.ToneHighHat;
 	import de.popforge.audio.processor.fl909.tone.ToneRimshot;
 	import de.popforge.audio.processor.fl909.tone.ToneSnaredrum;
@@ -13,15 +12,17 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.voices.Voice;
 	import de.popforge.audio.processor.fl909.voices.VoiceBassdrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceClap;
-	import de.popforge.audio.processor.fl909.voices.VoiceCymbal;
 	import de.popforge.audio.processor.fl909.voices.VoiceHiHat;
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
 	import de.popforge.audio.processor.fl909.voices.VoiceSnaredrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceTom;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
-	
 	import flash.utils.getQualifiedClassName;
+	import de.popforge.audio.processor.fl909.tone.ToneRide;
+	import de.popforge.audio.processor.fl909.voices.VoiceRide;
+	import de.popforge.audio.processor.fl909.tone.ToneCrash;
+	import de.popforge.audio.processor.fl909.voices.VoiceCrash;
 	
 	/**
 	 * UNDER DEVELOPMENT
@@ -49,7 +50,8 @@ package de.popforge.audio.processor.fl909
 		public const toneRimshot: ToneRimshot = new ToneRimshot();
 		public const toneClap: ToneClap = new ToneClap();
 		public const toneHighHat: ToneHighHat = new ToneHighHat();
-		public const toneCymbal: ToneCymbal = new ToneCymbal();
+		public const toneRide: ToneRide = new ToneRide();
+		public const toneCrash: ToneCrash = new ToneCrash();
 
 		/**
 		 * SEQUENCER
@@ -73,8 +75,7 @@ package de.popforge.audio.processor.fl909
 		 */
 		public function processAudio( samples: Array ): void
 		{
-			advancePattern( samples.length );
-			
+			advancePattern( samples );
 			advanceVoices( samples );
 		}
 		
@@ -89,9 +90,11 @@ package de.popforge.audio.processor.fl909
 		/**
 		 * ADVANCE IN PATTERN STRUCTURE
 		 */
-		private function advancePattern( samplesNum: int ): void
+		private function advancePattern( samples: Array ): void
 		{
-			var stepSampleNum: int = int( 15 * 44100 / tempo.getValue() );
+			var samplesNum: int = samples.length;
+			
+			var stepSampleNum: int = 15 * 44100 / tempo.getValue();
 			
 			var triggers: Array;
 			var trigger: Trigger;
@@ -99,7 +102,7 @@ package de.popforge.audio.processor.fl909
 			var relVol: Number;
 			var absVol: Number = volume.getValue();
 			var accentValue: Number = accent.getValue() * absVol;
-
+			
 			//-- Collect all triggers within buffer length
 			while( sampleOffset < samplesNum )
 			{
@@ -120,10 +123,10 @@ package de.popforge.audio.processor.fl909
 							case 4: addVoice( new VoiceTom( sampleOffset, relVol, toneTomHigh, VoiceTom.SIZE_HIGH ) ); break;
 							case 5: addVoice( new VoiceRimshot( sampleOffset, relVol, toneRimshot ) ); break;
 							case 6: addVoice( new VoiceClap( sampleOffset, relVol, toneClap ) ); break;
-							case 7:	addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.CLOSED ) ); break;
+							case 7: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.CLOSED ) ); break;
 							case 8: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.OPEN ) ); break;
-							case 9: addVoice( new VoiceCymbal( sampleOffset, relVol, toneCymbal, VoiceCymbal.CRASH ) ); break;
-							case 10: addVoice( new VoiceCymbal( sampleOffset, relVol, toneCymbal, VoiceCymbal.RIDE ) ); break;
+							case 9: addVoice( new VoiceCrash( sampleOffset, relVol, toneCrash ) ); break;
+							case 10: addVoice( new VoiceRide( sampleOffset, relVol, toneRide ) ); break;
 						}
 					}
 				}
@@ -170,7 +173,7 @@ package de.popforge.audio.processor.fl909
 					if( getQualifiedClassName( activeVoices[i] ) == getQualifiedClassName( voice ) )
 					{
 						//-- stop current voice, when new voice starts
-						Voice( activeVoices[i] ).stop( sampleOffset );
+						Voice( activeVoices[i] ).cut( sampleOffset );
 						break;
 					}
 				}
