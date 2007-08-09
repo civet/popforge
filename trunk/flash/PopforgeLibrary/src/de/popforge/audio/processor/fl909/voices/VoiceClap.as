@@ -5,16 +5,17 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public final class VoiceClap extends Voice
 	{
-		static private const snd: Array = Rom.convert16Bit( new Rom.Clap() );
-		static private const sndLength: int = snd.length - 1;
+		static private const snd: Array = Rom.getAmplitudesByName( '909.clap.raw' );
 		
-		private var level: Number;
+		private var tone: ToneClap;
 		
 		public function VoiceClap( start: int, volume: Number, tone: ToneClap )
 		{
-			super( start );
+			super( start, volume );
 			
-			level = tone.level.getValue() * volume;
+			this.tone = tone;
+			
+			maxLength = length = snd.length << 1;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -24,19 +25,19 @@ package de.popforge.audio.processor.fl909.voices
 			var sample: Sample;
 			var amplitude: Number;
 			
+			var level: Number = tone.level.getValue() * volume;
+			
 			for( var i: int = start ; i < n ; i++ )
 			{
 				sample = samples[i];
 
-				if( position < sndLength )
-				{
-					amplitude = snd[ position++ ] * level;
+				amplitude = snd[ int( position >> 1 ) ] * level;
 
-					//-- ADD AMPLITUDE (MONO)
-					sample.left += amplitude;
-					sample.right += amplitude;
-				}
-				else
+				//-- ADD AMPLITUDE (MONO)
+				sample.left += amplitude;
+				sample.right += amplitude;
+				
+				if( ++position >= length )
 					return true;
 			}
 

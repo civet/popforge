@@ -6,11 +6,11 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public class VoiceSnaredrum extends Voice
 	{
-		static private const sndBody: Array = Rom.convert16Bit( new Rom.SnareDrumBody() );
+		static private const sndBody: Array = Rom.getAmplitudesByName( '909.sd.raw' );
 		static private const sndBodyNum: int = sndBody.length - 1;
 		
 		static private const sndNoise: Array = createSnareNoise();
-		static private const sndNoiseNum: int = sndNoise.length - 1;
+		static private const sndNoiseNum: int = sndNoise.length;
 		
 		static private function createSnareNoise(): Array
 		{

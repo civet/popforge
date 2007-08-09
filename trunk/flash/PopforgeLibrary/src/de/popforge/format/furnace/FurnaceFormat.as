@@ -124,6 +124,9 @@ package de.popforge.format.furnace
 			
 			for (;i<n;++i)
 			{
+				if( i == -1 ) // added by aM
+					continue;
+				
 				if ( FurnaceItem( _items[ i ] ).fileName == fileName )
 				{
 					break;
