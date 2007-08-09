@@ -2,42 +2,62 @@ package de.popforge.audio.processor.fl909.memory
 {
 	public final class Memory
 	{
-		private var pattern: Pattern;
+		private var patternBank: Array;
+		
+		private var patternRun: Pattern;
+		private var patternNext: Pattern;
+		
 		private var stepIndex: int;
 
 		public function Memory()
 		{
-			pattern = new Pattern( 16 );
+			patternBank = [ patternRun = patternNext = new Pattern() ];
+		}
+		
+		public function changePatternByIndex( index: int ): void
+		{
+			if( patternBank[ index ] == null )
+				patternBank[ index ] = new Pattern();
+			
+			patternNext = patternBank[ index ];
 		}
 		
 		public function stepComplete(): void
 		{
-			if( ++stepIndex == pattern.length )
+			if( ++stepIndex == patternRun.length )
+			{
+				patternRun = patternNext;
 				stepIndex = 0;
+			}
 		}
 		
 		public function getTriggers(): Array
 		{
-			return pattern.steps[ stepIndex ];
+			return patternRun.steps[ stepIndex ];
 		}
 		
-		public function getPattern(): Pattern
+		public function getPatternRun(): Pattern
 		{
-			return pattern;
+			return patternRun;
 		}
 		
-		public function createTriggerAt( pattern: Pattern, stepIndex: int, voiceIndex: int, accent: Boolean ): void
+		public function getPatternNext(): Pattern
 		{
-			if( pattern.steps[ stepIndex ] == null )
-				pattern.steps[ stepIndex ] = new Array();
+			return patternNext;
+		}
+		
+		public function createTriggerAt( stepIndex: int, voiceIndex: int, accent: Boolean ): void
+		{
+			if( patternNext.steps[ stepIndex ] == null )
+				patternNext.steps[ stepIndex ] = new Array();
 
-			var triggers: Array = pattern.steps[ stepIndex ];
+			var triggers: Array = patternNext.steps[ stepIndex ];
 			triggers.push( new Trigger( voiceIndex, accent ) );
 		}
 		
-		public function removeTriggerAt( pattern: Pattern, stepIndex: int, voiceIndex: int ): void
+		public function removeTriggerAt( stepIndex: int, voiceIndex: int ): void
 		{
-			var triggers: Array = pattern.steps[ stepIndex ];
+			var triggers: Array = patternNext.steps[ stepIndex ];
 			
 			if( triggers == null ) return;
 			
@@ -51,6 +71,13 @@ package de.popforge.audio.processor.fl909.memory
 					return;
 				}
 			}
+		}
+		
+		public function copyPattern( sourceIndex: int, targetIndex: int ): void
+		{
+			if( sourceIndex == targetIndex ) return;
+			
+			patternBank[ targetIndex ] = Pattern( patternBank[ sourceIndex ] ).clone();
 		}
 	}
 }
