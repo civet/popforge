@@ -10,5 +10,10 @@ package de.popforge.audio.processor.fl909.memory
 			this.voiceIndex = voiceIndex;
 			this.accent = accent;
 		}
+		
+		public function clone(): Trigger
+		{
+			return new Trigger( voiceIndex, accent );
+		}
 	}
 }

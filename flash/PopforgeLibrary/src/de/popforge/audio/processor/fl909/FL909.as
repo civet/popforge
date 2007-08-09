@@ -116,17 +116,49 @@ package de.popforge.audio.processor.fl909
 						
 						switch( trigger.voiceIndex )
 						{
-							case 0: addVoice( new VoiceBassdrum( sampleOffset, relVol, toneBassdrum ) ); break;
-							case 1: addVoice( new VoiceSnaredrum( sampleOffset, relVol, toneSnaredrum ) ); break;
-							case 2: addVoice( new VoiceTom( sampleOffset, relVol, toneTomLow, VoiceTom.SIZE_LOW ) ); break;
-							case 3: addVoice( new VoiceTom( sampleOffset, relVol, toneTomMid, VoiceTom.SIZE_MED ) ); break;
-							case 4: addVoice( new VoiceTom( sampleOffset, relVol, toneTomHigh, VoiceTom.SIZE_HIGH ) ); break;
-							case 5: addVoice( new VoiceRimshot( sampleOffset, relVol, toneRimshot ) ); break;
-							case 6: addVoice( new VoiceClap( sampleOffset, relVol, toneClap ) ); break;
-							case 7: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.CLOSED ) ); break;
-							case 8: addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.OPEN ) ); break;
-							case 9: addVoice( new VoiceCrash( sampleOffset, relVol, toneCrash ) ); break;
-							case 10: addVoice( new VoiceRide( sampleOffset, relVol, toneRide ) ); break;
+							case 0:
+								if( !toneBassdrum.mute.getValue() )
+									addVoice( new VoiceBassdrum( sampleOffset, relVol, toneBassdrum ) ); break;
+
+							case 1:
+								if( !toneSnaredrum.mute.getValue() )
+									addVoice( new VoiceSnaredrum( sampleOffset, relVol, toneSnaredrum ) ); break;
+
+							case 2:
+								if( !toneTomLow.mute.getValue() )
+									addVoice( new VoiceTom( sampleOffset, relVol, toneTomLow, VoiceTom.SIZE_LOW ) ); break;
+
+							case 3:
+								if( !toneTomMid.mute.getValue() )
+									addVoice( new VoiceTom( sampleOffset, relVol, toneTomMid, VoiceTom.SIZE_MED ) ); break;
+
+							case 4:
+								if( !toneTomHigh.mute.getValue() )
+									addVoice( new VoiceTom( sampleOffset, relVol, toneTomHigh, VoiceTom.SIZE_HIGH ) ); break;
+
+							case 5:
+								if( !toneRimshot.mute.getValue() )
+									addVoice( new VoiceRimshot( sampleOffset, relVol, toneRimshot ) ); break;
+
+							case 6:
+								if( !toneClap.mute.getValue() )
+									addVoice( new VoiceClap( sampleOffset, relVol, toneClap ) ); break;
+								
+							case 7:
+								if( !toneHighHat.mute.getValue() )
+									addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.CLOSED ) ); break;
+
+							case 8:
+								if( !toneHighHat.mute.getValue() )
+									addVoice( new VoiceHiHat( sampleOffset, relVol, toneHighHat, VoiceHiHat.OPEN ) ); break;
+
+							case 9:
+								if( !toneCrash.mute.getValue() )
+									addVoice( new VoiceCrash( sampleOffset, relVol, toneCrash ) ); break;
+
+							case 10:
+								if( !toneRide.mute.getValue() )
+									addVoice( new VoiceRide( sampleOffset, relVol, toneRide ) ); break;
 						}
 					}
 				}

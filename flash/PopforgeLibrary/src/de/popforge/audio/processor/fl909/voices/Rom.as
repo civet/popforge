@@ -7,7 +7,7 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public class Rom
 	{
-		static public function getAmplitudesByName( name: String ): Array
+		static internal function getAmplitudesByName( name: String ): Array
 		{
 			switch( name )
 			{

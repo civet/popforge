@@ -17,17 +17,23 @@ package de.popforge.audio.processor.fl909.voices
 			var amplitudes: Array = new Array();
 			var r: Random = new Random( 0xffff );
 			var a: Number;
-			var v: Number = 0;
-			var o: Number = 0;
+			var hv: Number = 0;
+			var ho: Number = 0;
+			var lv: Number = 0;
+			var lo: Number = 0;
 			var i: int = 11025;
 			
 			while( --i > -1 )
 			{
-				a = r.getNumber( -2.4, 2.4 );
-				v *= .4;
-				v += ( a - o ) * .2;
-				o += v;
-				amplitudes[i] = a - o;
+				a = r.getNumber( -5, 5 );
+				
+				//-- highpass
+				ho += ( a - ho ) * .2;
+				
+				//-- lowpass
+				lo += ( ( a - ho ) - lo ) * .2;
+				
+				amplitudes[i] = lo;
 			}
 			
 			return amplitudes;
