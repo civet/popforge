@@ -19,6 +19,7 @@ package de.popforge.widget.fl909
 		
 		private var stepButtons: Array;
 		private var patternButtons: Array;
+		private var startButton: StartButton;
 		private var voiceSwitchBar: VoiceSwitchBar;
 		
 		internal var lastPatternButton: PatternButton;
@@ -43,6 +44,7 @@ package de.popforge.widget.fl909
 			addTempoLCD();
 			addPatternButtons();
 			addMuteButtons();
+			addStartButton();
 			
 			//addChild( led );
 			//startButton.x = 64;
@@ -128,6 +130,14 @@ package de.popforge.widget.fl909
 		{
 			voiceSwitchBar = new VoiceSwitchBar( updateStepButtons );
 			addChild( voiceSwitchBar );
+		}
+		
+		private function addStartButton(): void
+		{
+			startButton = new StartButton( fl909.pause );
+			startButton.x = 64;
+			startButton.y = 204;
+			addChild( startButton );
 		}
 		
 		/**
