@@ -4,6 +4,7 @@ package de.popforge.widget.fl909
 	import de.popforge.assets.tr909.start.button.ActiveUp;
 	import de.popforge.assets.tr909.start.button.NormalDown;
 	import de.popforge.assets.tr909.start.button.NormalUp;
+	import de.popforge.parameter.Parameter;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -19,25 +20,20 @@ package de.popforge.widget.fl909
 		
 		private const bitmap: Bitmap = new Bitmap( normalUp );
 		
-		private var value: Boolean;
+		private var parameter: Parameter;
 		
-		public function StartButton()
+		public function StartButton( parameter: Parameter )
 		{
+			this.parameter = parameter;
+			
 			build();
 		}
-		
-		public function getValue(): Boolean
-		{
-			return value;
-		}
-		
+
 		private function build(): void
 		{
 			addChild( bitmap );
 			
 			alpha = .75;
-			
-			value = false;
 			
 			buttonMode = true;
 			
@@ -50,28 +46,28 @@ package de.popforge.widget.fl909
 		
 		private function onMouseDown( event: MouseEvent ): void
 		{
-			bitmap.bitmapData = value ? activeDown : normalDown;
+			bitmap.bitmapData = parameter.getValue() ? normalDown : activeDown;
 		}
 		
 		private function onMouseOver( event: MouseEvent ): void
 		{
 			if( event.buttonDown && stage.focus == this )
-				bitmap.bitmapData = value ? activeDown : normalDown;
+				bitmap.bitmapData = parameter.getValue() ? normalDown : activeDown;
 		}
 		
 		private function onMouseUp( event: MouseEvent ): void
 		{
 			if( stage.focus == this )
 			{
-				value = !value;
-				bitmap.bitmapData = value ? activeUp : normalUp;
+				parameter.setValue( !parameter.getValue() );
+				bitmap.bitmapData = parameter.getValue() ? normalUp : activeUp;
 			}
 		}
 		
 		private function onMouseOut( event: MouseEvent ): void
 		{
 			if( event.buttonDown )
-				bitmap.bitmapData = value ? activeUp : normalUp;
+				bitmap.bitmapData = parameter.getValue() ? normalUp : activeUp;
 		}
 	}
 }
