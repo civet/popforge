@@ -23,8 +23,8 @@ package de.popforge.audio.processor.fl909.voices
 			
 			while( --i > -1 )
 			{
-				a = r.getNumber( -2, 2 );
-				v *= .3;
+				a = r.getNumber( -2.4, 2.4 );
+				v *= .4;
 				v += ( a - o ) * .2;
 				o += v;
 				amplitudes[i] = a - o;

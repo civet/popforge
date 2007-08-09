@@ -6,7 +6,7 @@ package de.popforge.audio.processor.fl909.tone
 	
 	public class ToneCrash
 	{
-		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .6 );
+		public const level: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .3 );
 		public const tune: Parameter = new Parameter( new MappingNumberExponential( .75, 1.3 ), 1 );
 	}
 }

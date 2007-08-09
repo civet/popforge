@@ -13,6 +13,8 @@ package de.popforge.audio.processor.fl909.voices
 		static private const snd1: Array = Rom.getAmplitudesByName( '909.tm.raw' );
 		static private const snd2: Array = Rom.getAmplitudesByName( '909.th.raw' );
 		
+		{ snd0.push( snd0[0] ); snd1.push( snd1[0] ); snd2.push( snd2[0] ); }
+		
 		private var snd: Array;
 		
 		private var tone: ToneTom;
