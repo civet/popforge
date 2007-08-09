@@ -1,10 +1,9 @@
 package de.popforge.audio.processor.fl909.voices
 {
-	import de.popforge.audio.output.Sample;
+	import de.popforge.format.furnace.FurnaceFormat;
 	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import de.popforge.format.furnace.FurnaceFormat;
 	
 	public class Rom
 	{

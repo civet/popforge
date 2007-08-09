@@ -8,6 +8,8 @@ package de.popforge.audio.processor.fl909.voices
 		static private const sndNoise: Array = Rom.getAmplitudesByName( '909.bd.noise.raw' );
 		static private const sndBody: Array = Rom.getAmplitudesByName( '909.bd.body.raw' );
 		
+		{ sndBody.push( sndBody[0] ); }
+		
 		static private var sndBodyNum: int = sndBody.length;
 		
 		private var tone: ToneBassdrum;
