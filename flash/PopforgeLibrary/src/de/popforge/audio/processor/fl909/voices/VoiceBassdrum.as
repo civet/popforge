@@ -17,6 +17,7 @@ package de.popforge.audio.processor.fl909.voices
 		private var tuneValue: Number;
 		private var attackValue: Number;
 		
+		private var cutEnv: Number;
 		private var bodyEnv: Number;
 		private var posBody: Number;
 		
@@ -28,6 +29,7 @@ package de.popforge.audio.processor.fl909.voices
 			
 			monophone = true;
 			
+			cutEnv = 1;
 			bodyEnv = 1;
 			posBody = 0;
 			
@@ -58,7 +60,7 @@ package de.popforge.audio.processor.fl909.voices
 				alpha = posBody - posBodyInt;
 				amplitude = sndBody[ posBodyInt ] * ( 1 - alpha );
 				amplitude += sndBody[ int( posBodyInt + 1 ) ] * alpha;
-				amplitude *= bodyEnv * levelValue;
+				amplitude *= bodyEnv * levelValue * cutEnv;
 				
 				//-- CLICK NOISE
 				if( position < sndNoise.length )
@@ -74,12 +76,17 @@ package de.popforge.audio.processor.fl909.voices
 						return true;
 				}
 				
-				if( ++position >= length )
-					return true;
-				
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
+				
+				if( ++position >= length - 100 ) //-- 100 release to avoid clicks
+				{
+					cutEnv -= 1/100;
+					
+					if( cutEnv <= 0 )
+						return true;
+				}
 
 				//-- ADVANCE WAVEFORMS
 				posBody += tuneValue;
