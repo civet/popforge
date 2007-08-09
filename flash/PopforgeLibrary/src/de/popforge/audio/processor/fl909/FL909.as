@@ -5,24 +5,26 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.memory.Trigger;
 	import de.popforge.audio.processor.fl909.tone.ToneBassdrum;
 	import de.popforge.audio.processor.fl909.tone.ToneClap;
+	import de.popforge.audio.processor.fl909.tone.ToneCrash;
 	import de.popforge.audio.processor.fl909.tone.ToneHighHat;
+	import de.popforge.audio.processor.fl909.tone.ToneRide;
 	import de.popforge.audio.processor.fl909.tone.ToneRimshot;
 	import de.popforge.audio.processor.fl909.tone.ToneSnaredrum;
 	import de.popforge.audio.processor.fl909.tone.ToneTom;
 	import de.popforge.audio.processor.fl909.voices.Voice;
 	import de.popforge.audio.processor.fl909.voices.VoiceBassdrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceClap;
+	import de.popforge.audio.processor.fl909.voices.VoiceCrash;
 	import de.popforge.audio.processor.fl909.voices.VoiceHiHat;
+	import de.popforge.audio.processor.fl909.voices.VoiceRide;
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
 	import de.popforge.audio.processor.fl909.voices.VoiceSnaredrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceTom;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
+	
 	import flash.utils.getQualifiedClassName;
-	import de.popforge.audio.processor.fl909.tone.ToneRide;
-	import de.popforge.audio.processor.fl909.voices.VoiceRide;
-	import de.popforge.audio.processor.fl909.tone.ToneCrash;
-	import de.popforge.audio.processor.fl909.voices.VoiceCrash;
+	import de.popforge.parameter.MappingBoolean;
 	
 	/**
 	 * UNDER DEVELOPMENT
@@ -38,6 +40,7 @@ package de.popforge.audio.processor.fl909
 		public const accent: Parameter = new Parameter( new MappingNumberLinear( .2, .8 ), .5 );
 		public const tempo: Parameter = new Parameter( new MappingNumberLinear( 30, 180 ), 127 );
 		public const shuffle: Parameter = new Parameter( new MappingNumberLinear( 1, 1.5 ), 1 );
+		public const pause: Parameter = new Parameter( new MappingBoolean(), true );
 
 		/**
 		 * VOICE TONE COLORS (adjustable parameters each voice)
@@ -75,7 +78,9 @@ package de.popforge.audio.processor.fl909
 		 */
 		public function processAudio( samples: Array ): void
 		{
-			advancePattern( samples );
+			if( !pause.getValue() )
+				advancePattern( samples );
+
 			advanceVoices( samples );
 		}
 		
