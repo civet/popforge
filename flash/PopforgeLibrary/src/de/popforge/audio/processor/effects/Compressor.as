@@ -4,6 +4,7 @@ package de.popforge.audio.processor.effects
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
+	import de.popforge.math.RMS;
 	
 	/**
 	 * TEST DRIVE
@@ -17,13 +18,20 @@ package de.popforge.audio.processor.effects
 		public const parameterAttack: Parameter = new Parameter( new MappingNumberLinear( .001, 1 ), .001 );
 		public const parameterRelease: Parameter = new Parameter( new MappingNumberLinear( .001, 1 ), .002 );
 		
+		private var gain: Number;
+		private var window: RMS;
+		
 		public function Compressor()
 		{
-
+			window = new RMS( 128 );
+			window.reset();
+			
+			gain = 1;
 		}
 		
 		public function reset(): void
 		{
+			window.reset();
 		}
 		
 		public function processAudio( samples: Array ): void
@@ -33,7 +41,13 @@ package de.popforge.audio.processor.effects
 			var threshold: Number = parameterThreshold.getValue();
 			var attack: Number = parameterAttack.getValue();
 			var release: Number = parameterRelease.getValue();
-			var ratio: Number = 1/4;
+			var ratio: Number = parameterRatio.getValue();
+			
+			var attackValue: Number = .997;
+			var releaseValue: Number = 1.004;
+			
+			var level: Number;
+			var volume: Number;
 			
 			var sample: Sample;
 			
@@ -41,6 +55,27 @@ package de.popforge.audio.processor.effects
 			{
 				sample = samples[i];
 				
+				level = window.value;
+				
+				volume = ( sample.left + sample.right ) * .5;
+				volume *= volume;
+				
+				window.update( volume );
+				
+				if( level > threshold )
+				{
+					gain *= attackValue;
+				}
+				else if( gain < 1 )
+				{
+					gain *= releaseValue;
+					
+					if( gain > 1 )
+						gain = 1;
+				}
+				
+				sample.left *= gain;
+				sample.right *= gain;
 			}
 		}
 	}
