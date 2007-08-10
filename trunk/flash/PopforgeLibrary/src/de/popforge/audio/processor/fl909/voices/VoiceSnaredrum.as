@@ -31,7 +31,7 @@ package de.popforge.audio.processor.fl909.voices
 				ho += ( a - ho ) * .2;
 				
 				//-- lowpass
-				lo += ( ( a - ho ) - lo ) * .2;
+				lo += ( ( a - ho ) - lo ) * .5;
 				
 				amplitudes[i] = lo;
 			}

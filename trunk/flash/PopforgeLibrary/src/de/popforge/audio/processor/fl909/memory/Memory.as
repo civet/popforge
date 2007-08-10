@@ -15,10 +15,8 @@ package de.popforge.audio.processor.fl909.memory
 		}
 		
 		private var patternBank: Array;
-		
 		private var patternRun: Pattern;
 		private var patternNext: Pattern;
-		
 		private var stepIndex: int;
 		
 		public function Memory()
@@ -40,6 +38,11 @@ package de.popforge.audio.processor.fl909.memory
 			patternRun = patternNext = patternBank[0];
 		}
 		
+		public function rewind(): void
+		{
+			stepIndex = 0;
+		}
+		
 		public function changePatternByIndex( index: int ): void
 		{
 			if( patternBank[ index ] == null )
@@ -50,7 +53,7 @@ package de.popforge.audio.processor.fl909.memory
 		
 		public function stepComplete(): void
 		{
-			if( ++stepIndex == patternRun.length )
+			if( ++stepIndex >= patternRun.length )
 			{
 				patternRun = patternNext;
 				stepIndex = 0;
@@ -103,7 +106,8 @@ package de.popforge.audio.processor.fl909.memory
 		{
 			if( sourceIndex == targetIndex ) return;
 			
-			patternBank[ targetIndex ] = Pattern( patternBank[ sourceIndex ] ).clone();
+			if( patternBank[ sourceIndex ] )
+				patternBank[ targetIndex ] = Pattern( patternBank[ sourceIndex ] ).clone();
 		}
 	}
 }
