@@ -1,15 +1,15 @@
 package de.popforge.audio.processor.fl909.voices
 {
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.fl909.tone.ToneClap;
+	import de.popforge.audio.processor.fl909.tone.ToneBase;
 	
 	public final class VoiceClap extends Voice
 	{
 		static private const snd: Array = Rom.getAmplitudesByName( '909.clap.raw' );
 		
-		private var tone: ToneClap;
+		private var tone: ToneBase;
 		
-		public function VoiceClap( start: int, volume: Number, tone: ToneClap )
+		public function VoiceClap( start: int, volume: Number, tone: ToneBase )
 		{
 			super( start, volume );
 			

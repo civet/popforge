@@ -21,6 +21,11 @@
  */
 package de.popforge.parameter
 {
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
+	import flash.net.registerClassAlias;
+	
 	/**
 	 * class Parameter stores an untyped value
 	 * Depending on its mapping it can handle different types of values
@@ -31,7 +36,12 @@ package de.popforge.parameter
 	 * @author Andre Michelle
 	 */
 	public class Parameter
+		implements IExternalizable
 	{
+		{
+			registerClassAlias( 'Parameter', Parameter );
+		}
+		
 		private var value: *;
 		private var mapping: IMapping;
 
@@ -45,12 +55,24 @@ package de.popforge.parameter
 		 * @param mapping The mapping used to map/mapInverse the normalized value
 		 * @param value The default values
 		 */
-		public function Parameter( mapping: IMapping, value: * = null )
+		public function Parameter( mapping: IMapping = null, value: * = null )
 		{
 			this.mapping = mapping;
 			this.value = defaultValue = value;
 			
 			changedCallbacks = new Array();
+		}
+		
+		public function writeExternal( output: IDataOutput ): void
+		{
+			output.writeObject( value );
+			output.writeObject( defaultValue );
+		}
+		
+		public function readExternal( input: IDataInput ): void
+		{
+			setValue( input.readObject() );
+			defaultValue = input.readObject();
 		}
 
 		/**

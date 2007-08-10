@@ -3,12 +3,11 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.audio.processor.fl909.memory.Memory;
 	import de.popforge.audio.processor.fl909.memory.Trigger;
+	import de.popforge.audio.processor.fl909.tone.ToneBase;
 	import de.popforge.audio.processor.fl909.tone.ToneBassdrum;
-	import de.popforge.audio.processor.fl909.tone.ToneClap;
 	import de.popforge.audio.processor.fl909.tone.ToneCrash;
 	import de.popforge.audio.processor.fl909.tone.ToneHighHat;
 	import de.popforge.audio.processor.fl909.tone.ToneRide;
-	import de.popforge.audio.processor.fl909.tone.ToneRimshot;
 	import de.popforge.audio.processor.fl909.tone.ToneSnaredrum;
 	import de.popforge.audio.processor.fl909.tone.ToneTom;
 	import de.popforge.audio.processor.fl909.voices.Voice;
@@ -20,18 +19,23 @@ package de.popforge.audio.processor.fl909
 	import de.popforge.audio.processor.fl909.voices.VoiceRimshot;
 	import de.popforge.audio.processor.fl909.voices.VoiceSnaredrum;
 	import de.popforge.audio.processor.fl909.voices.VoiceTom;
+	import de.popforge.parameter.MappingBoolean;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
 	
+	import flash.utils.ByteArray;
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
 	import flash.utils.getQualifiedClassName;
-	import de.popforge.parameter.MappingBoolean;
+	import flash.net.registerClassAlias;
 	
 	/**
 	 * UNDER DEVELOPMENT
 	 */
 
 	public final class FL909
-		implements IAudioProcessor
+		implements IAudioProcessor, IExternalizable
 	{
 		/**
 		 * FL909 PARAMETER
@@ -50,8 +54,8 @@ package de.popforge.audio.processor.fl909
 		public const toneTomLow: ToneTom = new ToneTom();
 		public const toneTomMid: ToneTom = new ToneTom();
 		public const toneTomHigh: ToneTom = new ToneTom();
-		public const toneRimshot: ToneRimshot = new ToneRimshot();
-		public const toneClap: ToneClap = new ToneClap();
+		public const toneRimshot: ToneBase = new ToneBase();
+		public const toneClap: ToneBase = new ToneBase();
 		public const toneHighHat: ToneHighHat = new ToneHighHat();
 		public const toneRide: ToneRide = new ToneRide();
 		public const toneCrash: ToneCrash = new ToneCrash();
@@ -59,7 +63,7 @@ package de.popforge.audio.processor.fl909
 		/**
 		 * SEQUENCER
 		 */
-		public const memory: Memory = new Memory();
+		public var memory: Memory;
 		
 		/**
 		 * AUDIO
@@ -67,10 +71,75 @@ package de.popforge.audio.processor.fl909
 		private const activeVoices: Array = new Array();
 		
 		private var sampleOffset: int;
-
+		
 		public function FL909()
 		{
+			memory = new Memory();
+			
 			sampleOffset = 0;
+		}
+		
+		public function writeExternal( output: IDataOutput ): void
+		{
+			output.writeObject( memory );
+			
+			volume.writeExternal( output );
+			accent.writeExternal( output );
+			tempo.writeExternal( output );
+			shuffle.writeExternal( output );
+			
+			toneBassdrum.writeExternal( output );
+			toneSnaredrum.writeExternal( output );
+			toneTomLow.writeExternal( output );
+			toneTomMid.writeExternal( output );
+			toneTomHigh.writeExternal( output );
+			toneRimshot.writeExternal( output );
+			toneClap.writeExternal( output );
+			toneHighHat.writeExternal( output );
+			toneRide.writeExternal( output );
+			toneCrash.writeExternal( output );
+		}
+		
+		public function readExternal( input: IDataInput ): void
+		{
+			memory = input.readObject();
+			
+			volume.readExternal( input );
+			accent.readExternal( input );
+			tempo.readExternal( input );
+			shuffle.readExternal( input );
+			
+			toneBassdrum.readExternal( input );
+			toneSnaredrum.readExternal( input );
+			toneTomLow.readExternal( input );
+			toneTomMid.readExternal( input );
+			toneTomHigh.readExternal( input );
+			toneRimshot.readExternal( input );
+			toneClap.readExternal( input );
+			toneHighHat.readExternal( input );
+			toneRide.readExternal( input );
+			toneCrash.readExternal( input );
+		}
+		
+		public function clear(): void
+		{
+			memory = new Memory();
+			
+			volume.reset();
+			accent.reset();
+			tempo.reset();
+			shuffle.reset();
+			
+			toneBassdrum.reset();
+			toneSnaredrum.reset();
+			toneTomLow.reset();
+			toneTomMid.reset();
+			toneTomHigh.reset();
+			toneRimshot.reset();
+			toneClap.reset();
+			toneHighHat.reset();
+			toneRide.reset();
+			toneCrash.reset();
 		}
 		
 		/**

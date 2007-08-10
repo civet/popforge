@@ -1,15 +1,15 @@
 package de.popforge.audio.processor.fl909.voices
 {
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.fl909.tone.ToneRimshot;
+	import de.popforge.audio.processor.fl909.tone.ToneBase;
 	
 	public final class VoiceRimshot extends Voice
 	{
 		static private const snd: Array = Rom.getAmplitudesByName( '909.rim.raw' );
 		
-		private var tone: ToneRimshot;
+		private var tone: ToneBase;
 		
-		public function VoiceRimshot( start: int, volume: Number, tone: ToneRimshot )
+		public function VoiceRimshot( start: int, volume: Number, tone: ToneBase )
 		{
 			super( start, volume );
 			
