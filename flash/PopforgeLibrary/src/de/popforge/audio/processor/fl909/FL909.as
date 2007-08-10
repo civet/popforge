@@ -71,17 +71,46 @@ package de.popforge.audio.processor.fl909
 		private const activeVoices: Array = new Array();
 		
 		private var sampleOffset: int;
+		private var shuffleIndex: int;
 		
 		public function FL909()
 		{
 			memory = new Memory();
 			
 			sampleOffset = 0;
+			shuffleIndex = 0;
 		}
 		
+		/**
+		 * PROCESS AUDIO
+		 */
+		public function processAudio( samples: Array ): void
+		{
+			if( !pause.getValue() )
+				advancePattern( samples );
+
+			advanceVoices( samples );
+		}
+		
+		/**
+		 * RESET MACHINE
+		 */
+		public function reset(): void
+		{
+			activeVoices.splice( 0, activeVoices.length );
+			
+			memory.rewind();
+			
+			sampleOffset = 0;
+			shuffleIndex = 0;
+		}
+		
+		/**
+		 * SERIALIZE
+		 */
 		public function writeExternal( output: IDataOutput ): void
 		{
-			output.writeObject( memory );
+			memory.writeExternal( output );
 			
 			volume.writeExternal( output );
 			accent.writeExternal( output );
@@ -99,11 +128,14 @@ package de.popforge.audio.processor.fl909
 			toneRide.writeExternal( output );
 			toneCrash.writeExternal( output );
 		}
-		
+
+		/**
+		 * DESERIALIZE
+		 */
 		public function readExternal( input: IDataInput ): void
 		{
-			memory = input.readObject();
-			
+			memory.readExternal( input );
+
 			volume.readExternal( input );
 			accent.readExternal( input );
 			tempo.readExternal( input );
@@ -121,6 +153,9 @@ package de.popforge.audio.processor.fl909
 			toneCrash.readExternal( input );
 		}
 		
+		/**
+		 * CLEAR
+		 */
 		public function clear(): void
 		{
 			memory = new Memory();
@@ -143,25 +178,6 @@ package de.popforge.audio.processor.fl909
 		}
 		
 		/**
-		 * PROCESS AUDIO
-		 */
-		public function processAudio( samples: Array ): void
-		{
-			if( !pause.getValue() )
-				advancePattern( samples );
-
-			advanceVoices( samples );
-		}
-		
-		/**
-		 * RESET MACHINE
-		 */
-		public function reset(): void
-		{
-			activeVoices.splice( 0, activeVoices.length );
-		}
-		
-		/**
 		 * ADVANCE IN PATTERN STRUCTURE
 		 */
 		private function advancePattern( samples: Array ): void
@@ -176,6 +192,8 @@ package de.popforge.audio.processor.fl909
 			var relVol: Number;
 			var absVol: Number = volume.getValue();
 			var accentValue: Number = accent.getValue() * absVol;
+			
+			var shuffleValue: Number = shuffle.getValue();
 			
 			//-- Collect all triggers within buffer length
 			while( sampleOffset < samplesNum )
@@ -238,8 +256,14 @@ package de.popforge.audio.processor.fl909
 				}
 				
 				memory.stepComplete();
-
-				sampleOffset += stepSampleNum;
+				
+				//-- shuffle
+				if( shuffleIndex == 0 )
+					sampleOffset += stepSampleNum * shuffleValue;
+				else
+					sampleOffset += stepSampleNum * ( 2 - shuffleValue );
+				
+				shuffleIndex = 1 - shuffleIndex;
 			}
 			
 			sampleOffset -= samplesNum;
