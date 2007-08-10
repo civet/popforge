@@ -2,7 +2,7 @@ package de.popforge.fui.core
 {
 	import flash.display.Sprite;
 	
-	public class Component extends Sprite
+	public class FuiComponent extends Sprite
 	{
 		/**
 		* The factory associated with this component.

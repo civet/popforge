@@ -1,7 +1,7 @@
 package de.popforge.fui
 {
 	import de.popforge.format.furnace.FurnaceFormat;
-	import de.popforge.fui.core.Component;
+	import de.popforge.fui.core.FuiComponent;
 	import de.popforge.fui.core.IFuiFactory;
 	
 	import flash.display.Loader;
@@ -73,9 +73,9 @@ package de.popforge.fui
 		 * @throws TypeError If no component with given name exists.
 		 * 
 		 */		
-		public function getElementById( name: String ): Component
+		public function getElementById( name: String ): FuiComponent
 		{
-			return Component( getChildByName( name ) );
+			return FuiComponent( getChildByName( name ) );
 		}
 		
 		/**
