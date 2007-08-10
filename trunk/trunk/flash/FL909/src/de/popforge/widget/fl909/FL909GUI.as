@@ -9,6 +9,8 @@ package de.popforge.widget.fl909
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.net.SharedObject;
+	import flash.utils.ByteArray;
 
 	public class FL909GUI extends Sprite
 	{
@@ -24,9 +26,13 @@ package de.popforge.widget.fl909
 		
 		internal var lastPatternButton: PatternButton;
 		
+		private var ram: SharedObject;
+		
 		public function FL909GUI( fl909: FL909 )
 		{
 			this.fl909 = fl909;
+			
+			ram = SharedObject.getLocal( 'FL909.mem', '/' );
 
 			build();
 		}
@@ -45,6 +51,7 @@ package de.popforge.widget.fl909
 			addPatternButtons();
 			addMuteButtons();
 			addStartButton();
+			addMemoryButtons();
 			
 			//addChild( led );
 			//startButton.x = 64;
@@ -160,6 +167,10 @@ package de.popforge.widget.fl909
 			{
 				proceedPatternButtonClick( target as PatternButton );
 			}
+			else if( target is MemoryButton )
+			{
+				proceedMemoryButton( target as MemoryButton );
+			}
 		}
 		
 		private function proceedStepButtonClick( button: StepButton ): void
@@ -263,6 +274,61 @@ package de.popforge.widget.fl909
 			button.x = x;
 			button.y = y;
 			addChild( button );
+		}
+		
+		private function addMemoryButtons(): void
+		{
+			var button: MemoryButton;
+			
+			//-- SAVE
+			button = new MemoryButton();
+			button.name = 'save';
+			button.x = 239;
+			button.y = 167;
+			addChild( button );
+			
+			//-- LOAD
+			button = new MemoryButton();
+			button.name = 'load';
+			button.x = 258;
+			button.y = 167;
+			addChild( button );
+			
+			//-- CLEAR
+			button = new MemoryButton();
+			button.name = 'clear';
+			button.x = 277;
+			button.y = 167;
+			addChild( button );
+		}
+		
+		private function proceedMemoryButton( button: MemoryButton ): void
+		{
+			switch( button.name )
+			{
+				case 'save':
+				
+					ram.data.all = new ByteArray();
+					fl909.writeExternal( ram.data.all );
+					ram.flush();
+					break;
+				
+				case 'load':
+				
+					if( ram.data.all )
+					{
+						fl909.readExternal( ram.data.all );
+						ram.data.all.position = 0;
+						updateStepButtons();
+					}
+					break;
+				
+				case 'clear':
+				
+					fl909.clear();
+					updateStepButtons();
+					break;
+			}
 		}
 		
 		/*
