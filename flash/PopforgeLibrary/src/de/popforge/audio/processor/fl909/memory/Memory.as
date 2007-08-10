@@ -1,17 +1,43 @@
 package de.popforge.audio.processor.fl909.memory
 {
+	import flash.utils.IDataInput;
+	import flash.utils.IDataOutput;
+	import flash.utils.IExternalizable;
+	import flash.net.registerClassAlias;
+	
 	public final class Memory
+		implements IExternalizable
 	{
+		{
+			registerClassAlias( 'Memory', Memory );
+			registerClassAlias( 'Pattern', Pattern );
+			registerClassAlias( 'Trigger', Trigger );
+		}
+		
 		private var patternBank: Array;
 		
 		private var patternRun: Pattern;
 		private var patternNext: Pattern;
 		
 		private var stepIndex: int;
-
+		
 		public function Memory()
 		{
 			patternBank = [ patternRun = patternNext = new Pattern() ];
+			
+			stepIndex = 0;
+		}
+		
+		public function writeExternal( output: IDataOutput ): void
+		{
+			output.writeObject( patternBank );
+		}
+		
+		public function readExternal( input: IDataInput ): void
+		{
+			patternBank = input.readObject();
+			
+			patternRun = patternNext = patternBank[0];
 		}
 		
 		public function changePatternByIndex( index: int ): void
