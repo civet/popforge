@@ -16,7 +16,9 @@ package de.popforge.fui.core
 		function get tileSize(): uint;
 
 		
-		function createSlider(): Slider;
+		function createHSlider(): HSlider;
+		function createVSlider(): VSlider;
+		
 		function createKnob(): Knob;
 	}
 }
