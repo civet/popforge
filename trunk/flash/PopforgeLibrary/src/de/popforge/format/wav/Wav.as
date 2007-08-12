@@ -19,11 +19,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
-package de.popforge.format
+package de.popforge.format.wav
 {
 	import flash.utils.ByteArray;
 
-	public class Wav
+	public class WavFormat
 	{
 		internal var $compression: uint;
 		internal var $channels: uint;

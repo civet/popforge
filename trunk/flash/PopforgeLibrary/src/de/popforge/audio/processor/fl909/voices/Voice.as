@@ -42,7 +42,6 @@ package de.popforge.audio.processor.fl909.voices
 		
 		public function cut( stop: int ): void
 		{
-			trace( "CUT", stop );
 			this.stop = stop;
 		}
 	}
