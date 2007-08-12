@@ -14,17 +14,9 @@ package de.popforge.fui.core
 		 * The tag that has been used to define this component.
 		 */
 		protected var _tag: XML;
-		
-		/**
-		 * Size of the component in tiles.
-		 * This property has to be overriden.
-		 * 
-		 * @throws ImplementationRequiredError If this method is not overriden.
-		 */		
-		public function get size(): FuiComponentSize
-		{
-			throw new ImplementationRequiredError;
-		}
+
+		public var rows: uint;
+		public var cols: uint;
 
 		/**
 		 * Renders the component by creating all the necessary display objects.
