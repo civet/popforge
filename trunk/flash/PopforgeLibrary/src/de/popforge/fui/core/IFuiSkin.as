@@ -13,7 +13,7 @@ package de.popforge.fui.core
 		 * Width and height of a tile for this skin.
 		 * Tiles are always squares.
 		 */		
-		function get tileSize(): Number;
+		function get tileSize(): uint;
 
 		
 		function createSlider(): Slider;
