@@ -66,6 +66,9 @@ package de.popforge.widget.fl909
 			addStartButton();
 			addMemoryButtons();
 			
+			bar = new LEDBar( fl909 );
+			addChild( bar );
+			
 			addEventListener( MouseEvent.CLICK, onMouseClick );
 		}
 		

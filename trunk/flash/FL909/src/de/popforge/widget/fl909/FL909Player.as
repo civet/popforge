@@ -22,6 +22,11 @@ package de.popforge.widget.fl909
 			return fl909;
 		}
 		
+		public function getAudioBuffer(): AudioBuffer
+		{
+			return buffer;
+		}
+		
 		private function init(): void
 		{
 			fl909 = new FL909();
