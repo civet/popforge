@@ -75,7 +75,7 @@ package de.popforge.audio.processor.fl909
 		
 		public function FL909()
 		{
-			memory = new Memory();
+			memory = new Memory( this );
 			
 			sampleOffset = 0;
 			shuffleIndex = 0;
@@ -158,7 +158,7 @@ package de.popforge.audio.processor.fl909
 		 */
 		public function clear(): void
 		{
-			memory = new Memory();
+			memory.clear();
 			
 			volume.reset();
 			accent.reset();

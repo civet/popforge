@@ -1,4 +1,4 @@
-package de.popforge.format
+package de.popforge.format.wav
 {
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.Sample;
