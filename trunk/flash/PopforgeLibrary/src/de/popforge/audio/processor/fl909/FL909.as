@@ -65,6 +65,9 @@ package de.popforge.audio.processor.fl909
 		 */
 		public var memory: Memory;
 		
+		public const stepTimes: Array = new Array();
+		private var timeElapsed: Number;
+		
 		/**
 		 * AUDIO
 		 */
@@ -79,6 +82,7 @@ package de.popforge.audio.processor.fl909
 			
 			sampleOffset = 0;
 			shuffleIndex = 0;
+			timeElapsed = .0;
 		}
 		
 		public function isBusy(): Boolean
@@ -104,10 +108,13 @@ package de.popforge.audio.processor.fl909
 		{
 			activeVoices.splice( 0, activeVoices.length );
 			
+			stepTimes.splice( 0, stepTimes.length );
+			
 			memory.rewind();
 			
 			sampleOffset = 0;
 			shuffleIndex = 0;
+			timeElapsed = .0;
 		}
 		
 		/**
@@ -191,6 +198,8 @@ package de.popforge.audio.processor.fl909
 			
 			var stepSampleNum: int = 15 * 44100 / tempo.getValue();
 			
+			var msEachStep: Number = 15000 / tempo.getValue();
+			
 			var triggers: Array;
 			var trigger: Trigger;
 			
@@ -259,6 +268,9 @@ package de.popforge.audio.processor.fl909
 						}
 					}
 				}
+				
+				timeElapsed += msEachStep;
+				stepTimes.push( timeElapsed );
 				
 				memory.stepComplete();
 				
