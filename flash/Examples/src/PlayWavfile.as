@@ -4,7 +4,7 @@ package
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.effects.QuirkFilter;
-	import de.popforge.format.Wav;
+	import de.popforge.format.wav.WavFormat;
 	import de.popforge.gui.Label;
 	import de.popforge.gui.Slider;
 	import de.popforge.parameter.MappingNumberLinear;
@@ -31,7 +31,7 @@ package
 
 	public class PlayWavfile extends Sprite
 	{
-		private var wav: Wav;
+		private var wav: WavFormat;
 		private var phase: Number;
 		
 		private var pcc: ProcontrollControl;
@@ -108,7 +108,7 @@ package
 		{
 			var loader: URLLoader = URLLoader( event.target );
 			
-			wav = Wav.decode( loader.data );
+			wav = WavFormat.decode( loader.data );
 			
 			initAudioEngine();
 		}
