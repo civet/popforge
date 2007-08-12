@@ -1,13 +1,14 @@
 package de.popforge.fui.core
 {
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 	
 	public class FuiComponent extends Sprite
 	{
 		/**
 		* The factory associated with this component.
 		*/		
-		protected var _factory: IFuiFactory;
+		protected var _skin: IFuiSkin;
 		
 		/**
 		 * The tag that has been used to define this component.
@@ -15,23 +16,12 @@ package de.popforge.fui.core
 		protected var _tag: XML;
 		
 		/**
-		 * Width of the component in tiles.
+		 * Size of the component in tiles.
 		 * This property has to be overriden.
 		 * 
 		 * @throws ImplementationRequiredError If this method is not overriden.
 		 */		
-		public function get tileWidth(): uint
-		{
-			throw new ImplementationRequiredError;
-		}
-
-		/**
-		 * Height of the component in tiles.
-		 * This property has to be overriden.
-		 * 
-		 * @throws ImplementationRequiredError If this method is not overriden.
-		 */		
-		public function get tileHeight(): uint
+		public function get size(): FuiComponentSize
 		{
 			throw new ImplementationRequiredError;
 		}
@@ -46,12 +36,17 @@ package de.popforge.fui.core
 			throw new ImplementationRequiredError;
 		}
 		
+		protected function createChildren(): void
+		{
+			throw new ImplementationRequiredError;
+		}
+		
 		/**
-		 * Removes the component and all its internal references.
+		 * Removes the components chidlren and all its internal references.
 		 */		
 		public function dispose(): void
 		{
-			_factory = null;
+			_skin = null;
 		}
 		
 		/**
@@ -63,15 +58,33 @@ package de.popforge.fui.core
 		}
 		
 		/**
-		 * The factory used to render this component.
-		 * A call to <code>render()</code> is made if you set a factory for a component.
+		 * The skin used to render this component.
+		 * A call to <code>render()</code> is made if you set a skin for a component.
 		 */		
-		public function set factory( value: IFuiFactory ): void
+		public function set skin( value: IFuiSkin ): void
 		{
-			_factory = value;
+			_skin = value;
 			render();
 		}
+
+		/**
+		 * Masks the component using the exact width and height calculated
+		 * using the tile size and components size in tiles.
+		 */		
+		protected function maskComponent(): void
+		{
+			scrollRect = new Rectangle( 0, 0, _skin.tileSize * size.width, _skin.tileSize * size.height );
+		}
 		
+		/**
+		 * Draws the bounds of the component given by tile size and components size in tiles.
+		 */
+		protected function debugBounds(): void
+		{
+			graphics.lineStyle( 1, 0xff00ff );
+			graphics.drawRect( 0, 0, _skin.tileSize * size.width, _skin.tileSize * size.height );
+		}
+
 		/**
 		 * Creates and returns the string representation of the current object.
 		 * 

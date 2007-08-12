@@ -2,7 +2,7 @@ package de.popforge.fui
 {
 	import de.popforge.format.furnace.FurnaceFormat;
 	import de.popforge.fui.core.FuiComponent;
-	import de.popforge.fui.core.IFuiFactory;
+	import de.popforge.fui.core.IFuiSkin
 	
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
@@ -11,6 +11,16 @@ package de.popforge.fui
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
+	import de.popforge.fui.core.IFuiParameter;
+	import de.popforge.parameter.Parameter;
+	import de.popforge.fui.controls.Slider;
+	import de.popforge.fui.controls.Knob;
+	import flash.display.Graphics;
+	import flash.display.Shape;
+	import flash.display.DisplayObject;
+	import flash.geom.Rectangle;
+	import flash.geom.Point;
+	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -33,7 +43,7 @@ package de.popforge.fui
 		 */		
 		public static function build( furnaceFile: ByteArray ): Fui
 		{
-			var fui: Fui = new Fui();
+			var fui: Fui = new Fui;
 			
 			var assets: FurnaceFormat = new FurnaceFormat;
 			assets.readExternal( furnaceFile );
@@ -51,19 +61,37 @@ package de.popforge.fui
 			return fui;
 		}
 		
+		public static function buildManual( xml: XML, skin: IFuiSkin ): Fui
+		{
+			var fui: Fui = new Fui;
+			
+			fui.xml = xml;
+			fui.skin = skin;
+			
+			fui.buildInternal();
+			fui.renderComponents();
+			
+			return fui;
+		}
+		
 		private var xml: XML;
 		private var swf: ByteArray;
 		
-		private var factory: IFuiFactory;
+		private var skin: IFuiSkin;
 		
 		private var components: Array;
 		private var numComponents: uint;
+		
+		private var debugGraphics: Graphics;
 		
 		/**
 		 * Creates a new Fui object.
 		 * The constructor should never be called. Use <code>Fui.build()</code> instead.
 		 */		
-		public function Fui() {}
+		public function Fui()
+		{
+			components = new Array;
+		}
 		
 		/**
 		 * Returns a component for the given name.
@@ -78,6 +106,25 @@ package de.popforge.fui
 			return FuiComponent( getChildByName( name ) );
 		}
 		
+		public function connect( name: String, value: * ): void
+		{
+			var component: FuiComponent = getElementById( name );
+			
+			if ( component is IFuiParameter )
+			{
+				IFuiParameter( component ).connectParameter( Parameter( value ) );
+			}
+			/*else
+			if ( component is Something else )
+			{
+
+			}*/
+			else
+			{
+				throw new Error( 'Unknown FuiComponent type.' );
+			}
+		}
+		
 		/**
 		 * Removes all references recursive. This way a Fui object should be
 		 * collected by the GC if it is no longer needed.
@@ -87,7 +134,7 @@ package de.popforge.fui
 			var i: int = 0;
 			var n: int = numComponents;
 			
-			var component: Component;
+			var component: FuiComponent;
 			
 			for (;i<n;++i)
 			{
@@ -111,10 +158,13 @@ package de.popforge.fui
 		{
 			buildComponents();
 			
-			var factoryLoader: Loader = new Loader();
+			if ( swf != null )
+			{
+				var factoryLoader: Loader = new Loader();
 			
-			factoryLoader.contentLoaderInfo.addEventListener( Event.COMPLETE, onFactoryComplete );
-			factoryLoader.loadBytes( swf, new LoaderContext( false, ApplicationDomain.currentDomain ) );
+				factoryLoader.contentLoaderInfo.addEventListener( Event.COMPLETE, onFactoryComplete );
+				factoryLoader.loadBytes( swf, new LoaderContext( false, ApplicationDomain.currentDomain ) );
+			}
 		}
 		
 		/**
@@ -124,18 +174,24 @@ package de.popforge.fui
 		{
 			var list: XMLList = xml.component;
 			var params: XML;
-			var component: Component;
+			var component: FuiComponent;
 			var clazz: Class;
 			
 			for each ( params in list )
 			{
 				switch ( String( params.@type ).toLowerCase() )
 				{
+					case 'slider':
+						component = skin.createSlider();
+						break;
+					
+					case 'knob':
+						component = skin.createKnob();
+						break;
+						
 					default:
-						clazz = Component;
+						component = new FuiComponent;
 				}
-				
-				component = new clazz;
 				
 				component.x = uint( params.@x );
 				component.y = uint( params.@y );
@@ -150,6 +206,12 @@ package de.popforge.fui
 			
 			numComponents = components.length;
 			
+			var debugShape: Shape = new Shape;
+			debugShape.name = '__FUI__DEBUG__SHAPE__';
+			addChild( debugShape );
+			
+			debugGraphics = debugShape.graphics;
+			
 			// Free some memory here. We will never use the XML again.
 			xml = null;
 		}
@@ -162,16 +224,59 @@ package de.popforge.fui
 			var i: int = 0;
 			var n: int = numComponents;
 			
-			var component: Component;
+			var component: FuiComponent;
 			
 			for (;i<n;++i)
 			{
 				component = components[ i ];
 				
-				component.x *= factory.tileWidth; 
-				component.y *= factory.tileHeight;
+				component.x *= skin.tileSize; 
+				component.y *= skin.tileSize;
 				
-				component.factory = factory;
+				component.skin = skin;
+			}
+		}
+		
+		/**
+		 * Draws the bounding box of every <code>DisplayObject</code> object and its registration point
+		 * that belongs to the current <code>Fui</code> object.
+		 */		
+		public function debugComponents(): void
+		{
+			var i: int = 0;
+			var n: int = numComponents;
+			
+			var component: FuiComponent;
+			
+			for (;i<n;++i)
+			{
+				component = components[ i ];
+				debugInternal( component );
+			}
+		}
+		
+		private function debugInternal( displayObject: DisplayObject ): void
+		{
+			var rect: Rectangle = displayObject.getRect( this );
+			var regPoint: Point = globalToLocal( displayObject.localToGlobal( new Point( 0, 0 ) ) );
+			
+			debugGraphics.lineStyle( 1, 0xff00ff );
+			debugGraphics.drawRect( rect.x, rect.y, rect.width, rect.height );
+			
+			debugGraphics.lineStyle( 1, 0xff0000 );
+			debugGraphics.moveTo( regPoint.x - 2, regPoint.y );
+			debugGraphics.lineTo( regPoint.x + 3, regPoint.y );
+			debugGraphics.moveTo( regPoint.x, regPoint.y - 2 );
+			debugGraphics.lineTo( regPoint.x, regPoint.y + 3 );
+			
+			if ( displayObject is DisplayObjectContainer )
+			{
+				var container: DisplayObjectContainer = DisplayObjectContainer( displayObject );
+				
+				for ( var i: int = 0; i < container.numChildren; ++i )
+				{
+					debugInternal( container.getChildAt( i ) );
+				}
 			}
 		}
 		
@@ -190,7 +295,7 @@ package de.popforge.fui
 			
 			var manifest: Class = Class( factoryLoader.contentLoaderInfo.applicationDomain.getDefinition( 'Manifest' ) );
 
-			factory = IFuiFactory( new manifest[ 'FACTORY_CLASS' ] );
+			skin = IFuiSkin( new manifest[ 'FACTORY_CLASS' ] );
 			
 			renderComponents();
 			

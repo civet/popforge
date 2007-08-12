@@ -1,34 +1,27 @@
 package de.popforge.fui.controls
 {
-	import de.popforge.fui.core.FuiComponent;
-	import de.popforge.fui.core.FuiComponentSize;
-	import de.popforge.fui.core.IFuiParameter;
 	import de.popforge.parameter.Parameter;
-	
-	import flash.display.InteractiveObject;
-	import flash.display.Sprite;
-	import flash.events.IEventDispatcher;
+	import de.popforge.fui.core.IFuiParameter;
+	import de.popforge.fui.core.FuiComponent;
 	import flash.events.MouseEvent;
-	import flash.display.SimpleButton;
+	import flash.events.IEventDispatcher;
+	import de.popforge.fui.core.FuiComponentSize;
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
-	
-	public class Slider extends FuiComponent implements IFuiParameter
+
+	public class Knob extends FuiComponent implements IFuiParameter
 	{
 		/* === COMPONENT SIZE === */
-		private static const COMPONENT_SIZE: FuiComponentSize = new FuiComponentSize( 4, 1 );
+		private static const COMPONENT_SIZE: FuiComponentSize = new FuiComponentSize( 1, 1 );
 		override public function get size(): FuiComponentSize { return COMPONENT_SIZE; }
 		/* === COMPONENT SIZE === */
 		
-		
 		protected var parameter: Parameter;
 		
-		protected var knob: InteractiveObject;
+		protected var grip: DisplayObject;
 		
-		protected var knobOffsetX: Number;
-		protected var knobOffsetY: Number;
-		
-		protected var length: Number;
-		protected var dragOffset: Number;
+		protected var mouseOrigin: Number;
+		protected var valueOrigin: Number;
 		
 		public function connectParameter( parameter: Parameter ): void
 		{
@@ -36,7 +29,7 @@ package de.popforge.fui.controls
 			
 			this.parameter = parameter;
 			
-			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
+			grip.rotation = valueToRotation( parameter.getValueNormalized() ); 
 			 
 			parameter.addChangedCallbacks( onParameterChanged );
 		}
@@ -53,40 +46,41 @@ package de.popforge.fui.controls
 		
 		protected function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
-			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
+			grip.rotation = valueToRotation( parameter.getValueNormalized() );
+		}
+		
+		protected function valueToRotation( normalizedValue: Number ): Number
+		{
+			return -225 + normalizedValue * 270;
 		}
 		
 		override protected function createChildren(): void
 		{
+			var cW: Number = _skin.tileSize * size.width;
+			var cH: Number = _skin.tileSize * size.height;
+			
 			graphics.lineStyle( 2, 0x333333 );
 			graphics.beginFill( 0x555555 );
-			graphics.drawRoundRect( 0, 0, length, _skin.tileSize, _skin.tileSize, _skin.tileSize );
+			graphics.drawEllipse( 0, 0, cW, cH );
 			graphics.endFill();
+			
+			var grip: Shape = new Shape;
+			
+			grip.graphics.lineStyle( 3, 0x999999 );
+			grip.graphics.moveTo( cW * .5 - 6, 0 );
+			grip.graphics.lineTo( cW * .5 - 2, 0 );
 
+			grip.x = cW * .5;
+			grip.y = cH * .5;
 			
-			var knob: Sprite = new Sprite
+			addChild( grip );
 			
-			with ( knob.graphics )
-			{
-				lineStyle( 2, 0x333333 );
-				beginFill( 0x999999 );
-				drawCircle( 0, 0, _skin.tileSize * .5 );
-				endFill();
-			}
-			
-			addChild( knob );
-
-			knobOffsetX = knob.x = _skin.tileSize * .5;
-			knobOffsetY = knob.y = _skin.tileSize * .5;
-			
-			this.knob = knob;
+			this.grip = grip;
 		}
-		
+	
 		override protected function render():void
 		{
-			length = _skin.tileSize * size.width;
 			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
-			
 			createChildren();
 		}
 		
@@ -98,20 +92,18 @@ package de.popforge.fui.controls
 				return;
 			}
 			
-			if( event.target == knob )
-				dragOffset = knob.mouseX;
-			else
-				dragOffset = 0;
+			mouseOrigin = event.stageY;
+			valueOrigin = parameter.getValueNormalized();
 			
 			stage.addEventListener( MouseEvent.MOUSE_MOVE, onStageMouseMove );
 			stage.addEventListener( MouseEvent.MOUSE_UP, onStageMouseUp );
 			
-			onStageMouseMove( null );
+			onStageMouseMove( event );
 		}
 		
 		protected function onStageMouseMove( event: MouseEvent ): void
 		{
-			var ratio: Number = ( mouseX - dragOffset - knobOffsetX ) / ( length - 2 * knobOffsetX );
+			var ratio: Number = valueOrigin + ( mouseOrigin - event.stageY ) / ( event.shiftKey ? 1000 : 75 );
 			
 			if( ratio < 0 ) ratio = 0;
 			else if( ratio > 1 ) ratio = 1;
@@ -136,16 +128,16 @@ package de.popforge.fui.controls
 			
 			removeEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			
-			removeChild( knob );
+			removeChild( grip );
 			
-			knob = null;
+			grip = null;
 			
 			super.dispose();
 		}
 
 		override public function toString(): String
 		{
-			return '[Slider]';
+			return '[Knob]';
 		}
 	}
 }
