@@ -81,6 +81,11 @@ package de.popforge.audio.processor.fl909
 			shuffleIndex = 0;
 		}
 		
+		public function isBusy(): Boolean
+		{
+			return activeVoices.length > 0;
+		}
+		
 		/**
 		 * PROCESS AUDIO
 		 */
