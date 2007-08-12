@@ -35,9 +35,9 @@ package de.popforge.format.wav
 	 */
 	internal class WavDecoder
 	{
-		static internal function parse( bytes: ByteArray ): Wav
+		static internal function parse( bytes: ByteArray ): WavFormat
 		{
-			var wav: Wav = new Wav();
+			var wav: WavFormat = new WavFormat();
 			
 			bytes.position = 0;
 			bytes.endian = Endian.LITTLE_ENDIAN;
@@ -99,7 +99,7 @@ package de.popforge.format.wav
 			return wav;
 		}
 		
-		static private function createSamples( wav: Wav ): Array
+		static private function createSamples( wav: WavFormat ): Array
 		{
 			var sampleCount: uint = wav.$numSamples;
 			var channels: uint = wav.$channels;

@@ -36,7 +36,7 @@ package de.popforge.format.wav
 		internal var $samples: Array;
 		internal var $numSamples: uint;
 
-		static public function decode( bytes: ByteArray ): Wav
+		static public function decode( bytes: ByteArray ): WavFormat
 		{
 			return WavDecoder.parse( bytes );
 		}
