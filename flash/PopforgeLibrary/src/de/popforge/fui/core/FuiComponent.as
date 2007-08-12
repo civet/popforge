@@ -6,29 +6,24 @@ package de.popforge.fui.core
 	public class FuiComponent extends Sprite
 	{
 		/**
-		* The factory associated with this component.
-		*/		
-		protected var _skin: IFuiSkin;
-		
-		/**
 		 * The tag that has been used to define this component.
 		 */
 		protected var _tag: XML;
 
-		public var rows: uint;
-		public var cols: uint;
+		protected var _rows: uint;
+		protected var _cols: uint;
+		
+		protected var tileSize: uint;
+		
+		protected var targetWidth: uint;
+		protected var targetHeight: uint;
 
 		/**
 		 * Renders the component by creating all the necessary display objects.
 		 * 
 		 * @throws ImplementationRequiredError If this method is not overriden.
 		 */	
-		protected function render(): void
-		{
-			throw new ImplementationRequiredError;
-		}
-		
-		protected function createChildren(): void
+		protected function build(): void
 		{
 			throw new ImplementationRequiredError;
 		}
@@ -38,7 +33,7 @@ package de.popforge.fui.core
 		 */		
 		public function dispose(): void
 		{
-			_skin = null;
+			_tag = null;
 		}
 		
 		/**
@@ -49,14 +44,30 @@ package de.popforge.fui.core
 			_tag = value;
 		}
 		
+		public function set rows( value: uint ): void
+		{
+			_rows = value;
+			targetHeight = tileSize * _rows;
+		}
+		
+		public function set cols( value: uint ): void
+		{
+			_cols = value;
+			targetWidth = tileSize * _cols;
+		}
+		
 		/**
 		 * The skin used to render this component.
 		 * A call to <code>render()</code> is made if you set a skin for a component.
 		 */		
 		public function set skin( value: IFuiSkin ): void
 		{
-			_skin = value;
-			render();
+			tileSize = value.tileSize;
+			
+			targetWidth = tileSize * _cols;
+			targetHeight = tileSize * _rows;
+			
+			build();
 		}
 
 		/**
@@ -65,7 +76,7 @@ package de.popforge.fui.core
 		 */		
 		protected function maskComponent(): void
 		{
-			scrollRect = new Rectangle( 0, 0, _skin.tileSize * size.width, _skin.tileSize * size.height );
+			scrollRect = new Rectangle( 0, 0, targetWidth, targetHeight );
 		}
 		
 		/**
@@ -74,7 +85,7 @@ package de.popforge.fui.core
 		protected function debugBounds(): void
 		{
 			graphics.lineStyle( 1, 0xff00ff );
-			graphics.drawRect( 0, 0, _skin.tileSize * size.width, _skin.tileSize * size.height );
+			graphics.drawRect( 0, 0, targetWidth, targetHeight );
 		}
 
 		/**
