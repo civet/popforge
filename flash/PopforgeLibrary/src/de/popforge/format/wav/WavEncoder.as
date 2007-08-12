@@ -34,6 +34,30 @@ package de.popforge.format.wav
 			return bytes;
 		}
 		
+		static public function createWildHeader( channels: uint, bits: uint, rate: uint ): ByteArray
+		{
+			var bytes: ByteArray = new ByteArray();
+			bytes.endian = Endian.LITTLE_ENDIAN;
+			
+			bytes.writeUTFBytes( 'RIFF' );
+			bytes.writeInt( 0 );
+			bytes.writeUTFBytes( 'WAVE' );
+			bytes.writeUTFBytes( 'fmt ' );
+			bytes.writeInt( uint( 16 ) );
+			bytes.writeShort( uint( 1 ) );
+			bytes.writeShort( channels );
+			bytes.writeInt( rate );
+			bytes.writeInt( uint( rate * channels * ( bits / 8 ) ) );
+			bytes.writeShort( uint( channels * ( bits / 8 ) ) );
+			bytes.writeShort( bits );
+			bytes.writeUTFBytes( 'data' );
+			bytes.writeInt( 0 );
+			
+			bytes.position = 0;
+			
+			return bytes;
+		}
+		
 		static private function createData( samples: Array, channels: uint, bits: uint, rate: uint ): ByteArray
 		{
 			var bytes: ByteArray = new ByteArray();
