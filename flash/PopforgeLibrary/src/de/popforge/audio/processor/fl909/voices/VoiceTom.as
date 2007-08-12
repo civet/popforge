@@ -5,9 +5,9 @@ package de.popforge.audio.processor.fl909.voices
 	
 	public final class VoiceTom extends Voice
 	{
-		static public const SIZE_LOW: uint = 0;
-		static public const SIZE_MED: uint = 1;
-		static public const SIZE_HIGH: uint = 2;
+		static public const SIZE_LOW: int = 0;
+		static public const SIZE_MED: int = 1;
+		static public const SIZE_HIGH: int = 2;
 		
 		static private const snd0: Array = Rom.getAmplitudesByName( '909.tl.raw' );
 		static private const snd1: Array = Rom.getAmplitudesByName( '909.tm.raw' );
@@ -17,12 +17,17 @@ package de.popforge.audio.processor.fl909.voices
 		
 		private var snd: Array;
 		
+		private var size: int;
+		
+		private var cutEnv: Number;
 		private var tone: ToneTom;
 		private var volEnv: Number;
 		
+		private var posFloat: Number;
+		
 		private var tuneValue: Number;
 		
-		public function VoiceTom( start: int, volume: Number, tone: ToneTom, size: uint )
+		public function VoiceTom( start: int, volume: Number, tone: ToneTom, size: int )
 		{
 			super( start, volume );
 			
@@ -35,13 +40,18 @@ package de.popforge.audio.processor.fl909.voices
 				case SIZE_HIGH: snd = snd2; break;
 			}
 			
+			this.size = size;
+			
+			length = snd.length - 1;
+			
 			monophone = true;
 			
-			maxLength = length = snd.length << 1;
-			
-			tuneValue = tone.tune.getValue()
+			tuneValue = tone.tune.getValue();
 			
 			volEnv = 1;
+			cutEnv = 1;
+			
+			posFloat = 0;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -57,38 +67,42 @@ package de.popforge.audio.processor.fl909.voices
 			
 			var levelValue: Number = tone.level.getValue() * volume;
 			var tuneValue: Number = tone.tune.getValue();
-			var decayValue: int = maxLength / tuneValue * tone.decay.getValue();
+			var decayValue: int = length * tone.decay.getValue();
 			
 			for( var i: int = start ; i < n ; i++ )
 			{
 				sample = samples[i];
 				
 				//-- LINEAR INTERPOLATION
-				tunePos = ( position >> 1 ) * this.tuneValue;
-				tunePosInt = tunePos;
+				tunePosInt = posFloat;
 				
-				alpha = tunePos - tunePosInt;
+				if( tunePosInt >= length - 1 )
+					return true;
+					
+				if( i >= stop )
+					return true;
+				
+				alpha = posFloat - tunePosInt;
 				
 				amplitude = snd[ tunePosInt ] * ( 1 - alpha );
 				amplitude += snd[ int( tunePosInt + 1 ) ] * alpha;
-				amplitude *= levelValue * volEnv;
+				amplitude *= levelValue * volEnv * cutEnv;
 				
-				//-- ADD AMPLITUDE (MONO)
-				sample.left += amplitude;
-				sample.right += amplitude;
-
 				//-- DECAY
-				if( position >= decayValue )
+				/*if( position++ >= decayValue )
 				{
 					//-- observed value
 					volEnv *= .9988;
 
 					if( volEnv < .001 )
 						return true;
-				}
+				}*/
 				
-				if( ++position >= length )
-					return true;
+				//-- ADD AMPLITUDE (MONO)
+				sample.left += amplitude;
+				sample.right += amplitude;
+				
+				posFloat++;// += this.tuneValue;
 				
 				//-- interpolate to avoid clicks
 				this.tuneValue += ( tuneValue - this.tuneValue ) * .001;
@@ -97,6 +111,11 @@ package de.popforge.audio.processor.fl909.voices
 			start = 0;
 			
 			return false;
+		}
+		
+		public override function getChannel(): int
+		{
+			return 2 + size;
 		}
 	}
 }

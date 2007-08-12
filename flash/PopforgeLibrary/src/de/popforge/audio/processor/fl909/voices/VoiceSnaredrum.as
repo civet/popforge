@@ -73,6 +73,9 @@ package de.popforge.audio.processor.fl909.voices
 
 			for( var i: int = start ; i < n ; i++ )
 			{
+				if( i >= stop )
+					return true;
+				
 				sample = samples[i];
 
 				//-- BODY GRAIN (INTERPOLATED)
@@ -111,5 +114,10 @@ package de.popforge.audio.processor.fl909.voices
 			
 			return false;
 		}
+		
+		public override function getChannel(): int
+		{
+			return 1;
+		}		
 	}
 }

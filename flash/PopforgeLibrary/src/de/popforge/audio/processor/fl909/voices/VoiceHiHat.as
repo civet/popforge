@@ -26,7 +26,7 @@ package de.popforge.audio.processor.fl909.voices
 			
 			snd = closed ? sndCL : sndOP;
 			
-			maxLength = length = snd.length << 1;
+			length = snd.length;
 			
 			monophone = true;
 			
@@ -41,13 +41,16 @@ package de.popforge.audio.processor.fl909.voices
 			var amplitude: Number;
 			
 			var levelValue: Number = tone.level.getValue() * volume;
-			var decayValue: int = maxLength * ( closed ? tone.decayCL.getValue() : tone.decayOP.getValue() );
+			var decayValue: int = length * ( closed ? tone.decayCL.getValue() : tone.decayOP.getValue() );
 			
 			for( var i: int = start ; i < n ; i++ )
 			{
+				if( i >= stop )
+					return true;
+
 				sample = samples[i];
 				
-				amplitude = snd[ int( position >> 1 ) ] * levelValue * volEnv;
+				amplitude = snd[ position ] * levelValue * volEnv;
 
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
@@ -71,5 +74,10 @@ package de.popforge.audio.processor.fl909.voices
 			
 			return false;
 		}
+		
+		public override function getChannel(): int
+		{
+			return 7;
+		}		
 	}
 }

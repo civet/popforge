@@ -292,6 +292,8 @@ package de.popforge.audio.processor.fl909
 		 */
 		private function addVoice( voice: Voice ): void
 		{
+			var cutVoice: Voice;
+			
 			//-- CHECK MONOPHONE
 			if( voice.isMonophone() )
 			{
@@ -299,16 +301,18 @@ package de.popforge.audio.processor.fl909
 				
 				while( --i > -1 )
 				{
-					//-- check if type is active
-					if( getQualifiedClassName( activeVoices[i] ) == getQualifiedClassName( voice ) )
+					cutVoice = Voice( activeVoices[i] );
+					
+					//-- check if channel is active
+					if( cutVoice.getChannel() == voice.getChannel() )
 					{
 						//-- stop current voice, when new voice starts
-						Voice( activeVoices[i] ).cut( sampleOffset );
+						cutVoice.cut( sampleOffset );
 						break;
 					}
 				}
 			}
-			
+
 			activeVoices.push( voice );
 		}
 	}

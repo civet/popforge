@@ -17,7 +17,7 @@ package de.popforge.audio.processor.fl909.voices
 			
 			monophone = true;
 			
-			maxLength = length = snd.length << 1;
+			length = snd.length;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -36,11 +36,18 @@ package de.popforge.audio.processor.fl909.voices
 			
 			for( var i: int = start ; i < n ; i++ )
 			{
+				if( i >= stop )
+					return true;
+
 				sample = samples[i];
 				
 				//-- LINEAR INTERPOLATION
-				tunePos = ( position >> 1 ) * tuneValue;
+				tunePos = position++ * tuneValue;
 				tunePosInt = tunePos;
+				
+				if( tunePosInt >= length - 1 )
+					return true;
+				
 				alpha = tunePos - tunePosInt;
 				
 				amplitude = snd[ tunePosInt ] * ( 1 - alpha );
@@ -50,14 +57,16 @@ package de.popforge.audio.processor.fl909.voices
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
-
-				if( ++position >= length )
-					return true;
 			}
 			
 			start = 0;
 			
 			return false;
 		}
+		
+		public override function getChannel(): int
+		{
+			return 9;
+		}		
 	}
 }
