@@ -15,7 +15,7 @@ package de.popforge.audio.processor.fl909.voices
 			
 			this.tone = tone;
 			
-			maxLength = length = snd.length;
+			length = snd.length;
 		}
 		
 		public override function processAudioAdd( samples: Array ): Boolean
@@ -29,6 +29,9 @@ package de.popforge.audio.processor.fl909.voices
 			
 			for( var i: int = start ; i < n ; i++ )
 			{
+				if( i >= stop )
+					return true;
+
 				sample = samples[i];
 
 				amplitude = snd[ position ] * level;
@@ -44,6 +47,11 @@ package de.popforge.audio.processor.fl909.voices
 			start = 0;
 			
 			return false;
+		}
+		
+		public override function getChannel(): int
+		{
+			return 5;
 		}
 	}
 }

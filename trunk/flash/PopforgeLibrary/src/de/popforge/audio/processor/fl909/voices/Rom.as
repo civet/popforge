@@ -12,17 +12,17 @@ package de.popforge.audio.processor.fl909.voices
 			switch( name )
 			{
 				case '909.bd.noise.raw':
-				case '909.bd.body.raw':
+				case '909.bd.grain.raw':
 				case '909.clap.raw':
 				case '909.rim.raw':
 				case '909.sd.raw':
 				case '909.tl.raw':
 				case '909.tm.raw':
 				case '909.th.raw':
+				case '909.ch.raw':
 					return convert16Bit( furnace.fileByName( name ) );
 
 				case '909.cr.raw':
-				case '909.ch.raw':
 				case '909.oh.raw':
 				case '909.ri.raw':
 					return convert8Bit( furnace.fileByName( name ) );

@@ -6,7 +6,7 @@ package de.popforge.audio.processor.fl909.voices
 	public final class VoiceBassdrum extends Voice
 	{
 		static private const sndNoise: Array = Rom.getAmplitudesByName( '909.bd.noise.raw' );
-		static private const sndBody: Array = Rom.getAmplitudesByName( '909.bd.body.raw' );
+		static private const sndBody: Array = Rom.getAmplitudesByName( '909.bd.grain.raw' );
 		
 		{ sndBody.push( sndBody[0] ); }
 		
@@ -48,13 +48,16 @@ package de.popforge.audio.processor.fl909.voices
 			var alpha: Number;
 			var posBodyInt: int;
 			
-			var levelValue: Number = tone.level.getValue();
+			var levelValue: Number = tone.level.getValue() * volume;
 			var decayValue: int = tone.decay.getValue();
 
 			for( var i: int = start ; i < n ; i++ )
 			{
+				if( i >= stop )
+					return true;
+					
 				sample = samples[i];
-
+				
 				//-- BODY GRAIN (INTERPOLATED)
 				posBodyInt = posBody;
 				alpha = posBody - posBodyInt;
@@ -67,7 +70,7 @@ package de.popforge.audio.processor.fl909.voices
 					amplitude += sndNoise[ position ] * attackValue * levelValue;
 				
 				//-- DECAY
-				if( position > decayValue )
+				if( position++ > decayValue )
 				{
 					//-- observed value
 					bodyEnv *= .9994;
@@ -80,17 +83,9 @@ package de.popforge.audio.processor.fl909.voices
 				sample.left += amplitude;
 				sample.right += amplitude;
 				
-				if( ++position >= length - 100 ) //-- 100 release to avoid clicks
-				{
-					cutEnv -= 1/100;
-					
-					if( cutEnv <= 0 )
-						return true;
-				}
-
 				//-- ADVANCE WAVEFORMS
 				posBody += tuneValue;
-				if( posBody >= sndBodyNum )
+				while( posBody >= sndBodyNum )
 					posBody -= sndBodyNum;
 
 				//-- observed value
@@ -100,6 +95,11 @@ package de.popforge.audio.processor.fl909.voices
 			start = 0;
 			
 			return false;
+		}
+		
+		public override function getChannel(): int
+		{
+			return 0;
 		}
 	}
 }
