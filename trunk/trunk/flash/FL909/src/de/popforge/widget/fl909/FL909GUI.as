@@ -17,23 +17,30 @@ package de.popforge.widget.fl909
 		static public const WIDTH: int = 580;
 		static public const HEIGHT: int = 262;
 		
+		[Embed(source="firstrun.909", mimeType="application/octet-stream")] static private const FirstRun: Class;
+		
+		private var player: FL909Player;
 		private var fl909: FL909;
+		
+		private var ram: SharedObject;
 		
 		private var stepButtons: Array;
 		private var patternButtons: Array;
 		private var startButton: StartButton;
 		private var voiceSwitchBar: VoiceSwitchBar;
+		private var bar: LEDBar;
 		
 		internal var lastPatternButton: PatternButton;
 		
-		private var ram: SharedObject;
-		
-		public function FL909GUI( fl909: FL909 )
+		public function FL909GUI( player: FL909Player )
 		{
-			this.fl909 = fl909;
+			this.player = player;
+			
+			fl909 = player.getFL909();
+			fl909.readExternal( new FirstRun() );
 			
 			ram = SharedObject.getLocal( 'FL909.mem', '/' );
-
+			
 			build();
 		}
 		
@@ -44,6 +51,12 @@ package de.popforge.widget.fl909
 		{
 			addChild( new Bitmap( new Chassis(0,0) ) );
 			
+			hitArea = new Sprite();
+			hitArea.graphics.beginFill( 0, 0 );
+			hitArea.graphics.drawRect( 0, 0, FL909GUI.WIDTH, FL909GUI.HEIGHT );
+			hitArea.graphics.endFill();
+			addChild( hitArea );
+			
 			addKnobs();
 			addVoiceSwitchBar();
 			addStepButtons();
@@ -52,11 +65,6 @@ package de.popforge.widget.fl909
 			addMuteButtons();
 			addStartButton();
 			addMemoryButtons();
-			
-			//addChild( led );
-			//startButton.x = 64;
-			//startButton.y = 204;
-			//addChild( startButton );
 			
 			addEventListener( MouseEvent.CLICK, onMouseClick );
 		}
@@ -141,7 +149,7 @@ package de.popforge.widget.fl909
 		
 		private function addStartButton(): void
 		{
-			startButton = new StartButton( fl909.pause );
+			startButton = new StartButton( player );
 			startButton.x = 64;
 			startButton.y = 204;
 			addChild( startButton );
@@ -330,163 +338,5 @@ package de.popforge.widget.fl909
 					break;
 			}
 		}
-		
-		/*
-		private function createMemoryButtons(): void
-		{
-			var button: MemoryButton;
-			
-			//-- SAVE
-			button = new MemoryButton();
-			button.name = 'save';
-			button.x = 239;
-			button.y = 167;
-			addChild( button );
-			
-			//-- LOAD
-			button = new MemoryButton();
-			button.name = 'load';
-			button.x = 258;
-			button.y = 167;
-			addChild( button );
-			
-			//-- CLEAR
-			button = new MemoryButton();
-			button.name = 'clear';
-			button.x = 277;
-			button.y = 167;
-			addChild( button );
-		}
-		
-
-		
-		/*private function onMouseClick( event: MouseEvent ): void
-		{
-			var target: Object = event.target;
-			
-			if( target is StepButton )
-			{
-				proceedStepButtonEvent( target as StepButton );
-			}
-			
-			if( target is PatternButton )
-			{
-				proceedPatternButtonEvent( target as PatternButton );
-			}
-			
-			if( target is StartButton )
-			{
-				if( StartButton( target ).getValue() )
-					Sync.getInstance().start();
-				else
-					Sync.getInstance().stop();
-			}
-			
-			if( target is MemoryButton )
-			{
-				proceedMemoryButtonEvent( target as MemoryButton );
-			}
-			
-			if( target is MuteButton )
-			{
-				proceedMuteButtonEvent( target as MuteButton );
-			}
-		}*/
-		
-		/*private function proceedPatternButtonEvent( button: PatternButton ): void
-		{
-			var index: int = button.getIndex();
-			
-			if( lastPatternButton != null )
-				lastPatternButton.setValue( false );
-			
-			memory.setPatternIndex( index );
-			
-			editPatternIndex = index;
-			
-			updateStepButtons();
-			
-			lastPatternButton = button;
-			
-			button.setValue( true );
-		}
-		
-		private function proceedMemoryButtonEvent( button: MemoryButton ): void
-		{
-			var name: String = button.name;
-			
-			switch( name )
-			{
-				case 'save':
-				
-					memory.save();
-					generator.save();
-					break;
-
-				case 'load':
-				
-					memory.load();
-					generator.load();
-					break;
-
-				case 'clear':
-				
-					memory.clear();
-					break;
-			}
-		}*/
-		
-		/*private function proceedMuteButtonEvent( button: MuteButton ): void
-		{
-			var value: Boolean = !button.getValue();
-			
-			generator.setMuteVoice( button.getIndex(), value );
-			
-			button.setValue( value );
-		}*/
-		
-		/*private function onMemoryPatternChanged( memory: Memory ): void
-		{
-			updateStepButtons();
-		}
-		
-		private function onMemoryStepChanged( memory: Memory ): void
-		{
-		}
-		
-		private function onMemoryReset( memory: Memory ): void
-		{
-			startTimer = getTimer();
-			step = 0;
-			addEventListener( Event.ENTER_FRAME, onEnterFrame );
-		}
-		
-		private function onEnterFrame( event: Event ): void
-		{
-			if( generator.stepTimes.length == 0 ) return;
-			
-			var nextStepTime: int = generator.stepTimes[0];
-			
-			if( getTimer() - startTimer > nextStepTime && generator.stepTimes.length > 0 )
-			{
-				generator.stepTimes.shift();
-				
-				led.show( step & 15 );
-				
-				step++;
-				
-				nextStepTime = generator.stepTimes[0];
-			}
-		}
-		
-		private function onVoiceSwitcherChanged( switcher: VoiceSwitcher ): void
-		{
-			updateStepButtons();
-		}
-		
-		private function onTempoChanged( parameter: Parameter, oldValue: *, newValue: * ): void
-		{
-			lcd.show( parameter.getValue() );
-		}*/
 	}
 }
