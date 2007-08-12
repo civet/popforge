@@ -1,14 +1,14 @@
 package
 {
+	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.bitboy.BitBoy;
 	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	import de.popforge.audio.processor.bitboy.formats.FormatFactory;
+	import de.popforge.format.wav.WavFormat;
 	
 	import flash.display.Sprite;
 	import flash.utils.ByteArray;
-	import de.popforge.format.Wav;
-	import de.popforge.audio.output.Audio;
 
 	public class BitboyTestApp extends Sprite
 	{
@@ -36,7 +36,7 @@ package
 			
 			bitboy.processAudio( samples );
 			
-			var bytes: ByteArray = Wav.encode( samples, 2, Audio.BIT16, Audio.RATE44100 );
+			var bytes: ByteArray = WavFormat.encode( samples, 2, Audio.BIT16, Audio.RATE44100 );
 			
 			ExportBinarySocket.getInstance().saveFile( 'declicker.wav', bytes );
 		}
