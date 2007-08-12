@@ -31,7 +31,11 @@ package de.popforge.audio.processor.fl909
 	import flash.net.registerClassAlias;
 	
 	/**
-	 * UNDER DEVELOPMENT
+	 * @author Andre Michelle
+	 * 
+	 * FL909 attempts to simulate the original sound of the Roland TR-909.
+	 * This drumcomputer hits the market 1984 and was a long time the state
+	 * of art in house and techno productions.
 	 */
 
 	public final class FL909
