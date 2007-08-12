@@ -1,21 +1,16 @@
 package de.popforge.fui.controls
 {
-	import de.popforge.parameter.Parameter;
-	import de.popforge.fui.core.IFuiParameter;
 	import de.popforge.fui.core.FuiComponent;
-	import flash.events.MouseEvent;
-	import flash.events.IEventDispatcher;
-	import de.popforge.fui.core.FuiComponentSize;
+	import de.popforge.fui.core.IParameterBindable;
+	import de.popforge.parameter.Parameter;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
+	import flash.events.IEventDispatcher;
+	import flash.events.MouseEvent;
 
-	public class Knob extends FuiComponent implements IFuiParameter
+	public class Knob extends FuiComponent implements IParameterBindable
 	{
-		/* === COMPONENT SIZE === */
-		private static const COMPONENT_SIZE: FuiComponentSize = new FuiComponentSize( 1, 1 );
-		override public function get size(): FuiComponentSize { return COMPONENT_SIZE; }
-		/* === COMPONENT SIZE === */
-		
 		protected var parameter: Parameter;
 		
 		protected var grip: DisplayObject;
@@ -23,7 +18,7 @@ package de.popforge.fui.controls
 		protected var mouseOrigin: Number;
 		protected var valueOrigin: Number;
 		
-		public function connectParameter( parameter: Parameter ): void
+		public function connect( parameter: Parameter ): void
 		{
 			releaseParameter();
 			
@@ -32,6 +27,11 @@ package de.popforge.fui.controls
 			grip.rotation = valueToRotation( parameter.getValueNormalized() ); 
 			 
 			parameter.addChangedCallbacks( onParameterChanged );
+		}
+		
+		public function disconnect(): void
+		{
+			releaseParameter();
 		}
 		
 		protected function releaseParameter(): void
@@ -54,34 +54,27 @@ package de.popforge.fui.controls
 			return -225 + normalizedValue * 270;
 		}
 		
-		override protected function createChildren(): void
+		override protected function build(): void
 		{
-			var cW: Number = _skin.tileSize * size.width;
-			var cH: Number = _skin.tileSize * size.height;
-			
 			graphics.lineStyle( 2, 0x333333 );
 			graphics.beginFill( 0x555555 );
-			graphics.drawEllipse( 0, 0, cW, cH );
+			graphics.drawEllipse( 0, 0, targetWidth, targetHeight );
 			graphics.endFill();
 			
 			var grip: Shape = new Shape;
 			
 			grip.graphics.lineStyle( 3, 0x999999 );
-			grip.graphics.moveTo( cW * .5 - 6, 0 );
-			grip.graphics.lineTo( cW * .5 - 2, 0 );
+			grip.graphics.moveTo( targetWidth * .5 - 6, 0 );
+			grip.graphics.lineTo( targetHeight * .5 - 2, 0 );
 
-			grip.x = cW * .5;
-			grip.y = cH * .5;
+			grip.x = targetWidth * .5;
+			grip.y = targetHeight * .5;
 			
 			addChild( grip );
 			
 			this.grip = grip;
-		}
-	
-		override protected function render():void
-		{
+			
 			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
-			createChildren();
 		}
 		
 		protected function onMouseDown( event: MouseEvent ): void

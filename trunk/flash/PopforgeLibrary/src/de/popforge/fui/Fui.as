@@ -2,25 +2,23 @@ package de.popforge.fui
 {
 	import de.popforge.format.furnace.FurnaceFormat;
 	import de.popforge.fui.core.FuiComponent;
-	import de.popforge.fui.core.IFuiSkin
+	import de.popforge.fui.core.IFuiSkin;
+	import de.popforge.fui.core.IParameterBindable;
+	import de.popforge.parameter.Parameter;
 	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
-	import de.popforge.fui.core.IFuiParameter;
-	import de.popforge.parameter.Parameter;
-	import de.popforge.fui.controls.Slider;
-	import de.popforge.fui.controls.Knob;
-	import flash.display.Graphics;
-	import flash.display.Shape;
-	import flash.display.DisplayObject;
-	import flash.geom.Rectangle;
-	import flash.geom.Point;
-	import flash.display.DisplayObjectContainer;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -110,9 +108,9 @@ package de.popforge.fui
 		{
 			var component: FuiComponent = getElementById( name );
 			
-			if ( component is IFuiParameter )
+			if ( component is IParameterBindable )
 			{
-				IFuiParameter( component ).connectParameter( Parameter( value ) );
+				IParameterBindable( component ).connect( Parameter( value ) );
 			}
 			/*else
 			if ( component is Something else )
@@ -196,6 +194,9 @@ package de.popforge.fui
 				component.x = uint( params.@x );
 				component.y = uint( params.@y );
 				
+				component.rows = uint( params.@rows );
+				component.cols = uint( params.@cols );
+				
 				component.name = String( params.@name );
 				
 				component.tag = params;
@@ -232,7 +233,7 @@ package de.popforge.fui
 				
 				component.x *= skin.tileSize; 
 				component.y *= skin.tileSize;
-				
+
 				component.skin = skin;
 			}
 		}

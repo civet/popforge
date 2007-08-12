@@ -1,25 +1,16 @@
 package de.popforge.fui.controls
 {
 	import de.popforge.fui.core.FuiComponent;
-	import de.popforge.fui.core.FuiComponentSize;
-	import de.popforge.fui.core.IFuiParameter;
+	import de.popforge.fui.core.IParameterBindable;
 	import de.popforge.parameter.Parameter;
 	
 	import flash.display.InteractiveObject;
 	import flash.display.Sprite;
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
-	import flash.display.SimpleButton;
-	import flash.display.Shape;
 	
-	public class Slider extends FuiComponent implements IFuiParameter
+	public class Slider extends FuiComponent implements IParameterBindable
 	{
-		/* === COMPONENT SIZE === */
-		private static const COMPONENT_SIZE: FuiComponentSize = new FuiComponentSize( 4, 1 );
-		override public function get size(): FuiComponentSize { return COMPONENT_SIZE; }
-		/* === COMPONENT SIZE === */
-		
-		
 		protected var parameter: Parameter;
 		
 		protected var knob: InteractiveObject;
@@ -30,7 +21,7 @@ package de.popforge.fui.controls
 		protected var length: Number;
 		protected var dragOffset: Number;
 		
-		public function connectParameter( parameter: Parameter ): void
+		public function connect( parameter: Parameter ): void
 		{
 			releaseParameter();
 			
@@ -39,6 +30,11 @@ package de.popforge.fui.controls
 			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
 			 
 			parameter.addChangedCallbacks( onParameterChanged );
+		}
+		
+		public function disconnect(): void
+		{
+			releaseParameter();
 		}
 		
 		protected function releaseParameter(): void
@@ -55,12 +51,14 @@ package de.popforge.fui.controls
 		{
 			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
 		}
-		
-		override protected function createChildren(): void
+
+		override protected function build():void
 		{
+			length = targetWidth;
+			
 			graphics.lineStyle( 2, 0x333333 );
 			graphics.beginFill( 0x555555 );
-			graphics.drawRoundRect( 0, 0, length, _skin.tileSize, _skin.tileSize, _skin.tileSize );
+			graphics.drawRoundRect( 0, 0, length, tileSize, tileSize, tileSize );
 			graphics.endFill();
 
 			
@@ -70,24 +68,18 @@ package de.popforge.fui.controls
 			{
 				lineStyle( 2, 0x333333 );
 				beginFill( 0x999999 );
-				drawCircle( 0, 0, _skin.tileSize * .5 );
+				drawCircle( 0, 0, tileSize * .5 );
 				endFill();
 			}
 			
 			addChild( knob );
 
-			knobOffsetX = knob.x = _skin.tileSize * .5;
-			knobOffsetY = knob.y = _skin.tileSize * .5;
+			knobOffsetX = knob.x = tileSize * .5;
+			knobOffsetY = knob.y = tileSize * .5;
 			
 			this.knob = knob;
-		}
-		
-		override protected function render():void
-		{
-			length = _skin.tileSize * size.width;
-			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			
-			createChildren();
+			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 		}
 		
 		protected function onMouseDown( event: MouseEvent ): void
