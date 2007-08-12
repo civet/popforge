@@ -179,16 +179,20 @@ package de.popforge.fui
 			{
 				switch ( String( params.@type ).toLowerCase() )
 				{
-					case 'slider':
-						component = skin.createSlider();
+					case 'hslider':
+						component = skin.createHSlider();
 						break;
-					
+
+					case 'vslider':
+						component = skin.createVSlider();
+						break;
+											
 					case 'knob':
 						component = skin.createKnob();
 						break;
 						
 					default:
-						component = new FuiComponent;
+						throw new Error( 'Unknown component type "' + String( params.@type ) + '"' );
 				}
 				
 				component.x = uint( params.@x );

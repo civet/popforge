@@ -9,7 +9,7 @@ package de.popforge.fui.controls
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	
-	public class Slider extends FuiComponent implements IParameterBindable
+	internal class Slider extends FuiComponent implements IParameterBindable
 	{
 		protected var parameter: Parameter;
 		
@@ -26,9 +26,9 @@ package de.popforge.fui.controls
 			releaseParameter();
 			
 			this.parameter = parameter;
-			
-			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
-			 
+
+			updateKnobPosition();
+						 
 			parameter.addChangedCallbacks( onParameterChanged );
 		}
 		
@@ -49,36 +49,13 @@ package de.popforge.fui.controls
 		
 		protected function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
-			knob.x = knobOffsetX + parameter.getValueNormalized() * ( length - 2 * knobOffsetX );
+			updateKnobPosition();
 		}
 
+		protected function updateKnobPosition(): void { /* OVERRIDE ME */ }
+		
 		override protected function build():void
-		{
-			length = targetWidth;
-			
-			graphics.lineStyle( 2, 0x333333 );
-			graphics.beginFill( 0x555555 );
-			graphics.drawRoundRect( 0, 0, length, tileSize, tileSize, tileSize );
-			graphics.endFill();
-
-			
-			var knob: Sprite = new Sprite
-			
-			with ( knob.graphics )
-			{
-				lineStyle( 2, 0x333333 );
-				beginFill( 0x999999 );
-				drawCircle( 0, 0, tileSize * .5 );
-				endFill();
-			}
-			
-			addChild( knob );
-
-			knobOffsetX = knob.x = tileSize * .5;
-			knobOffsetY = knob.y = tileSize * .5;
-			
-			this.knob = knob;
-			
+		{	
 			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 		}
 		
@@ -90,29 +67,13 @@ package de.popforge.fui.controls
 				return;
 			}
 			
-			if( event.target == knob )
-				dragOffset = knob.mouseX;
-			else
-				dragOffset = 0;
-			
 			stage.addEventListener( MouseEvent.MOUSE_MOVE, onStageMouseMove );
 			stage.addEventListener( MouseEvent.MOUSE_UP, onStageMouseUp );
 			
 			onStageMouseMove( null );
 		}
 		
-		protected function onStageMouseMove( event: MouseEvent ): void
-		{
-			var ratio: Number = ( mouseX - dragOffset - knobOffsetX ) / ( length - 2 * knobOffsetX );
-			
-			if( ratio < 0 ) ratio = 0;
-			else if( ratio > 1 ) ratio = 1;
-			
-			if ( parameter != null )
-			{
-				parameter.setValueNormalized( ratio );
-			}
-		}
+		protected function onStageMouseMove( event: MouseEvent ): void { /* OVERRIDE ME */ }
 		
 		protected function onStageMouseUp( event: MouseEvent ): void
 		{
