@@ -89,20 +89,20 @@ package de.popforge.audio.processor.fl909.voices
 				amplitude *= levelValue * volEnv * cutEnv;
 				
 				//-- DECAY
-				/*if( position++ >= decayValue )
+				if( position++ >= decayValue )
 				{
 					//-- observed value
 					volEnv *= .9988;
 
 					if( volEnv < .001 )
 						return true;
-				}*/
+				}
 				
 				//-- ADD AMPLITUDE (MONO)
 				sample.left += amplitude;
 				sample.right += amplitude;
 				
-				posFloat++;// += this.tuneValue;
+				posFloat += this.tuneValue;
 				
 				//-- interpolate to avoid clicks
 				this.tuneValue += ( tuneValue - this.tuneValue ) * .001;
