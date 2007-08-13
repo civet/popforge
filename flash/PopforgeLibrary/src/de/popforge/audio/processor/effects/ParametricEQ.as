@@ -5,6 +5,12 @@ package de.popforge.audio.processor.effects
 	import de.popforge.parameter.MappingNumberExponential;
 	import de.popforge.parameter.Parameter;
 	import de.popforge.parameter.MappingNumberLinear;
+	
+	/**
+	 * @author Andre Michelle
+	 * 
+	 * based on http://epubl.ltu.se/1402-1773/2003/044/LTU-CUPP-03044-SE.pdf
+	 */
 
 	public final class ParametricEQ	
 		implements IAudioProcessor
@@ -36,21 +42,7 @@ package de.popforge.audio.processor.effects
 		
 		public function processAudio( samples: Array ): void
 		{
-			const samplingRate: Number = 44100;
-			
-			//-- compute coeffs
-			var A: Number = Math.pow( 10, parameterGain.getValue() / 40 );
-			var omega: Number = ( 2 * Math.PI * parameterFrequency.getValue() ) / samplingRate;
-			var sn: Number = Math.sin( omega );
-			var cs: Number = Math.cos( omega );
-			
-			var alpha: Number = sn / ( 2.0 * parameterQ.getValue() );
-			
-			b0 = 1 + alpha * A;
-			b2 = 1 - alpha * A;
-			a0 = 1 / ( 1 + alpha / A );
-			a1 = -2 * cs;
-			a2 = 1 - alpha / A;
+			calcCoeffs();
 			
 			var sample: Sample;
 			
@@ -74,6 +66,7 @@ package de.popforge.audio.processor.effects
 				lxnm2 = lxnm1;
 				lxnm1 = lxn;
 				lynm2 = lynm1;
+				
 				rxnm2 = rxnm1;
 				rxnm1 = rxn;
 				rynm2 = rynm1;
@@ -93,6 +86,24 @@ package de.popforge.audio.processor.effects
 			rxnm2 = 0;
 			rynm1 = 0;
 			rynm2 = 0;
+		}
+		
+		private function calcCoeffs(): void
+		{
+			const samplingRate: Number = 44100;
+			
+			var A: Number = Math.pow( 10, parameterGain.getValue() / 40 );
+			var omega: Number = ( 2 * Math.PI * parameterFrequency.getValue() ) / samplingRate;
+			var sn: Number = Math.sin( omega );
+			var cs: Number = Math.cos( omega );
+			
+			var alpha: Number = sn / ( 2.0 * parameterQ.getValue() );
+			
+			b0 = 1 + alpha * A;
+			b2 = 1 - alpha * A;
+			a0 = 1 / ( 1 + alpha / A );
+			a1 = -2 * cs;
+			a2 = 1 - alpha / A;
 		}
 	}
 }
