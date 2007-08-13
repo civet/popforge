@@ -3,7 +3,7 @@ package
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.effects.QuirkFilter;
+	import de.popforge.audio.processor.effects.ParametricEQ;
 	import de.popforge.format.wav.WavFormat;
 	import de.popforge.gui.Label;
 	import de.popforge.gui.Slider;
@@ -35,7 +35,7 @@ package
 		private var phase: Number;
 		
 		private var pcc: ProcontrollControl;
-		private var filter: QuirkFilter;
+		private var filter: ParametricEQ;
 		
 		private var parameterPitch: Parameter;
 		
@@ -43,10 +43,10 @@ package
 		{
 			parameterPitch = new Parameter( new MappingNumberLinear( -1, 3 ), 1 );
 			
-			filter = new QuirkFilter();
+			filter = new ParametricEQ();
 			
 			var x: int = 100;
-			var y: int = 64;
+			var y: int = 28;
 			var label: Label;
 			var slider: Slider;
 			
@@ -62,12 +62,36 @@ package
 			
 			y += 64;
 
-			slider = new Slider( filter.parameterX, 100 );
+			slider = new Slider( filter.parameterFrequency, 100 );
 			slider.x = x;
 			slider.y = y;
 			addChild( slider );
 			
-			label = new Label( 'QUIRK FILTER', 100 );
+			label = new Label( 'Freq', 100 );
+			label.x = x;
+			label.y = slider.y - 20;
+			addChild( label );
+			
+			y += 64;
+
+			slider = new Slider( filter.parameterGain, 100 );
+			slider.x = x;
+			slider.y = y;
+			addChild( slider );
+			
+			label = new Label( 'Gain', 100 );
+			label.x = x;
+			label.y = slider.y - 20;
+			addChild( label );
+			
+			y += 64;
+
+			slider = new Slider( filter.parameterQ, 100 );
+			slider.x = x;
+			slider.y = y;
+			addChild( slider );
+			
+			label = new Label( 'Q', 100 );
 			label.x = x;
 			label.y = slider.y - 20;
 			addChild( label );
@@ -90,8 +114,8 @@ package
 			if( device != null )
 			{
 				ProcontrollStick( device.sticks[0] ).setParameterX( parameterPitch );
-				ProcontrollStick( device.sticks[1] ).setParameterX( filter.parameterX );
-				ProcontrollStick( device.sticks[1] ).setParameterY( filter.parameterY );
+				//ProcontrollStick( device.sticks[1] ).setParameterX( filter.parameterX );
+				//ProcontrollStick( device.sticks[1] ).setParameterY( filter.parameterY );
 			}
 		}
 		
