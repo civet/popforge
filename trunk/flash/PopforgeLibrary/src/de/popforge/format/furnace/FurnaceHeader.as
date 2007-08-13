@@ -80,7 +80,7 @@ package de.popforge.format.furnace
 		 */		
 		public function writeExternal( output: IDataOutput ): void
 		{
-			output.writeMultiByte( IDENTIFIER, 'us-ascii' );
+			output.writeUTFBytes( IDENTIFIER  );
 			
 			output.writeUnsignedInt( _size );
 			
@@ -96,7 +96,7 @@ package de.popforge.format.furnace
 		 */	
 		public function readExternal( input: IDataInput ): void
 		{
-			if ( ( _id = input.readMultiByte( 3, 'iso-8859-1' ) ) != IDENTIFIER )
+			if ( ( _id = input.readUTFBytes( 3 ) ) != IDENTIFIER )
 				throw new Error( 'Can not parse FurnaceHeader (identifier "' + _id + '" invalid)' );
 				
 			_size = input.readUnsignedInt();
