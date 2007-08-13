@@ -3,8 +3,8 @@ package de.popforge.audio.processor.effects
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.parameter.MappingNumberExponential;
-	import de.popforge.parameter.Parameter;
 	import de.popforge.parameter.MappingNumberLinear;
+	import de.popforge.parameter.Parameter;
 	
 	/**
 	 * @author Andre Michelle
@@ -16,7 +16,7 @@ package de.popforge.audio.processor.effects
 		implements IAudioProcessor
 	{
 		public const parameterFrequency: Parameter = new Parameter( new MappingNumberExponential( 31, 16000 ), 2000 );
-		public const parameterGain: Parameter = new Parameter( new MappingNumberLinear( -12, 12 ), 6 );
+		public const parameterGain: Parameter = new Parameter( new MappingNumberLinear( -24, 24 ), 6 );
 		public const parameterQ: Parameter = new Parameter( new MappingNumberExponential( .33, 12 ), 1 );
 
 		//-- cooef
