@@ -96,8 +96,8 @@ package de.popforge.format.furnace
 		 */	
 		public function readExternal( input: IDataInput ): void
 		{
-			if ( ( _id = input.readMultiByte( 3, 'us-ascii' ) ) != IDENTIFIER )
-				throw new Error( 'Can not parse FurnaceHeader (identifier invalid)' );
+			if ( ( _id = input.readMultiByte( 3, 'iso-8859-1' ) ) != IDENTIFIER )
+				throw new Error( 'Can not parse FurnaceHeader (identifier "' + _id + '" invalid)' );
 				
 			_size = input.readUnsignedInt();
 			
