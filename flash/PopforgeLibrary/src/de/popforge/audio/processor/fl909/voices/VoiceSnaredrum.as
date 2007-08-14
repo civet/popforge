@@ -3,6 +3,7 @@ package de.popforge.audio.processor.fl909.voices
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.fl909.tone.ToneSnaredrum;
 	import de.popforge.math.Random;
+	import de.popforge.audio.processor.effects.ParametricEQ;
 	
 	public class VoiceSnaredrum extends Voice
 	{
@@ -14,26 +15,20 @@ package de.popforge.audio.processor.fl909.voices
 		
 		static private function createSnareNoise(): Array
 		{
+			var peq: ParametricEQ = new ParametricEQ();
+			
+			peq.parameterFrequency.setValue( 8130 );
+			
 			var amplitudes: Array = new Array();
 			var r: Random = new Random( 0xffff );
 			var a: Number;
-			var hv: Number = 0;
-			var ho: Number = 0;
-			var lv: Number = 0;
-			var lo: Number = 0;
 			var i: int = 11025;
 			
 			while( --i > -1 )
 			{
 				a = r.getNumber( -5, 5 );
 				
-				//-- highpass
-				ho += ( a - ho ) * .2;
-				
-				//-- lowpass
-				lo += ( ( a - ho ) - lo ) * .5;
-				
-				amplitudes[i] = lo;
+				amplitudes[i] = a;
 			}
 			
 			return amplitudes;
