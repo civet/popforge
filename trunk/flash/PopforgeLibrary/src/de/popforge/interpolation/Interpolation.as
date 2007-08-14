@@ -20,6 +20,7 @@ package de.popforge.interpolation
 			registerClassAlias( 'Interpolation', Interpolation );
 		}
 		
+		private var hasAnchorPoints: Boolean;
 		private var mapping: IMapping;
 		
 		/**
@@ -51,10 +52,14 @@ package de.popforge.interpolation
 		 */		
 		public function addControlPoint( point: Point ): void
 		{
+			removeAnchors();
+			
 			points.push( point );
 			points.sortOn( 'x', Array.NUMERIC );
 			
 			numPoints = points.length;
+			
+			addAnchors();
 		}
 		
 		/**
@@ -66,6 +71,8 @@ package de.popforge.interpolation
 		 */		
 		public function removeControlPoint( point: Point ): void
 		{
+			removeAnchors();
+			
 			var index: int = points.indexOf( point );
 			
 			if ( index != -1 )
@@ -73,6 +80,8 @@ package de.popforge.interpolation
 				points.splice( index, 1 );
 				numPoints = points.length;
 			}
+			
+			addAnchors();
 		}
 		
 		/**
@@ -158,9 +167,52 @@ package de.popforge.interpolation
 			return x;
 		}
 		
+		/**
+		 * Creates the string representation of the current object.
+		 * @return The string representation of the current object.
+		 * 
+		 */		
 		public function toString(): String
 		{
 			return '[Interpolation]';
+		}
+		
+		/**
+		 * Adds anchor points at (0|y0) and (1|yN).
+		 */		
+		private function addAnchors(): void
+		{
+			points.push( new Point( 1, Point( points[ numPoints - 1 ] ).y ) );
+			points.unshift( new Point( 0, Point( points[ 0 ] ).y ) );
+				
+			numPoints += 2;
+		}
+		
+		/**
+		 * Removes anchor points.
+		 */		
+		private function removeAnchors(): void
+		{
+			points.pop();
+			points.shift();
+			numPoints -= 2;
+		}
+
+		/**
+		 * Clamps a value so that <code>0 &lt;= value &lt;= 1</code> is true.
+		 * 
+		 * @param value The value to clamp.
+		 * @return The value in the range of <code>0..1</code>.
+		 * 
+		 */		
+		protected function clamp( value: Number ): Number
+		{
+			if ( value > 1 )
+				return 1;
+			else if ( value < 0 )
+				return 0;
+			else
+				return value;
 		}
 	}
 }
