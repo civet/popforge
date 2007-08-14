@@ -23,8 +23,8 @@ package de.popforge.audio.processor.effects
 		private var a0: Number;
 		private var a1: Number;
 		private var a2: Number;
-		private var b0: Number;
-		private var b2: Number;
+		private var a3: Number;
+		private var a4: Number;
 
 		//-- history
 		private var lxnm1: Number = 0;
@@ -60,13 +60,12 @@ package de.popforge.audio.processor.effects
 				lxn = sample.left;
 				rxn = sample.right;
 				
-				lyn = ( b0 * lxn + a1 * lxnm1 + b2 * lxnm2 - a1 * lynm1 - a2 * lynm2 ) * a0;
-				ryn = ( b0 * rxn + a1 * rxnm1 + b2 * rxnm2 - a1 * rynm1 - a2 * rynm2 ) * a0;
+				lyn = ( a3 * lxn + a1 * lxnm1 + a4 * lxnm2 - a1 * lynm1 - a2 * lynm2 ) * a0;
+				ryn = ( a3 * rxn + a1 * rxnm1 + a4 * rxnm2 - a1 * rynm1 - a2 * rynm2 ) * a0;
 				
 				lxnm2 = lxnm1;
 				lxnm1 = lxn;
 				lynm2 = lynm1;
-				
 				rxnm2 = rxnm1;
 				rxnm1 = rxn;
 				rynm2 = rynm1;
@@ -99,11 +98,11 @@ package de.popforge.audio.processor.effects
 			
 			var alpha: Number = sn / ( 2.0 * parameterQ.getValue() );
 			
-			b0 = 1 + alpha * A;
-			b2 = 1 - alpha * A;
 			a0 = 1 / ( 1 + alpha / A );
 			a1 = -2 * cs;
 			a2 = 1 - alpha / A;
+			a3 = 1 + alpha * A;
+			a4 = 1 - alpha * A;
 		}
 	}
 }
