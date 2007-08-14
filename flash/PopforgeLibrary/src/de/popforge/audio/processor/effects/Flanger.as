@@ -53,6 +53,7 @@ package de.popforge.audio.processor.effects
 				bufferL[write] = sample.left;
 				bufferR[write] = sample.right;
 				
+				//-- triangle lfo
 				a = ( phase - int( phase ) ) * 4;
 				if( a < 2 ) a -= 1;
 				else a = 3 - a;
