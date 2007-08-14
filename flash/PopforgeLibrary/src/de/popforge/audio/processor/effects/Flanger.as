@@ -1,10 +1,9 @@
 package de.popforge.audio.processor.effects
 {
-	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.audio.output.Sample;
-	import de.popforge.parameter.Parameter;
+	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.parameter.MappingNumberLinear;
-	import de.popforge.parameter.MappingNumberExponential;
+	import de.popforge.parameter.Parameter;
 
 	public class Flanger
 		implements IAudioProcessor
