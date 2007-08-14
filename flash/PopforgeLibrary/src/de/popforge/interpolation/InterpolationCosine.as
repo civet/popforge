@@ -4,27 +4,20 @@ package de.popforge.interpolation
 	
 	import flash.geom.Point;
 	
-	/**
-	 * The InterpolationLinear class an extension to the Interpolation class using
-	 * linear interpolation.
-	 * 
-	 * @author Joa Ebert
-	 * @see de.popforge.interpolation.Interpolation Interpolation
-	 */	
-	final public class InterpolationLinear extends Interpolation
+	public final class InterpolationCosine extends Interpolation
 	{
 		/**
 		 * Creates a new InterpolationLinear object.
 		 * 
 		 * @param mapping The IMapping object used to map the normalized value.
 		 */			
-		public function InterpolationLinear( mapping: IMapping = null )
+		public function InterpolationCosine( mapping: IMapping = null )
 		{
 			super( mapping );
 		}
 		
 		/**
-		 * Calculates the linear interpolated value <em>y</em> for <em>x</em> based on the control points.
+		 * Calculates the cosine interpolated value <em>y</em> for <em>x</em> based on the control points.
 		 * 
 		 * @param x Normalized position on the <em>x</em>-axis.
 		 * @return The <em>y</em> value at given position <em>x</em>.
@@ -46,7 +39,22 @@ package de.popforge.interpolation
 				p1 = points[ index + 1 ];
 			}
 			
-			return clamp( p0.y + ( p1.y - p0.y ) * ( ( x - p0.x ) / ( p1.x - p0.x ) ) );
+			var y: Number;
+			var t: Number = ( x - p0.x ) / ( p1.x - p0.x );
+			
+			if ( index == 0 || index >= ( numPoints - 2 ) )
+			{
+				// Interpolate linear between first two and last two points.
+				y = p0.y + ( p1.y - p0.y ) * t;
+			}
+			else
+			{
+				// Cosine interpolation between the rest
+				var g: Number = ( 1 + Math.cos( t * Math.PI ) ) * .5;
+				y = g * p0.y + ( 1 - g ) * p1.y;
+			}
+			
+			return clamp( y );
 		}
 		
 		/**
@@ -56,7 +64,7 @@ package de.popforge.interpolation
 		 */	
 		override public function toString(): String
 		{
-			return '[InterpolationLinear]';
-		}
+			return '[InterpolationCosine]';
+		}		
 	}
 }
