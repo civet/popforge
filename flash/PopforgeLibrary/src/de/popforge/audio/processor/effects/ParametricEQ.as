@@ -17,7 +17,7 @@ package de.popforge.audio.processor.effects
 	{
 		public const parameterFrequency: Parameter = new Parameter( new MappingNumberExponential( 31, 16000 ), 900 );
 		public const parameterGain: Parameter = new Parameter( new MappingNumberLinear( -12, 12 ), 0 );
-		public const parameterQ: Parameter = new Parameter( new MappingNumberExponential( .1, 12 ), 1 );
+		public const parameterQ: Parameter = new Parameter( new MappingNumberExponential( .1, 12 ), .5 );
 
 		//-- cooef
 		private var a0: Number;
