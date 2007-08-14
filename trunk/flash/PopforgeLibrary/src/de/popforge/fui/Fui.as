@@ -191,6 +191,10 @@ package de.popforge.fui
 						component = skin.createKnob();
 						break;
 						
+					case 'label':
+						component = skin.createLabel();
+						break;
+						
 					default:
 						throw new Error( 'Unknown component type "' + String( params.@type ) + '"' );
 				}
