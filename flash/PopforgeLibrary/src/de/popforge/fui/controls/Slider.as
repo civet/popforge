@@ -89,7 +89,8 @@ package de.popforge.fui.controls
 			
 			removeEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			
-			removeChild( knob );
+			if ( contains( knob ) )
+				removeChild( knob );
 			
 			knob = null;
 			
