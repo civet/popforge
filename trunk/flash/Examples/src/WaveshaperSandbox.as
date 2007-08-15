@@ -4,7 +4,7 @@ package
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.output.SoundFactory;
-	import de.popforge.audio.processor.effects.Flanger;
+	import de.popforge.audio.processor.effects.Waveshaper;
 	import de.popforge.format.wav.WavFormat;
 	import de.popforge.gui.Label;
 	import de.popforge.gui.Slider;
@@ -28,7 +28,7 @@ package
 	 * @author Andre Michelle
 	 */
 
-	public class FlangerSandbox extends Sprite
+	public class WaveshaperSandbox extends Sprite
 	{
 		private var buffer: AudioBuffer;
 		
@@ -37,22 +37,18 @@ package
 		private var wav: WavFormat;
 		private var phase: Number;
 		
-		private var filter: Flanger;
+		private var filter: Waveshaper;
 		
-		public function FlangerSandbox()
+		public function WaveshaperSandbox()
 		{
-			filter = new Flanger();
+			filter = new Waveshaper();
 			
 			var label: Label;
 			var slider: Slider;
 			
 			var p: Array =
 			[
-				{ p: filter.parameterDelay, name: 'DELAY' },
-				{ p: filter.parameterDepth, name: 'DEPTH' },
-				{ p: filter.parameterSpeed, name: 'SPEED' },
-				{ p: filter.parameterFeedback, name: 'FEEDBACK' },
-				{ p: filter.parameterMix, name: 'MIX' }
+				{ p: filter.parameterAmount, name: 'AMOUNT' }
 			];
 			
 			for( var i: int = 0 ; i < p.length ; i++ )
@@ -84,7 +80,7 @@ package
 			loader.addEventListener( Event.COMPLETE, onLoaderComplete );
 			loader.addEventListener( ProgressEvent.PROGRESS, onLoaderProgress );
 			loader.addEventListener( IOErrorEvent.IO_ERROR, onLoaderError );
-			loader.load( new URLRequest( 'highQ.wav' ) );
+			loader.load( new URLRequest( 'loop.wav' ) );
 		}
 		
 		private function onLoaderProgress( event: ProgressEvent ): void
