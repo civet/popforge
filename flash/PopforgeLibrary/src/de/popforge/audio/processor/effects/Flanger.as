@@ -12,19 +12,25 @@ package de.popforge.audio.processor.effects
 		public const parameterDepth: Parameter = new Parameter( new MappingNumberLinear( .2, 1 ), .8 );
 		public const parameterSpeed: Parameter = new Parameter( new MappingNumberLinear( 24, .5 ), 6 ); // sec
 		public const parameterFeedback: Parameter = new Parameter( new MappingNumberLinear( 0, .86 ), .6 );
-		public const parameterMix: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), 1 );
+		public const parameterMix: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .5 );
 		
+		//-- delay lines
 		private const bufferL: Array = new Array();
 		private const bufferR: Array = new Array();
 		
+		//-- write position
 		private var write: int;
+		
+		//-- lfo phase
 		private var phase: Number;
 		
+		//-- constructor
 		public function Flanger()
 		{
 			reset();
 		}
 		
+		//-- compute effect
 		public function processAudio( samples: Array ): void
 		{
 			var n: int = samples.length;
@@ -42,6 +48,7 @@ package de.popforge.audio.processor.effects
 			var bl: Float;
 			var br: Float;
 			
+			//-- grap parameter values
 			var delay: Number = parameterDelay.getValue() * 44100 / 1000;
 			var depth: Number = parameterDepth.getValue();
 			var phaseShift: Number = 1 / ( 44100 * parameterSpeed.getValue() );
@@ -51,11 +58,8 @@ package de.popforge.audio.processor.effects
 			
 			var a: Number;
 			
-			//for( var i: int = 0 ; i < n ; ++i )
 			for each( sample in samples )
 			{
-				//sample = samples[i];
-				
 				bl = bufferL[write];
 				br = bufferR[write];
 				
@@ -68,18 +72,23 @@ package de.popforge.audio.processor.effects
 				if( a < 2 ) a -= 1;
 				else a = 3 - a;
 				
+				//-- advance lfo
 				phase += phaseShift;
 				
+				//-- apply depth & delay
 				a *= depth * delay;
 				
+				//-- compute read position
 				readL = write - ( delay + a );
 				readR = write - ( delay - a );
 				
+				//--clamp position into delay lines
 				if( readL < 0 )
 					readL += 0xfff;
 				if( readR < 0 )
 					readR += 0xfff;
 				
+				//-- get amplitudes at read position
 				fl = Float( bufferL[ readL ] ).value;
 				fr = Float( bufferR[ readR ] ).value;
 				
@@ -87,10 +96,11 @@ package de.popforge.audio.processor.effects
 				bl.value += fl * feedback;
 				br.value += fr * feedback;
 				
-				//-- mix into stream
+				//-- mix into stream (wet/dry)
 				sample.left = mixm * sl + fl * mix;
 				sample.right = mixm * sr + fr * mix;
 				
+				//-- cycle delay line
 				if( ++write == 0xfff )
 					write = 0;
 			}

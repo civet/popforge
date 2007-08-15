@@ -36,11 +36,11 @@ package de.popforge.gui
 		{
 			textfield = new TextField();
 			textfield.x = 4;
-			textfield.y = -1;
-			textfield.textColor = 0xcccccc;
+			textfield.y = 0;
+			textfield.textColor = 0x999999;
 			textfield.autoSize = TextFieldAutoSize.LEFT;
 			textfield.selectable = false;
-			textfield.defaultTextFormat = new TextFormat( 'arial', 10, 0xcccccc, true );
+			textfield.defaultTextFormat = new TextFormat( 'verdana', 9, 0xcccccc, true );
 			addChild( textfield );
 		}
 		

@@ -57,8 +57,8 @@ package de.popforge.gui
 		
 		private function init(): void
 		{
-			graphics.lineStyle( 2, 0x333333 );
-			graphics.beginFill( 0x555555 );
+			graphics.lineStyle( 2, 0x555555 );
+			graphics.beginFill( 0x333333 );
 			graphics.drawRoundRect( 0, 0, length + 16, 16, 16, 16 );
 			graphics.endFill();
 
