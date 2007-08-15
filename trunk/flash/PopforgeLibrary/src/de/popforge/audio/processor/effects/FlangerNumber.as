@@ -4,6 +4,11 @@ package de.popforge.audio.processor.effects
 	import de.popforge.audio.processor.IAudioProcessor;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
+	
+	/**
+	 * JUST A PERFORMANCE TEST
+	 * IGNORE
+	 */
 
 	public class FlangerNumber
 		implements IAudioProcessor
