@@ -16,6 +16,8 @@ package de.popforge.fui.core
 		 */		
 		function get tileSize(): uint;
 
+		function createTriggerButton(): TriggerButton;
+		function createSwitchButton(): SwitchButton;
 		
 		function createHSlider(): HSlider;
 		function createVSlider(): VSlider;

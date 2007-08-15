@@ -1,14 +1,26 @@
 package de.popforge.fui.controls
 {
 	import de.popforge.fui.core.FuiComponent;
+	import de.popforge.fui.core.IStringBindable;
+	
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 
-	public class Label extends FuiComponent
+	public class Label extends FuiComponent implements IStringBindable
 	{
 		protected var textField: TextField;
 
+		public function connect( string: String ): void
+		{
+			textField.text = string;
+		}
+		
+		public function disconnect(): void
+		{
+			textField.text = '';
+		}
+		
 		override protected function build(): void
 		{
 			graphics.beginFill( 0x555555 );
@@ -36,8 +48,6 @@ package de.popforge.fui.controls
 			textField.defaultTextFormat = format;
 
 			addChild( textField );
-			
-			textField.text = 'Test';
 					
 			maskComponent();
 		}
