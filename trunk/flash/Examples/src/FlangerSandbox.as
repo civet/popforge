@@ -3,10 +3,10 @@ package
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.effects.ParametricEQ;
+	import de.popforge.audio.processor.effects.Flanger;
 	import de.popforge.format.wav.WavFormat;
 	import de.popforge.gui.Label;
-	import de.popforge.gui.XYPlane;
+	import de.popforge.gui.Slider;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -14,29 +14,36 @@ package
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
-	import de.popforge.audio.processor.effects.Flanger;
-	import de.popforge.gui.Slider;
-	import de.popforge.gui.Slider;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import de.popforge.audio.output.Sample;
+	import de.popforge.audio.output.SoundFactory;
+	import flash.media.Sound;
+	import flash.utils.getTimer;
+	import de.popforge.audio.processor.IAudioProcessor;
+	import de.popforge.audio.processor.effects.FlangerNumber;
 	
-	[SWF( backgroundColor='0xffffff', frameRate='30', width='320', height='240')]
+	[SWF( backgroundColor='0xffffff', frameRate='30', width='320', height='256')]
 	
 	/**
-	 * Example PlayWavfile
-	 * Creates endless dynamic audio with the content of a wavefile
-	 * 
 	 * @author Andre Michelle
 	 */
 
 	public class FlangerSandbox extends Sprite
 	{
+		private var buffer: AudioBuffer;
+		
+		private var debugField: TextField;
+		
 		private var wav: WavFormat;
 		private var phase: Number;
 		
-		private var filter: Flanger;
+		private var filter: FlangerNumber;
 		
 		public function FlangerSandbox()
 		{
-			filter = new Flanger();
+			filter = new FlangerNumber();
 			
 			var label: Label;
 			var slider: Slider;
@@ -54,15 +61,20 @@ package
 			{
 				label = new Label( p[i].name, 128 );
 				label.x = 80;
-				label.y = i * 44 + 12;
+				label.y = i * 44 + 32;
 				addChild( label );
 				
 				slider = new Slider( p[i].p, 128 );
 				slider.x = 80;
-				slider.y = i * 44 + 32;
+				slider.y = i * 44 + 52;
 				addChild( slider );
 			}
-
+			
+			debugField = new TextField();
+			debugField.autoSize = TextFieldAutoSize.LEFT;
+			debugField.defaultTextFormat = new TextFormat( 'verdana', 9 );
+			debugField.text = '...';
+			addChild( debugField );
 			
 			loadWave();
 		}
@@ -92,11 +104,13 @@ package
 		
 		private function initAudioEngine(): void
 		{
-			var buffer: AudioBuffer = new AudioBuffer( 4, Audio.STEREO, Audio.BIT16, Audio.RATE44100 );
-			buffer.onInit = onAudioBufferInit;
-			buffer.onComplete = onAudioBufferComplete;
+			buffer = new AudioBuffer( 4, Audio.STEREO, Audio.BIT16, Audio.RATE44100 );
+			//buffer.onInit = onAudioBufferInit;
+			//buffer.onComplete = onAudioBufferComplete;
 			
 			phase = 0;
+			
+			test();
 		}
 		
 		private function onAudioBufferInit( buffer: AudioBuffer ): void
@@ -109,6 +123,18 @@ package
 			//-- get array to store samples
 			var samples: Array = buffer.getSamples();
 			
+			sampler( samples );
+			
+			filter.processAudio( samples );
+			
+			//-- update audio buffer
+			buffer.update();
+		}
+		
+		//-- dummy generator
+		private function sampler( samples: Array ): void
+		{
+			var n: int = samples.length;
 			//-- some locals
 			var output: Sample;
 			var input: Sample;
@@ -116,8 +142,7 @@ package
 			//-- compute speed
 			var speed: Number = wav.rate / buffer.getRate();
 			
-			//-- CREATE ONE SECOND OF AUDIO (SINUS WAVE)
-			for( var i: int = 0 ; i < samples.length ; i++ )
+			for( var i: int = 0 ; i < n ; ++i )
 			{
 				//-- store local
 				output = samples[i];
@@ -135,11 +160,39 @@ package
 				else if( phase >= wav.samples.length )
 					phase -= wav.samples.length;
 			}
+		}
+		
+		private function test(): void
+		{
+			var millisAudio: int = 20000;
+			
+			var n: int = 44.100 * millisAudio; // 10 seconds audio
+			
+			var samples: Array = new Array();
+			
+			for( var i: int = 0 ; i < n ; ++i )
+				samples.push( new Sample() );
+			
+			//-- fill with loop
+			sampler( samples );
+			
+			var ms: int = getTimer();
+			var elapsed: int;
 			
 			filter.processAudio( samples );
 			
-			//-- update audio buffer
-			buffer.update();
+			elapsed = getTimer() - ms;
+			
+			debugField.text = elapsed.toString() + 'ms\n';
+			
+			debugField.appendText( int( millisAudio / elapsed ).toString() + ' x faster than runtime.' );
+			
+			SoundFactory.fromArray( samples, Audio.STEREO, Audio.BIT16, Audio.RATE44100, onSoundComplete );
+		}
+		
+		private function onSoundComplete( sound: Sound ): void
+		{
+			sound.play();
 		}
 	}
 }

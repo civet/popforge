@@ -3,10 +3,9 @@ package
 	import de.popforge.audio.output.Audio;
 	import de.popforge.audio.output.AudioBuffer;
 	import de.popforge.audio.output.Sample;
-	import de.popforge.audio.processor.effects.ParametricEQ;
+	import de.popforge.audio.processor.effects.Distort;
 	import de.popforge.format.wav.WavFormat;
-	import de.popforge.gui.Label;
-	import de.popforge.gui.Slider;
+	import de.popforge.interpolation.InterpolationCubic;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
 	import de.popforge.ui.procontroll.ProcontrollControl;
@@ -16,9 +15,11 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.geom.Point;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import de.popforge.audio.processor.effects.Flanger;
 	
 	[SWF( backgroundColor='0xcccccc', frameRate='30', width='320', height='240')]
 	
@@ -35,7 +36,7 @@ package
 		private var phase: Number;
 		
 		private var pcc: ProcontrollControl;
-		private var filter: ParametricEQ;
+		private var filter: Flanger;
 		
 		private var parameterPitch: Parameter;
 		
@@ -43,59 +44,8 @@ package
 		{
 			parameterPitch = new Parameter( new MappingNumberLinear( -1, 3 ), 1 );
 			
-			filter = new ParametricEQ();
-			
-			var x: int = 100;
-			var y: int = 28;
-			var label: Label;
-			var slider: Slider;
-			
-			slider = new Slider( parameterPitch, 100 );
-			slider.x = x;
-			slider.y = y;
-			addChild( slider );
-			
-			label = new Label( 'PITCH CONTROL', 100 );
-			label.x = x;
-			label.y = slider.y - 20;
-			addChild( label );
-			
-			y += 64;
+			filter = new Flanger();
 
-			slider = new Slider( filter.parameterFrequency, 100 );
-			slider.x = x;
-			slider.y = y;
-			addChild( slider );
-			
-			label = new Label( 'Freq', 100 );
-			label.x = x;
-			label.y = slider.y - 20;
-			addChild( label );
-			
-			y += 64;
-
-			slider = new Slider( filter.parameterGain, 100 );
-			slider.x = x;
-			slider.y = y;
-			addChild( slider );
-			
-			label = new Label( 'Gain', 100 );
-			label.x = x;
-			label.y = slider.y - 20;
-			addChild( label );
-			
-			y += 64;
-
-			slider = new Slider( filter.parameterQ, 100 );
-			slider.x = x;
-			slider.y = y;
-			addChild( slider );
-			
-			label = new Label( 'Q', 100 );
-			label.x = x;
-			label.y = slider.y - 20;
-			addChild( label );
-			
 			/**
 			 * You need to have the Java server running and
 			 * a Joystick with 'analogue sticks'
@@ -125,7 +75,7 @@ package
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener( Event.COMPLETE, onLoaderComplete );
 			loader.addEventListener( IOErrorEvent.IO_ERROR, onLoaderError );
-			loader.load( new URLRequest( 'loop.wav' ) );
+			loader.load( new URLRequest( 'highQ.wav' ) );
 		}
 		
 		private function onLoaderComplete( event: Event ): void
