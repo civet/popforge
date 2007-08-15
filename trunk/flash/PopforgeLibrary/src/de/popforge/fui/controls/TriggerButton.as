@@ -25,7 +25,7 @@ package de.popforge.fui.controls
 			with ( Sprite( trigger ).graphics )
 			{
 				clear();
-				beginFill( ( parameter.getValueNormalized() == 1 ) ? 0xeeeeee : 0x999999 );
+				beginFill( ( parameter.getValueNormalized() == 1 ) ? 0xbbbbbb : 0x999999 );
 				drawRoundRect( 4, 4, tileSize - 8, tileSize - 8, ( tileSize - 8 ) * .25, ( tileSize - 8 ) * .25 );
 				endFill();
 			}
