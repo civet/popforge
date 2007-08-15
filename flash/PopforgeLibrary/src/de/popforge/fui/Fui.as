@@ -19,6 +19,7 @@ package de.popforge.fui
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
+	import de.popforge.fui.core.IStringBindable;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -112,11 +113,11 @@ package de.popforge.fui
 			{
 				IParameterBindable( component ).connect( Parameter( value ) );
 			}
-			/*else
-			if ( component is Something else )
+			else
+			if ( component is IStringBindable )
 			{
-
-			}*/
+				IStringBindable( component ).connect( String( value ) );
+			}
 			else
 			{
 				throw new Error( 'Unknown FuiComponent type.' );
@@ -193,6 +194,14 @@ package de.popforge.fui
 						
 					case 'label':
 						component = skin.createLabel();
+						break;
+					
+					case 'switchbutton':
+						component = skin.createSwitchButton();
+						break;
+					
+					case 'triggerbutton':
+						component = skin.createTriggerButton();
 						break;
 						
 					default:
