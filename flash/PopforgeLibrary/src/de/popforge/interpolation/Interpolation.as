@@ -1,3 +1,24 @@
+/**
+ * Copyright(C) 2007 Andre Michelle and Joa Ebert
+ *
+ * PopForge is an ActionScript3 code sandbox developed by Andre Michelle and Joa Ebert
+ * http://sandbox.popforge.de
+ * 
+ * This file is part of PopforgeAS3Audio.
+ * 
+ * PopforgeAS3Audio is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * PopforgeAS3Audio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package de.popforge.interpolation
 {
 	import de.popforge.parameter.IMapping;
@@ -23,6 +44,10 @@ package de.popforge.interpolation
 		private var hasAnchorPoints: Boolean;
 		private var mapping: IMapping;
 		
+		private var _mode: uint;
+		private var table: Array;
+		private var resolution: uint;
+		
 		/**
 		 * An array of control points.
 		 * The control points are always sorted on their <em>x</em> value.
@@ -43,6 +68,8 @@ package de.popforge.interpolation
 		{
 			this.mapping = mapping;
 			points = new Array;
+			
+			mode = InterpolationMode.RUNTIME;
 		}
 		
 		/**
@@ -97,7 +124,15 @@ package de.popforge.interpolation
 			if ( numPoints == 0 )
 				return mapping.map( 0 );
 				
-			return mapping.map( interpolate( x ) );
+			if ( _mode == 0 ) // = InterpolationMode.RUNTIME
+			{
+				return mapping.map( interpolate( x ) );
+			}
+			else
+			if ( _mode == 1 ) // = InterpolationMode.BAKED
+			{
+				return mapping.map( fromTable( x ) );
+			}
 		}
 		
 		/**
@@ -213,6 +248,62 @@ package de.popforge.interpolation
 				return 0;
 			else
 				return value;
+		}
+		
+		/**
+		 * Retrievs value <em>y</em> from private look-up table.
+		 * 
+		 * @param x Position on the <em>x</em>-axis.
+		 * @return Precalculated value on <em>y</em>-axis.
+		 * 
+		 */		
+		private function fromTable( x: Number ): Number
+		{
+			return table[ uint( x * resolution + .5 ) ];
+		}
+		
+		/**
+		 * Bakes the current interpolation.
+		 * 
+		 * This way your interpolation will act much faster but changes to the
+		 * interpolation by adding points or chainging their position will not
+		 * affect the output unless you call bake() again or set the <code>mode</code>
+		 * back to InterpolationMode.RUNTIME.
+		 * 
+		 * Calling bake() will set the <code>mode</code> automatically to InterpolationMode.BAKED.
+		 * 
+		 * @param resolution The resolution of the baked interpolation. The higher the resolution the more accurate results you will get.
+		 * 
+		 */		
+		public function bake( resolution: uint = 0xff ): void
+		{
+			this.resolution = resolution;
+			
+			var i: int = 0;
+			var n: int = resolution + 1;
+			
+			table = new Array( n );
+			
+			for (;i<n;++i)
+			{
+				table[ i ] = interpolate( i / resolution );
+			}
+			
+			mode = InterpolationMode.BAKED;
+		}
+		
+		/**
+		 * The mode of the current Interpolation object.
+		 * Can be any value of InterpolationMode.
+		 */		
+		public function set mode( interpolationMode: uint ): void
+		{
+			_mode = interpolationMode;
+		}
+		
+		public function get mode(): uint
+		{
+			return _mode;
 		}
 	}
 }
