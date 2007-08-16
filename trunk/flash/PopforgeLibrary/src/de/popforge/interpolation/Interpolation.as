@@ -23,7 +23,6 @@ package de.popforge.interpolation
 {
 	import de.popforge.parameter.IMapping;
 	
-	import flash.geom.Point;
 	import flash.net.registerClassAlias;
 	
 	/**
@@ -47,6 +46,7 @@ package de.popforge.interpolation
 		private var _mode: uint;
 		private var table: Array;
 		private var resolution: uint;
+		private var changedCallbacks: Array;
 		
 		/**
 		 * An array of control points.
@@ -66,6 +66,8 @@ package de.popforge.interpolation
 		 */		
 		public function Interpolation( mapping: IMapping = null )
 		{
+			changedCallbacks = new Array;
+			
 			this.mapping = mapping;
 			points = new Array;
 			
@@ -77,7 +79,7 @@ package de.popforge.interpolation
 		 * 
 		 * @param point The control point to add.
 		 */		
-		public function addControlPoint( point: Point ): void
+		public function addControlPoint( point: ControlPoint ): void
 		{
 			removeAnchors();
 			
@@ -85,6 +87,8 @@ package de.popforge.interpolation
 			points.sortOn( 'x', Array.NUMERIC );
 			
 			numPoints = points.length;
+			
+			point.addChangedCallbacks( onPointChanged );
 			
 			addAnchors();
 		}
@@ -96,7 +100,7 @@ package de.popforge.interpolation
 		 * @param point The control point to remove.
 		 * 
 		 */		
-		public function removeControlPoint( point: Point ): void
+		public function removeControlPoint( point: ControlPoint ): void
 		{
 			removeAnchors();
 			
@@ -104,11 +108,38 @@ package de.popforge.interpolation
 			
 			if ( index != -1 )
 			{
+				ControlPoint( points[ index ] ).removeChangedCallbacks( onPointChanged );
+				
 				points.splice( index, 1 );
 				numPoints = points.length;
 			}
 			
 			addAnchors();
+		}
+		
+		private function onPointChanged( point: ControlPoint, oldX: Number, oldY: Number, x: Number, y: Number ): void
+		{
+			var index: uint = points.indexOf( point );
+			var anchorPoint: ControlPoint;
+						
+			//-- POINT COULD BE IN MIDDLE IF ONLY 1 POINT IS EXISTING
+			//-- 0 = ANCHOR LEFT, 1 = POINT, 2 = ANCHOR RIGHT
+			
+			if ( index == 1 )
+			{ // First point (update position of first anchor)
+				anchorPoint = points[ int( 0 ) ];
+				anchorPoint.x = x;
+				anchorPoint.y = y;
+			}
+			
+			if ( index == ( numPoints - 2 ) )
+			{ // Last point (update position of last anchor)
+				anchorPoint = points[ int( numPoints - 1 ) ];
+				anchorPoint.x = x;
+				anchorPoint.y = y;
+			}
+			
+			valueChanged();
 		}
 		
 		/**
@@ -129,7 +160,7 @@ package de.popforge.interpolation
 				return mapping.map( interpolate( x ) );
 			}
 			else
-			if ( _mode == 1 ) // = InterpolationMode.BAKED
+			if ( ( _mode & 1 ) == 1 ) // = InterpolationMode.BAKED
 			{
 				return mapping.map( fromTable( x ) );
 			}
@@ -144,8 +175,8 @@ package de.popforge.interpolation
 		 */		
 		protected function findPointBefore( x: Number ): uint
 		{
-			var p0: Point;
-			var p1: Point;
+			var p0: ControlPoint;
+			var p1: ControlPoint;
 			
 			var p0x: Number;
 			var p1x: Number;
@@ -167,9 +198,9 @@ package de.popforge.interpolation
 				
 				if ( p0x == x )
 				{ // x is on a point. Return point before x if possible.
-					if ( index > 0 )
+					if ( index > 1 )
 						return ( index - 1 );
-					return 0;
+					return 1;
 				}
 				else if ( ( p0x <= x ) && ( x <= p1x ) )
 				{ // We have a perfect match (p0 <= x <= p1)
@@ -217,8 +248,8 @@ package de.popforge.interpolation
 		 */		
 		private function addAnchors(): void
 		{
-			points.push( new Point( 1, Point( points[ numPoints - 1 ] ).y ) );
-			points.unshift( new Point( 0, Point( points[ 0 ] ).y ) );
+			points.push( new ControlPoint( 1, ControlPoint( points[ numPoints - 1 ] ).y ) );
+			points.unshift( new ControlPoint( 0, ControlPoint( points[ 0 ] ).y ) );
 				
 			numPoints += 2;
 		}
@@ -259,7 +290,21 @@ package de.popforge.interpolation
 		 */		
 		private function fromTable( x: Number ): Number
 		{
-			return table[ uint( x * resolution + .5 ) ];
+			var xrf: Number = x * resolution;
+			var xri: int = int( xrf );
+			
+			if ( ( _mode & 2 ) == 0 ) // return if no linear interpolation is used
+				return table[ int( xrf + .5 ) ];
+				
+			var dx: Number = xrf - xri
+			
+			if ( dx == 0 )
+				return table[ xri ];
+				
+			var p0: Number = table[ xri ];
+			var p1: Number = table[ int( xri + 1 ) ];
+			
+			return ( p0 + ( p1 - p0 ) * dx );
 		}
 		
 		/**
@@ -289,7 +334,7 @@ package de.popforge.interpolation
 				table[ i ] = interpolate( i / resolution );
 			}
 			
-			mode = InterpolationMode.BAKED;
+			mode |= InterpolationMode.BAKED;
 		}
 		
 		/**
@@ -304,6 +349,32 @@ package de.popforge.interpolation
 		public function get mode(): uint
 		{
 			return _mode;
+		}
+		
+		public function addChangedCallbacks( callback: Function ): void
+		{
+			changedCallbacks.push( callback );
+		}
+
+		public function removeChangedCallbacks( callback: Function ): void
+		{
+			var index: int = changedCallbacks.indexOf( callback );
+			
+			if( index > -1 )
+				changedCallbacks.splice( index, 1 );
+		}
+		
+		private function valueChanged(): void
+		{
+			try
+			{
+				for each( var callback: Function in changedCallbacks )
+					callback( this );
+			}
+			catch( e: ArgumentError )
+			{
+				throw new ArgumentError( 'Make sure callbacks have the following signature: (interpolation: Interpolation)' );
+			}
 		}
 	}
 }

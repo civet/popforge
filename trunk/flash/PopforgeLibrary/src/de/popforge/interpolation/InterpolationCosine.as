@@ -23,8 +23,6 @@ package de.popforge.interpolation
 {
 	import de.popforge.parameter.IMapping;
 	
-	import flash.geom.Point;
-	
 	public final class InterpolationCosine extends Interpolation
 	{
 		/**
@@ -48,8 +46,8 @@ package de.popforge.interpolation
 		{
 			var index: uint = findPointBefore( x );
 			
-			var p0: Point = points[ index ];
-			var p1: Point;
+			var p0: ControlPoint = points[ index ];
+			var p1: ControlPoint;
 			
 			if ( ( index + 1 ) == numPoints )
 			{
