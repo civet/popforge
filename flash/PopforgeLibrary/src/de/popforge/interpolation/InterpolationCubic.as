@@ -23,8 +23,6 @@ package de.popforge.interpolation
 {
 	import de.popforge.parameter.IMapping;
 	
-	import flash.geom.Point;
-	
 	public final class InterpolationCubic extends Interpolation
 	{
 		/**
@@ -48,10 +46,10 @@ package de.popforge.interpolation
 		{
 			var index: uint = findPointBefore( x );
 			
-			var p0: Point;
-			var p1: Point = points[ index ];
-			var p2: Point;
-			var p3: Point;
+			var p0: ControlPoint;
+			var p1: ControlPoint = points[ index ];
+			var p2: ControlPoint;
+			var p3: ControlPoint;
 			
 			if ( ( index - 1 ) < 0 )
 			{
