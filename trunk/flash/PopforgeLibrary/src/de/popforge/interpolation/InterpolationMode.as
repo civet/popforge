@@ -24,19 +24,17 @@ package de.popforge.interpolation
 	/**
 	 * The InterpolationMode class is an enumeration of constant values that indicate which way an Interpolation object should act.
 	 * 
-	 * This is a bitmask. You can combine modes using the bitwise OR (|) operator.
-	 *  
 	 * @author Joa Ebert
  	 */
 	public final class InterpolationMode
 	{
 		/** Calculate all values at runtime. */
-		public static const RUNTIME: uint = 0;
+		public static const RUNTIME: uint = 1;
 		
 		/** Use pre-calculated values from internal look-up table. */		
-		public static const BAKED: uint = 1;
+		public static const BAKED: uint = 2;
 		
 		/** Interpolate between baked values. */
-		public static const BAKED_LINEAR: uint = 2;
+		public static const BAKED_LINEAR: uint = 3;
 	}
 }

@@ -119,7 +119,12 @@ package de.popforge.interpolation
 		
 		private function onPointChanged( point: ControlPoint, oldX: Number, oldY: Number, x: Number, y: Number ): void
 		{
-			var index: uint = points.indexOf( point );
+			removeAnchors();
+			
+			points.sortOn( 'x' );
+			
+			addAnchors()
+			/*var index: uint = points.indexOf( point );
 			var anchorPoint: ControlPoint;
 						
 			//-- POINT COULD BE IN MIDDLE IF ONLY 1 POINT IS EXISTING
@@ -137,7 +142,7 @@ package de.popforge.interpolation
 				anchorPoint = points[ int( numPoints - 1 ) ];
 				anchorPoint.x = x;
 				anchorPoint.y = y;
-			}
+			}*/
 			
 			valueChanged();
 		}
@@ -154,16 +159,32 @@ package de.popforge.interpolation
 		{
 			if ( numPoints == 0 )
 				return mapping.map( 0 );
+			
+			return mapping.map( getInterpolationAt( x ) );
+		}
+		
+		
+		public function getInterpolationAt( x: Number ): Number
+		{
+			if ( numPoints == 0 )
+				return 0;
 				
-			if ( _mode == 0 ) // = InterpolationMode.RUNTIME
+			if ( _mode == InterpolationMode.RUNTIME )
 			{
-				return mapping.map( interpolate( x ) );
+				return interpolate( x )
 			}
 			else
-			if ( ( _mode & 1 ) == 1 ) // = InterpolationMode.BAKED
+			if ( _mode == InterpolationMode.BAKED )
 			{
-				return mapping.map( fromTable( x ) );
+				return fromTable( x );
 			}
+			else
+			if ( _mode == InterpolationMode.BAKED_LINEAR )
+			{
+				return fromTableLinear( x );
+			}
+			
+			return 0;
 		}
 		
 		/**
@@ -282,7 +303,7 @@ package de.popforge.interpolation
 		}
 		
 		/**
-		 * Retrievs value <em>y</em> from private look-up table.
+		 * Retrievs value <em>x</em> from private look-up table.
 		 * 
 		 * @param x Position on the <em>x</em>-axis.
 		 * @return Precalculated value on <em>y</em>-axis.
@@ -290,11 +311,21 @@ package de.popforge.interpolation
 		 */		
 		private function fromTable( x: Number ): Number
 		{
+			return table[ int( x * resolution + .5 ) ];
+		}
+		
+		/**
+		 * Retrievs value <em>y</em> from private look-up table.
+		 * If <em>x</em> is in between two values a linear interpolation is used.
+		 * 
+		 * @param x Position on the <em>x</em>-axis.
+		 * @return Linear interpolated value on <em>y</em>-axis.
+		 * 
+		 */		
+		private function fromTableLinear( x: Number ): Number
+		{
 			var xrf: Number = x * resolution;
 			var xri: int = int( xrf );
-			
-			if ( ( _mode & 2 ) == 0 ) // return if no linear interpolation is used
-				return table[ int( xrf + .5 ) ];
 				
 			var dx: Number = xrf - xri
 			
@@ -315,7 +346,8 @@ package de.popforge.interpolation
 		 * affect the output unless you call bake() again or set the <code>mode</code>
 		 * back to InterpolationMode.RUNTIME.
 		 * 
-		 * Calling bake() will set the <code>mode</code> automatically to InterpolationMode.BAKED.
+		 * Do not forget to set the <code>mode</code> of the interpolation to InterpolationMode.BAKED
+		 * or InterpolationMode.BAKED_LINEAR in order to use the baked values.
 		 * 
 		 * @param resolution The resolution of the baked interpolation. The higher the resolution the more accurate results you will get.
 		 * 
@@ -333,8 +365,6 @@ package de.popforge.interpolation
 			{
 				table[ i ] = interpolate( i / resolution );
 			}
-			
-			mode |= InterpolationMode.BAKED;
 		}
 		
 		/**
