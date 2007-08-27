@@ -25,5 +25,7 @@ package de.popforge.fui.core
 		function createLabel(): Label;
 		
 		function createKnob(): Knob;
+		
+		function createInterpolationDisplay(): InterpolationDisplay;
 	}
 }

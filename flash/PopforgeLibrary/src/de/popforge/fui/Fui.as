@@ -4,6 +4,7 @@ package de.popforge.fui
 	import de.popforge.fui.core.FuiComponent;
 	import de.popforge.fui.core.IFuiSkin;
 	import de.popforge.fui.core.IParameterBindable;
+	import de.popforge.fui.core.IStringBindable;
 	import de.popforge.parameter.Parameter;
 	
 	import flash.display.DisplayObject;
@@ -19,7 +20,8 @@ package de.popforge.fui
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
-	import de.popforge.fui.core.IStringBindable;
+	import de.popforge.fui.core.IInterpolationBindable;
+	import de.popforge.interpolation.Interpolation;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -32,12 +34,12 @@ package de.popforge.fui
 	 * 
 	 * @author Joa Ebert
 	 */	
-	public class Fui extends Sprite
+	final public class Fui extends Sprite
 	{
 		/**
-		 * Builds and returns a <code>Fui</code> object.
+		 * Builds and returns a Fui object.
 		 * 
-		 * @param furnaceFile A <code>ByteArray</code> object containing a Furnace file.
+		 * @param furnaceFile A ByteArray object containing a Furnace file.
 		 * @return A Fui object containing all components.
 		 */		
 		public static function build( furnaceFile: ByteArray ): Fui
@@ -60,6 +62,18 @@ package de.popforge.fui
 			return fui;
 		}
 		
+		/**
+		 * Builds and returns a Fui object.
+		 * This function is used mainly for debugging purposes.
+		 * 
+		 * On the other hand this call is absolute synchronous without
+		 * any queus in between.
+		 * 
+		 * @param xml The Fui XML file.
+		 * @param skin An instance of a skin object implementing 
+		 * @return A Fui object containing all components. 
+		 * 
+		 */		
 		public static function buildManual( xml: XML, skin: IFuiSkin ): Fui
 		{
 			var fui: Fui = new Fui;
@@ -68,7 +82,6 @@ package de.popforge.fui
 			fui.skin = skin;
 			
 			fui.buildInternal();
-			fui.renderComponents();
 			
 			return fui;
 		}
@@ -83,13 +96,18 @@ package de.popforge.fui
 		
 		private var debugGraphics: Graphics;
 		
+		private var initialized: Boolean;
+		private var connectQueue: Array;
+		
 		/**
 		 * Creates a new Fui object.
 		 * The constructor should never be called. Use <code>Fui.build()</code> instead.
 		 */		
 		public function Fui()
 		{
+			initialized = false;
 			components = new Array;
+			connectQueue = new Array;
 		}
 		
 		/**
@@ -105,8 +123,37 @@ package de.popforge.fui
 			return FuiComponent( getChildByName( name ) );
 		}
 		
+		/**
+		 * Connects a Fui component with a given value.
+		 * 
+		 * There are different Fui components that can connect with
+		 * different values. Depending on the interfaces a component
+		 * implements it can be connected with a different value.
+		 * 
+		 * Components that implement IParameterBindable can be connected
+		 * to Paramter objects.
+		 * 
+		 * Components that implement IStringBindable can be connected to
+		 * String primitives.
+		 * 
+		 * Connects are called after the skin has been initialized. They will
+		 * be hold in a queue until the components are ready.
+		 * 
+		 * @param name The name of the component.
+		 * @param value The value to connect with that component.
+		 * 
+		 * @throws TypeError If no component with given name exists.
+		 * @throws Error If component can not be connected with given value.
+		 * @throws Error If component is from unknown type or unsupported.
+		 */		
 		public function connect( name: String, value: * ): void
 		{
+			if ( !initialized )
+			{
+				connectQueue.push( new QueueItem( name, value ) );
+				return;
+			}
+			
 			var component: FuiComponent = getElementById( name );
 			
 			if ( component is IParameterBindable )
@@ -119,14 +166,19 @@ package de.popforge.fui
 				IStringBindable( component ).connect( String( value ) );
 			}
 			else
+			if ( component is IInterpolationBindable )
 			{
-				throw new Error( 'Unknown FuiComponent type.' );
+				IInterpolationBindable( component ).connect( Interpolation( value ) );
+			}
+			else
+			{
+				throw new Error( 'Unknown FuiComponent type. Can not bind.' );
 			}
 		}
 		
 		/**
 		 * Removes all references recursive. This way a Fui object should be
-		 * collected by the GC if it is no longer needed.
+		 * collected by the garbage collection if it is no longer needed.
 		 */		
 		public function dispose(): void
 		{
@@ -155,7 +207,10 @@ package de.popforge.fui
 		 */		
 		private function buildInternal(): void
 		{
-			buildComponents();
+			if ( skin != null )
+			{
+				buildComponents();
+			}
 			
 			if ( swf != null )
 			{
@@ -203,7 +258,11 @@ package de.popforge.fui
 					case 'triggerbutton':
 						component = skin.createTriggerButton();
 						break;
-						
+					
+					case 'interpolationdisplay':
+						component = skin.createInterpolationDisplay();
+						break;
+							
 					default:
 						throw new Error( 'Unknown component type "' + String( params.@type ) + '"' );
 				}
@@ -232,6 +291,8 @@ package de.popforge.fui
 			
 			// Free some memory here. We will never use the XML again.
 			xml = null;
+			
+			renderComponents();
 		}
 		
 		/**
@@ -253,6 +314,15 @@ package de.popforge.fui
 
 				component.skin = skin;
 			}
+			
+			initialized = true;
+			
+			for each ( var queueItem: QueueItem in connectQueue )
+			{
+				connect( queueItem.name, queueItem.value )
+			}
+			
+			connectQueue = null;
 		}
 		
 		/**
@@ -315,10 +385,23 @@ package de.popforge.fui
 
 			skin = IFuiSkin( new manifest[ 'FACTORY_CLASS' ] );
 			
-			renderComponents();
-			
 			// Free some memory. We do not need that ByteArray again.
 			swf = null;
+			
+			// Skin should not be null any longer. Try to build again.
+			buildInternal();
 		}
+	}
+}
+
+class QueueItem
+{
+	public var name: String;
+	public var value:*;
+	
+	public function QueueItem( name: String, value:* )
+	{
+		this.name = name;
+		this.value = value;
 	}
 }
