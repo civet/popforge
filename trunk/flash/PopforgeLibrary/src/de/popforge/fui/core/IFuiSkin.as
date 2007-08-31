@@ -16,16 +16,16 @@ package de.popforge.fui.core
 		 */		
 		function get tileSize(): uint;
 
-		function createTriggerButton(): TriggerButton;
-		function createSwitchButton(): SwitchButton;
+		function createTriggerButton( parameters: XML ): TriggerButton;
+		function createSwitchButton( parameters: XML ): SwitchButton;
 		
-		function createHSlider(): HSlider;
-		function createVSlider(): VSlider;
+		function createHSlider( parameters: XML ): HSlider;
+		function createVSlider( parameters: XML ): VSlider;
 		
-		function createLabel(): Label;
+		function createLabel( parameters: XML ): Label;
 		
-		function createKnob(): Knob;
+		function createKnob( parameters: XML ): Knob;
 		
-		function createInterpolationDisplay(): InterpolationDisplay;
+		function createInterpolationDisplay( parameters: XML ): InterpolationDisplay;
 	}
 }

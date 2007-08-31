@@ -3,8 +3,10 @@ package de.popforge.fui
 	import de.popforge.format.furnace.FurnaceFormat;
 	import de.popforge.fui.core.FuiComponent;
 	import de.popforge.fui.core.IFuiSkin;
+	import de.popforge.fui.core.IInterpolationBindable;
 	import de.popforge.fui.core.IParameterBindable;
 	import de.popforge.fui.core.IStringBindable;
+	import de.popforge.interpolation.Interpolation;
 	import de.popforge.parameter.Parameter;
 	
 	import flash.display.DisplayObject;
@@ -20,8 +22,6 @@ package de.popforge.fui
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
-	import de.popforge.fui.core.IInterpolationBindable;
-	import de.popforge.interpolation.Interpolation;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -236,31 +236,31 @@ package de.popforge.fui
 				switch ( String( params.@type ).toLowerCase() )
 				{
 					case 'hslider':
-						component = skin.createHSlider();
+						component = skin.createHSlider( params );
 						break;
 
 					case 'vslider':
-						component = skin.createVSlider();
+						component = skin.createVSlider( params );
 						break;
 											
 					case 'knob':
-						component = skin.createKnob();
+						component = skin.createKnob( params );
 						break;
 						
 					case 'label':
-						component = skin.createLabel();
+						component = skin.createLabel( params );
 						break;
 					
 					case 'switchbutton':
-						component = skin.createSwitchButton();
+						component = skin.createSwitchButton( params );
 						break;
 					
 					case 'triggerbutton':
-						component = skin.createTriggerButton();
+						component = skin.createTriggerButton( params );
 						break;
 					
 					case 'interpolationdisplay':
-						component = skin.createInterpolationDisplay();
+						component = skin.createInterpolationDisplay( params );
 						break;
 							
 					default:
