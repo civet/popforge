@@ -349,11 +349,11 @@ package de.popforge.utils
 							
 							if ( precision != 0 )
 							{
-								value = floatValue.toPrecision( precision + 1 );
+								value = floatValue.toPrecision( precision );
 							}
 							else
 							{
-								value = floatValue.toPrecision( 7 );
+								value = floatValue.toPrecision( 6 );
 							}
 							
 							if ( flagExtended )
