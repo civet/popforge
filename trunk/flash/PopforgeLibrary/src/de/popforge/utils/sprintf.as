@@ -396,10 +396,7 @@ package de.popforge.utils
 							var v0: String = sprintf( '%' + flags + precs + len + 'f', compValue );
 							var v1: String = sprintf( '%' + flags + precs + len + ( ( byte == 'G' ) ? 'E' : 'e' ), compValue );
 							
-							if ( v0.length < v1.length )
-								value = v0;
-							else
-								value = v1;
+							value = ( v0.length < v1.length ) ? v0 : v1;
 							break;
 							
 						case 's':
