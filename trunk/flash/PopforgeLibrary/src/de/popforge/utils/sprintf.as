@@ -1,7 +1,7 @@
 package de.popforge.utils
 {
 	/**
-	 * A sprintf implementation in ActionScript 3.
+	 * An sprintf implementation in ActionScript 3.
 	 * 
 	 * <p>
 	 * Supported specifiers: <code>cdieEfgGosuxX</code><br/>
