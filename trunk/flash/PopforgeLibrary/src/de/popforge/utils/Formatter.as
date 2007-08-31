@@ -29,6 +29,11 @@ package de.popforge.utils
 				{
 					Parameter( argument ).addChangedCallbacks( onParameterChanged );
 				}
+				else
+				if ( argument is Formatter )
+				{
+					Formatter( argument ).addChangedCallbacks( onFormatterChanged );
+				}
 				
 				this.args.push( argument );
 			}
@@ -52,9 +57,18 @@ package de.popforge.utils
 			valueChanged( oldValue );
 		}
 		
+		protected function onFormatterChanged( formatter: Formatter, oldValue: String, newValue: String ): void
+		{
+			var oldValue: String = value;
+			
+			updateValue();
+			
+			valueChanged( oldValue );
+		}
+		
 		protected function updateValue(): void
 		{
-			var fargs: Array = [ format ];
+			var argsBaked: Array = [ format ];
 			
 			var i: int = 0;
 			var n: int = args.length;
@@ -66,15 +80,20 @@ package de.popforge.utils
 				
 				if ( argument is Parameter )
 				{
-					fargs.push( Parameter( argument ).getValue() );
+					argsBaked.push( Parameter( argument ).getValue() );
+				}
+				else
+				if ( argument is Formatter )
+				{
+					argsBaked.push( Formatter( argument ).getValue() );
 				}
 				else
 				{
-					fargs.push( argument );
+					argsBaked.push( argument );
 				}
 			}
 			
-			value = sprintf.apply( null, fargs );
+			value = sprintf.apply( null, argsBaked );
 		}
 		
 		public function addChangedCallbacks( callback: Function ): void
@@ -104,6 +123,11 @@ package de.popforge.utils
 			{
 				throw new ArgumentError( 'Make sure callbacks have the following signature: (formatter: Formatter, oldValue: String, newValue: String)' );
 			}
+		}
+		
+		public function toString(): String
+		{
+			return '[Formatter format: ' + format + ', arguments: ' + args.toString() + ']';
 		}
 	}
 }
