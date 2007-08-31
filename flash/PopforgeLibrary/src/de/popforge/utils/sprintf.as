@@ -105,10 +105,10 @@ package de.popforge.utils
 					{
 						while (
 								byte == '1' || byte == '2'
-							||	byte == '3'	|| byte == '4'
+							||	byte == '3' || byte == '4'
 							||	byte == '5' || byte == '6'
 							||	byte == '7' || byte == '8'
-							||	byte == '9'	||	byte == '0'
+							||	byte == '9' || byte == '0'
 						)
 						{
 							widthString += byte;
