@@ -22,6 +22,8 @@ package de.popforge.fui
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
+	import de.popforge.fui.core.IFormatterBindable;
+	import de.popforge.utils.Formatter;
 	
 	/**
 	 * The Fui class is able to read and parse special Furnace files that contain
@@ -164,6 +166,18 @@ package de.popforge.fui
 			if ( component is IStringBindable )
 			{
 				IStringBindable( component ).connect( String( value ) );
+			}
+			else
+			if ( component is IFormatterBindable )
+			{
+				if ( value is String )
+				{
+					IFormatterBindable( component ).connect( new Formatter( String( value ) ) );
+				}
+				else
+				{
+					IFormatterBindable( component ).connect( Formatter( value ) );
+				}
 			}
 			else
 			if ( component is IInterpolationBindable )
