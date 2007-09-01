@@ -21,9 +21,23 @@
  */
 package de.popforge.fui.core
 {
+	/**
+	 * An interface for objects that can display a String.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public interface IStringBindable
 	{
+		/**
+		 * Displays a string.
+		 * 
+		 * @param string The string to display.
+		 */		
 		function connect( string: String ): void;
+		
+		/**
+		 * Removes the displayed string.
+		 */		
 		function disconnect(): void;
 	}
 }

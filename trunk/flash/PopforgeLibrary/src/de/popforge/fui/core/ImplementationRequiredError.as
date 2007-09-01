@@ -21,8 +21,16 @@
  */
 package de.popforge.fui.core
 {
+	/**
+	 * The ImplementationRequiredError is thrown when a method has to be overriden.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class ImplementationRequiredError extends Error
 	{
+		/**
+		 * Creates a new ImplementationRequiredError object.
+		 */		
 		public function ImplementationRequiredError()
 		{
 			super( 'Method has to be overriden' );

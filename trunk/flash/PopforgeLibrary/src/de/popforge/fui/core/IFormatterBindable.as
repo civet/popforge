@@ -23,9 +23,22 @@ package de.popforge.fui.core
 {
 	import de.popforge.utils.Formatter;
 	
+	/**
+	 * An interface for objects that can react on Formatter objects.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public interface IFormatterBindable
 	{
+		/**
+		 * Connects a Formatter object.
+		 * @param formatter The Formatter to bind.
+		 */		
 		function connect( formatter: Formatter ): void;
+		
+		/**
+		 * Releases the Formatter object.
+		 */		
 		function disconnect(): void;
 	}
 }

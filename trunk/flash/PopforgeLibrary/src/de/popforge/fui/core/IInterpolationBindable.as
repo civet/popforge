@@ -23,9 +23,23 @@ package de.popforge.fui.core
 {
 	import de.popforge.interpolation.Interpolation;
 	
+	/**
+	 * An interface for objects that can react on Interpolation objects.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public interface IInterpolationBindable
 	{
+		/**
+		 * Connects an Interpolation object.
+		 * 
+		 * @param interpolation The Interpolation to bind.
+		 */	
 		function connect( interpolation: Interpolation ): void;
+		
+		/**
+		 * Releases the Interpolation object.
+		 */	
 		function disconnect(): void;
 	}
 }

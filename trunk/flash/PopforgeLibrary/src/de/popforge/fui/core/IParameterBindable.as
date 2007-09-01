@@ -23,9 +23,23 @@ package de.popforge.fui.core
 {
 	import de.popforge.parameter.Parameter;
 	
+	/**
+	 * An interface for objects that can react on Parameter objects.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public interface IParameterBindable
 	{
+		/**
+		 * Connects a Parameter object.
+		 * 
+		 * @param parameter The Parameter to bind.
+		 */	
 		function connect( parameter: Parameter ): void;
+		
+		/**
+		 * Releases the Parameter object.
+		 */
 		function disconnect(): void;
 	}
 }
