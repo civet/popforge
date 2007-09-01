@@ -25,16 +25,55 @@ package de.popforge.fui.core
 	import de.popforge.parameter.MappingBoolean;
 	import de.popforge.parameter.Parameter;
 	
+	/**
+	 * The Group class is a manager that handles a Parameter object with a MappingValues for multiple components.
+	 * 
+	 * Since components do not know anything about each other they can not know
+	 * what to do if a certai value appears. The Group object is a proxy that will
+	 * connect a IParameterBindable object with an internal Parameter object using MappingBoolean
+	 * that is set to <code>true</code> when the paramter value of the group is changed to the
+	 * asociated value for the IParameterBindable.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class Group implements IParameterBindable
 	{
+		/**
+		 * The Fui object where the current Group object belongs to.
+		 */		
 		protected var fui: Fui;
+		
+		/**
+		 * The binded parameter.
+		 */		
 		protected var parameter: Parameter;
 		
+		/**
+		 * Componets in the group.
+		 */		
 		protected var components: Array;
+		
+		/**
+		 * Proxy parameters for the components that belong to the group.
+		 */		
 		protected var parameters: Array;
+		
+		/**
+		 * Values that are asociated with the components.
+		 */		
 		protected var values: Array;
+		
+		/**
+		 * A helping varibable that makres if a change to a proxy parameter has been made
+		 * internally or comes from a different source (e.g. user pressing a SwitchButton).
+		 */		
 		protected var internalChange: Boolean;
 		
+		/**
+		 * Creates a new Group object.
+		 * 
+		 * @param fui The Fui object the Group belongs to.
+		 */		
 		public function Group( fui: Fui )
 		{
 			this.fui = fui;
@@ -44,6 +83,18 @@ package de.popforge.fui.core
 			values = new Array;
 		}
 		
+		/**
+		 * Adds a FuiComponent to the group.
+		 * 
+		 * The FuiComponent has to be able to bind paramters.
+		 * 
+		 * @param name The name of the FuiComponent in the belonging Fui object.
+		 * @param value The value belonging to the FuiComponent.
+		 * 
+		 * @return <code>true</code> if the FuiComponent has been added; <code>false</code> otherwise.
+		 * 
+		 * @throws Error If the FuiComponent does not implement IParameterBindable.
+		 */		
 		public function addComponent( name: String, value: * ): Boolean
 		{
 			var component: FuiComponent = fui.getElementById( name );
@@ -77,6 +128,12 @@ package de.popforge.fui.core
 			return true;
 		}
 		
+		/**
+		 * Removes a FuiComponent from the group.
+		 * 
+		 * @param name The name of the FuiComponent in the belonging Fui object.
+		 * @return <code>true</code> if the FuiComponent has been removed; <code>false</code> otherwise.
+		 */		
 		public function removeComponent( name: String ): Boolean
 		{
 			var component: FuiComponent = fui.getElementById( name );
@@ -98,6 +155,9 @@ package de.popforge.fui.core
 			return true;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */		
 		public function connect( parameter: Parameter ): void
 		{
 			releaseParameter();
@@ -109,11 +169,17 @@ package de.popforge.fui.core
 			initGroup();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */		
 		public function disconnect(): void
 		{
 			releaseParameter();
 		}
 		
+		/**
+		 * Releases the paramter and removes the listener.
+		 */		
 		protected function releaseParameter(): void
 		{
 			if ( parameter != null )
@@ -124,6 +190,10 @@ package de.popforge.fui.core
 			parameter = null;
 		}
 		
+		/**
+		 * Initializes the group.
+		 * Should be called only once when <code>connect()</code> is called.
+		 */		
 		protected function initGroup(): void
 		{
 			var index: int = values.indexOf( parameter.getValue() );
@@ -142,6 +212,14 @@ package de.popforge.fui.core
 			internalChange = false; }
 		}
 		
+		/**
+		 * Listener for changes of proxy parameters.
+		 * 
+		 * @param parameter The parameter that has been changed.
+		 * @param oldValue The old value of the parameter.
+		 * @param newValue The new value of the parameter.
+		 * 
+		 */		
 		protected function onGroupParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
 			var index: int = parameters.indexOf( parameter );
@@ -162,6 +240,14 @@ package de.popforge.fui.core
 			}
 		}
 		
+		/**
+		 * Listener for changes of the binded parameter.
+		 * 
+		 * @param parameter The parameter that has been changed.
+		 * @param oldValue The old value of the parameter.
+		 * @param newValue The new value of the parameter.
+		 * 
+		 */		
 		protected function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
 			var index: int = values.indexOf( newValue );
@@ -180,6 +266,11 @@ package de.popforge.fui.core
 			internalChange = false; }
 		}
 		
+		/**
+		 * Creates and returns the string representation of the current object.
+		 * 
+		 * @return The string representation of the current object.
+		 */		
 		public function toString(): String
 		{
 			return '[Group]';
