@@ -24,6 +24,12 @@ package de.popforge.fui.controls
 	import flash.events.MouseEvent;
 	import flash.display.Sprite;
 	
+	/**
+	 * The HSlider class represents a horizontal slider.
+	 * 
+	 * @author Joa Ebert
+	 * @author André Michelle
+	 */	
 	public class HSlider extends Slider
 	{
 		override protected function build(): void

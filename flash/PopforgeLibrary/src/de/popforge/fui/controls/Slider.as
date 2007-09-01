@@ -30,6 +30,11 @@ package de.popforge.fui.controls
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	
+	/**
+	 * The Slider class is a base for sliders in the Fui framework.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	internal class Slider extends FuiComponent implements IParameterBindable
 	{
 		protected var parameter: Parameter;
