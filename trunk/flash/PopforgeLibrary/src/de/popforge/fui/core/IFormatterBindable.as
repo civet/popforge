@@ -31,8 +31,8 @@ package de.popforge.fui.core
 	public interface IFormatterBindable
 	{
 		/**
-		 * 
 		 * Connects a Formatter object.
+		 * 
 		 * @param formatter The Formatter to bind.
 		 */		
 		function connect( formatter: Formatter ): void;
