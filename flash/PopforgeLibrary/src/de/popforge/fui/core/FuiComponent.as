@@ -24,6 +24,19 @@ package de.popforge.fui.core
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	
+	/**
+	 * The FuiComponent class is the base for every visible element handled by a Fui object.
+	 * 
+	 * Remember that Fui is a tile-based system. Each component is described with a size in
+	 * rows and columns. An IFuiSkin object defines the tile size. A component may have the
+	 * dimension of 3 rows and 1 column. If the tile size is 16 this would result in a width
+	 * of <code>3 ~~ 16</code> and a height of <code>1 ~~ 16</code>.
+	 * 
+	 * Precalculated variables of the actual size are stored in <code>targetWidth</code> and
+	 * <code>targetHeight</code>.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class FuiComponent extends Sprite
 	{
 		/**
@@ -31,12 +44,29 @@ package de.popforge.fui.core
 		 */
 		protected var _tag: XML;
 
+		/**
+		* The rows of the component in tiles.
+		*/
 		protected var _rows: uint;
+		
+		/**
+		* The columns of the component in tiles.
+		*/		
 		protected var _cols: uint;
 		
+		/**
+		* The tile size used to render this component.
+		*/		
 		protected var tileSize: uint;
 		
+		/**
+		* The width in pixels (<code>_cols ~~ tileSize</code>).
+		*/		
 		protected var targetWidth: uint;
+		
+		/**
+		* The height in pixels (<code>_rows ~~ tileSize</code>).
+		*/		
 		protected var targetHeight: uint;
 
 		/**
@@ -65,12 +95,18 @@ package de.popforge.fui.core
 			_tag = value;
 		}
 		
+		/**
+		 * The rows of the component.
+		 */		
 		public function set rows( value: uint ): void
 		{
 			_rows = value;
 			targetHeight = tileSize * _rows;
 		}
 		
+		/**
+		 * The columns of the component.
+		 */		
 		public function set cols( value: uint ): void
 		{
 			_cols = value;
