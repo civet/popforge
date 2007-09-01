@@ -29,6 +29,15 @@ package de.popforge.fui.controls
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 
+	/**
+	 * The Button class is a base class for buttons inside the Fui framework.
+	 * No visuals are handled in this class.
+	 * 
+	 * <p><b>Skin developer information:</b> You do not have to extend or overwrite this class
+	 * since the visuals are created in classes that extend Button</p>
+	 * 
+	 * @author Joa Ebert
+	 */
 	internal class Button extends FuiComponent implements IParameterBindable
 	{
 		protected var parameter: Parameter;

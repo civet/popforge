@@ -26,6 +26,14 @@ package de.popforge.fui.controls
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 
+	/**
+	 * The Display class is a base for FuiComponents visualizing data.
+	 * 
+	 * <p><b>Skin developer information:</b> By default a BitmapData object is created and
+	 * add to the display list if <code>build()</code> is called.</p>
+	 * 
+	 * @author Joa Ebert
+	 */
 	internal class Display extends FuiComponent
 	{
 		protected var screen: BitmapData;

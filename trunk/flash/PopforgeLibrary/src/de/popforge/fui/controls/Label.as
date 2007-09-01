@@ -30,6 +30,11 @@ package de.popforge.fui.controls
 	import de.popforge.utils.Formatter;
 	import de.popforge.utils.Formatter;
 
+	/**
+	 * The Label class is a simple text rendering component.
+	 * 
+	 * @author Joa Ebert
+	 */
 	public class Label extends FuiComponent implements IFormatterBindable
 	{
 		protected var textField: TextField;

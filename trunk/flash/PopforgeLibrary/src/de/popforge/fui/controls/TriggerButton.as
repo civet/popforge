@@ -23,6 +23,11 @@ package de.popforge.fui.controls
 {
 	import flash.display.Sprite;
 	
+	/**
+	 * The TriggerButton class represents a trigger that keeps the value only while its pressed.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class TriggerButton extends Button
 	{
 		override protected function build(): void

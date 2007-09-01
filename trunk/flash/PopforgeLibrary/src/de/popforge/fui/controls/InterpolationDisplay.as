@@ -25,6 +25,11 @@ package de.popforge.fui.controls
 	import de.popforge.interpolation.Interpolation;
 	import de.popforge.fui.core.IInterpolationBindable;
 	
+	/**
+	 * The InterpolationDisplay class is a utility to render Interpolation objects.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class InterpolationDisplay extends Display implements IInterpolationBindable
 	{
 		protected var screenMapping: MappingIntLinear;

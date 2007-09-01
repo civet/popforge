@@ -30,6 +30,11 @@ package de.popforge.fui.controls
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 
+	/**
+	 * The Knob class represents a simple knob.
+	 * 
+	 * @author Joa Ebert
+	 */
 	public class Knob extends FuiComponent implements IParameterBindable
 	{
 		protected var parameter: Parameter;

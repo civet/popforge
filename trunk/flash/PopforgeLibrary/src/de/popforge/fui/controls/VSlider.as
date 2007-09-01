@@ -24,6 +24,12 @@ package de.popforge.fui.controls
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
+	/**
+	 * The VSlider class represents a vertical slider.
+	 * 
+	 * @author Joa Ebert
+	 * @author André Michelle
+	 */	
 	public class VSlider extends Slider
 	{
 		override protected function build(): void

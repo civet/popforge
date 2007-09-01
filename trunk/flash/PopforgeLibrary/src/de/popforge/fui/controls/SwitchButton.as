@@ -23,6 +23,11 @@ package de.popforge.fui.controls
 {
 	import flash.display.Sprite;
 	
+	/**
+	 * The SwitchButton class represents a button that keeps is value once pressed.
+	 * 
+	 * @author Joa Ebert
+	 */	
 	public class SwitchButton extends Button
 	{
 		override protected function build(): void
