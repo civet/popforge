@@ -235,6 +235,9 @@ package de.popforge.fui.core
 			{
 				if ( !internalChange )
 				{
+					// A proxy parameter has been set to false by the user.
+					// We do not allow this in a group since one of the values
+					// has to be true.
 					parameter.setValue( true );
 				}
 			}
