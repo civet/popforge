@@ -1,8 +1,8 @@
 package de.popforge.fui.core
 {
-	import de.popforge.parameter.Parameter;
 	import de.popforge.fui.Fui;
 	import de.popforge.parameter.MappingBoolean;
+	import de.popforge.parameter.Parameter;
 	
 	public class Group implements IParameterBindable
 	{
