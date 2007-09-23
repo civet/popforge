@@ -8,10 +8,10 @@ package de.popforge.audio.processor.effects
 	public class Flanger
 		implements IAudioProcessor
 	{
-		public const parameterDelay: Parameter = new Parameter( new MappingNumberLinear( 1, 10 ), 5 ); // ms
+		public const parameterDelay: Parameter = new Parameter( new MappingNumberLinear( 1, 10 ), 1 ); // ms
 		public const parameterDepth: Parameter = new Parameter( new MappingNumberLinear( .2, 1 ), .8 );
 		public const parameterSpeed: Parameter = new Parameter( new MappingNumberLinear( 24, .5 ), 6 ); // sec
-		public const parameterFeedback: Parameter = new Parameter( new MappingNumberLinear( 0, .86 ), .6 );
+		public const parameterFeedback: Parameter = new Parameter( new MappingNumberLinear( 0, .86 ), .2 );
 		public const parameterMix: Parameter = new Parameter( new MappingNumberLinear( 0, 1 ), .5 );
 		
 		//-- delay lines
