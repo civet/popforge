@@ -354,7 +354,7 @@ package de.popforge.fui
 			
 			for each ( var queueItem: QueueItem in connectQueue )
 			{
-				connect( queueItem.name, queueItem.value )
+				connect( queueItem.name, queueItem.value );
 			}
 			
 			connectQueue = null;

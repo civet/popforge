@@ -214,7 +214,7 @@ package de.popforge.utils
 						case 'd':
 						case 'i':
 						case 'o':
-							var intValue: int = int( list.shift() )
+							var intValue: int = int( list.shift() );
 
 							if ( lenh ) intValue &= 0xffff;
 							
@@ -270,7 +270,7 @@ package de.popforge.utils
 						case 'u':
 						case 'x':
 						case 'X':
-							var uintValue: uint = uint( list.shift() )
+							var uintValue: uint = uint( list.shift() );
 							
 							if ( lenh ) uintValue &= 0xffff;
 							
@@ -405,7 +405,7 @@ package de.popforge.utils
 					
 							if ( p != null && p != undefined && p != '' )
 							{
-								precs = '.' + precision.toString()
+								precs = '.' + precision.toString();
 							}
 							
 							if ( lenh ) len += 'h';

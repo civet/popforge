@@ -88,7 +88,7 @@ package de.popforge.audio.processor.bitboy.formats.xm
 				return '(empty)\n';
 				
 			var patternString: String = '';
-			var numChannels: uint = rows[0].length
+			var numChannels: uint = rows[0].length;
 			var row: Array;
 			var line: String;
 			
