@@ -123,7 +123,7 @@ package de.popforge.interpolation
 			
 			points.sortOn( 'x' );
 			
-			addAnchors()
+			addAnchors();
 			/*var index: uint = points.indexOf( point );
 			var anchorPoint: ControlPoint;
 						
@@ -171,7 +171,7 @@ package de.popforge.interpolation
 				
 			if ( _mode == InterpolationMode.RUNTIME )
 			{
-				return interpolate( x )
+				return interpolate( x );
 			}
 			else
 			if ( _mode == InterpolationMode.BAKED )
@@ -327,7 +327,7 @@ package de.popforge.interpolation
 			var xrf: Number = x * resolution;
 			var xri: int = int( xrf );
 				
-			var dx: Number = xrf - xri
+			var dx: Number = xrf - xri;
 			
 			if ( dx == 0 )
 				return table[ xri ];

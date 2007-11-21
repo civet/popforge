@@ -207,7 +207,7 @@ package de.popforge.audio.output
 			var onSWFLoaded: Function = function( event: Event ): void
 			{
 				onComplete( Sound( new ( loader.contentLoaderInfo.applicationDomain.getDefinition( 'SoundItem' ) as Class )() ) );
-			}
+			};
 			
 			var loader: Loader = new Loader();
 			loader.contentLoaderInfo.addEventListener( Event.COMPLETE, onSWFLoaded );
