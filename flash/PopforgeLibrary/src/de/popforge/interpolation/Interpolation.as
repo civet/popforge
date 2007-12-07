@@ -40,7 +40,6 @@ package de.popforge.interpolation
 			registerClassAlias( 'Interpolation', Interpolation );
 		}
 		
-		private var hasAnchorPoints: Boolean;
 		private var mapping: IMapping;
 		
 		private var _mode: uint;
@@ -119,6 +118,8 @@ package de.popforge.interpolation
 		
 		private function onPointChanged( point: ControlPoint, oldX: Number, oldY: Number, x: Number, y: Number ): void
 		{
+			point, oldX, oldY, x, y;//FDT unused
+			
 			removeAnchors();
 			
 			points.sortOn( 'x' );
