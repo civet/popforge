@@ -110,6 +110,8 @@ package de.popforge.gui
 		
 		private function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
+			parameter, oldValue, newValue;//FDT unused
+			
 			updatePoint();
 		}
 		

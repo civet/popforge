@@ -78,6 +78,8 @@ package de.popforge.gui
 		
 		private function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
+			oldValue, newValue;//FDT unused
+			
 			knob.x = 8 + parameter.getValueNormalized() * length;
 		}
 		

@@ -222,6 +222,8 @@ package de.popforge.fui.core
 		 */		
 		protected function onGroupParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
+			oldValue;//FDT unused
+			
 			var index: int = parameters.indexOf( parameter );
 
 			if ( index == -1 )
@@ -253,6 +255,8 @@ package de.popforge.fui.core
 		 */		
 		protected function onParameterChanged( parameter: Parameter, oldValue: *, newValue: * ): void
 		{
+			parameter, oldValue;//FDT unused
+			
 			var index: int = values.indexOf( newValue );
 
 			if ( index == -1 )
