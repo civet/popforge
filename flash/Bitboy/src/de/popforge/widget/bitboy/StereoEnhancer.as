@@ -38,9 +38,9 @@ package de.popforge.widget.bitboy
 			var stream: Sample;
 			
 			var readL: int;
-			var offsetL: int = 44.1 * 20;
+			var offsetL: int = 44.1 * 12;
 			var readR: int;
-			var offsetR: int = 44.1 * 40;
+			var offsetR: int = 44.1 * 24;
 			
 			var l: Number;
 			var r: Number;
@@ -64,11 +64,11 @@ package de.popforge.widget.bitboy
 				readR = writeIndex - offsetR;
 				if( readR < 0 ) readR += 0xffff;
 				
-				dL = delayL[readL] * .5;
-				dR = delayR[readR] * .5;
+				dL = delayL[readL] * .6;
+				dR = delayR[readR] * .6;
 
-				delayL[writeIndex] = l + dR * .3;
-				delayR[writeIndex] = r + dL * .3;
+				delayL[writeIndex] = l + dR * .05;
+				delayR[writeIndex] = r + dL * .05;
 				
 				stream.left = dR + m;
 				stream.right = dL + m;
