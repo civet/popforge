@@ -1,36 +1,40 @@
 package de.popforge.widget.bitboy
 {
-	import de.popforge.audio.output.Audio;
-	import de.popforge.audio.output.AudioBuffer;
+	import de.popforge.audio.output.Sample;
 	import de.popforge.audio.processor.bitboy.BitBoy;
 	import de.popforge.audio.processor.bitboy.formats.FormatBase;
 	import de.popforge.bitboy.assets.Background;
 	import de.popforge.ui.KeyboardShortcut;
-	
+
 	import flash.display.Bitmap;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.SampleDataEvent;
 	import flash.filters.ColorMatrixFilter;
+	import flash.media.Sound;
 	import flash.utils.getTimer;
 
 	public class BitboyPlayer extends Sprite
 	{
 		static public const LOOP_PLAY_TIME_SEC: uint = 120;
+		static public const BUFFER_SIZE: int = 4096;
 		
-		{
-			[Embed(source='/../assets/font/04B_03__.TTF', fontName='bitboy_font', unicodeRange='U+0020-U+007E' )]
-				static private const Font04B_03: Class;
-		}
+		[Embed(source='/../assets/font/04B_03__.TTF', fontName='bitboy_font', unicodeRange='U+0020-U+007E' )]
+			static private const Font04B_03: Class;
 		
 		static public const FONT_NAME: String = 'bitboy_font';
 		
 		//-- AUDIO
 		private var bitboy: BitBoy;
-		private var buffer: AudioBuffer;
 		private var lastBuffer: Boolean;
 		private var fader: AudioFadeOut;
 		private var stereoEnhancer: StereoEnhancer;
 		private var bassBoost: BassBoost;
+		
+		//-- Flash10
+		private var sound: Sound;
+		private var buffer: Array;
+		private var isRunning: Boolean;
 
 		//-- GUI
 		private var volumeSlider: VolumeSlider;
@@ -79,12 +83,12 @@ package de.popforge.widget.bitboy
 		
 		internal function setStereoEnhancement( value: Boolean ): void
 		{
-			stereoEnhancer = value ? new StereoEnhancer( buffer.getRate() ) : null;
+			stereoEnhancer = value ? new StereoEnhancer( 44100 ) : null;
 		}
 		
 		internal function setBassBoost( value: Boolean ): void
 		{
-			bassBoost = value ? new BassBoost( buffer.getRate() ) : null;
+			bassBoost = value ? new BassBoost( 44100 ) : null;
 		}
 		
 		private function loadXMLConfig(): void
@@ -112,60 +116,68 @@ package de.popforge.widget.bitboy
 		{
 			bitboy = new BitBoy();
 			
-			buffer = new AudioBuffer( 4, Audio.STEREO, Audio.BIT16, Audio.RATE44100 );
-			buffer.onInit = onAudioBufferInit;
-			buffer.onComplete = onAudioBufferComplete;
+			buffer = new Array();
+			
+			for( var i: int = 0 ; i < BUFFER_SIZE ; ++i )
+				buffer[i] = new Sample();
+			
+			sound = new Sound();
+			sound.addEventListener( SampleDataEvent.SAMPLE_DATA, onSampleData );
+			sound.play();
 		}
 		
-		private function onAudioBufferInit( buffer: AudioBuffer ): void
+		private function onSampleData( event: SampleDataEvent ): void
 		{
-			tintUI();
-			
-			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 49 ], 1 );
-			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 50 ], 2 );
-			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 51 ], 4 );
-			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 52 ], 8 );
-			
-			loadMod();
-		}
-		
-		private function onAudioBufferComplete( buffer: AudioBuffer ): void
-		{
-			var samples: Array = buffer.getSamples();
-			
-			bitboy.processAudio( samples );
-			
-			if( bassBoost )
-				bassBoost.processAudio( samples );
-			
-			if( stereoEnhancer )
-				stereoEnhancer.processAudio( samples );
-			
-			if( lastBuffer )
+			if( isRunning )
 			{
-				onModComplete();
-			}
-			else if( bitboy.isIdle() )
-			{
-				lastBuffer = true;
-			}
-			else if( fader != null )
-			{
-				if( fader.proceesAudio( samples ) )
+				bitboy.processAudio( buffer );
+				
+				if( bassBoost )
+					bassBoost.processAudio( buffer );
+				
+				if( stereoEnhancer )
+					stereoEnhancer.processAudio( buffer );
+				
+				if( lastBuffer )
 				{
-					fader = null;
-					next();
+					onModComplete();
+				}
+				else if( bitboy.isIdle() )
+				{
+					lastBuffer = true;
+				}
+				else if( fader != null )
+				{
+					if( fader.proceesAudio( buffer ) )
+					{
+						fader = null;
+						next();
+					}
+				}
+				else if( !bitboy.parameterLoopMode.getValue() )
+				{
+					if( bitboy.getLengthSeconds() == -1 && getTimer() / 1000 - startTime > LOOP_PLAY_TIME_SEC )
+						fader = new AudioFadeOut( 44100 );
 				}
 			}
-			else if( !bitboy.parameterLoopMode.getValue() )
+			
+			var sample: Sample;
+			
+			var i: int = 0;
+			var n: int = BUFFER_SIZE;
+			
+			for( ; i < n ; ++i )
 			{
-				if( bitboy.getLengthSeconds() == -1 && getTimer() / 1000 - startTime > LOOP_PLAY_TIME_SEC )
-					fader = new AudioFadeOut( buffer.getRate() );
+				sample = buffer[i];
+				
+				event.data.writeFloat( sample.left );
+				event.data.writeFloat( sample.right );
+				
+				sample.left = 0.0;
+				sample.right = 0.0;
 			}
-
-			buffer.update();
 		}
-		
+
 		private function loadMod(): void
 		{
 			if( modLoader != null )
@@ -180,6 +192,8 @@ package de.popforge.widget.bitboy
 			display.updateSong( songList.getCurrentSong() );
 			
 			startTime = int.MAX_VALUE;
+			
+			isRunning = false;
 		}
 		
 		private function onModLoad( format: FormatBase ): void
@@ -194,12 +208,11 @@ package de.popforge.widget.bitboy
 			
 			autoStart = true;
 			
-			if( !buffer.isPlaying() )
-				buffer.start();
-			
 			startTime = getTimer() / 1000;
 			
 			modLoader = null;
+			
+			isRunning = true;
 		}
 		
 		private function onModComplete(): void
@@ -276,6 +289,15 @@ package de.popforge.widget.bitboy
 			addChild( s );
 			
 			bitMenu = new BitMenu( this );
+
+			tintUI();
+			
+			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 49 ], 1 );
+			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 50 ], 2 );
+			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 51 ], 4 );
+			KeyboardShortcut.getInstance().addShortcut( onChannelMute, [ 17, 52 ], 8 );
+			
+			loadMod();
 		}
 		
 		private function onChannelMute( channelIndex: int ): void
