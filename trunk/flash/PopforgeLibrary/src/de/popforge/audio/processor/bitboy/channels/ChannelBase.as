@@ -50,7 +50,7 @@ package de.popforge.audio.processor.bitboy.channels
 			throw new Error( 'Override Implementation!' );
 		}
 		
-		public function processAudioAdd( samples: Array ): void
+		public function processAudioAdd( samples: Array, numSamples: int, pointerIndex: int ): void
 		{
 			throw new Error( 'Override Implementation!' );
 		}

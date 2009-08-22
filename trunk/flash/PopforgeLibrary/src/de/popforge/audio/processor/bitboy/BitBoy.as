@@ -9,9 +9,9 @@ package de.popforge.audio.processor.bitboy
 	import de.popforge.parameter.MappingIntLinear;
 	import de.popforge.parameter.MappingNumberLinear;
 	import de.popforge.parameter.Parameter;
-	
+
 	import flash.utils.getTimer;
-	
+
 	public class BitBoy
 		implements IAudioProcessor
 	{
@@ -96,46 +96,39 @@ package de.popforge.audio.processor.bitboy
 			
 			var channel: ChannelBase;
 			
-			var samplesAvailable: int = samples.length;
-			var sampleIndex: int = rest;
-			var subset: Array;
+			var pointer: int = 0;
+			var available: int = samples.length;
 			
-			//-- process rest, if any
-			if( rest > 0 )
+			if( 0 < rest )
 			{
-				subset = samples.slice( 0, rest );
 				for each( channel in channels )
-					channel.processAudioAdd( subset );
-
-				samplesAvailable -= rest;
+					channel.processAudioAdd( samples, rest, pointer );
+				
+				pointer += rest;
+				available -= rest;
 			}
 			
 			nextTick();
 			
-			//-- procees complete tick duration
-			while( samplesAvailable >= samplesPerTick )
+			while( available >= samplesPerTick )
 			{
-				subset = samples.slice( sampleIndex, sampleIndex + samplesPerTick );
-
 				for each( channel in channels )
-					channel.processAudioAdd( subset );
-
-				samplesAvailable -= samplesPerTick;
-				sampleIndex += samplesPerTick;
+					channel.processAudioAdd( samples, samplesPerTick, pointer );
 				
-				if( samplesAvailable > 0 )
+				pointer += samplesPerTick;
+				available -= samplesPerTick;
+				
+				if( 0 < available )
 					nextTick();
 			}
 			
-			//-- procees remaining samples
-			if( samplesAvailable > 0 )
+			if( 0 < available )
 			{
-				subset = samples.slice( -samplesAvailable );
 				for each( channel in channels )
-					channel.processAudioAdd( subset );
+					channel.processAudioAdd( samples, available, pointer );
 			}
-			
-			rest = samplesPerTick - samplesAvailable;
+
+			rest = samplesPerTick - available;
 		}
 		
 		public function reset(): void

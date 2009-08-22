@@ -188,14 +188,10 @@ package de.popforge.audio.processor.bitboy.channels
 			}
 		}
 		
-		public override function processAudioAdd( samples: Array ): void
+		public override function processAudioAdd( samples: Array, numSamples: int, pointerIndex: int ): void
 		{
 			if( wave == null || mute )
 				return;
-			
-			var n: int = samples.length;
-			
-			if( n == 0 ) return;
 			
 			var sample: Sample;
 			
@@ -211,7 +207,7 @@ package de.popforge.audio.processor.bitboy.channels
 			var alpha: Number;
 			var amp: Number;
 			
-			for( var i: int = 0 ; i < n ; ++i )
+			for( var i: int = 0 ; i < numSamples ; ++i )
 			{
 				if( firstRun )
 				{
@@ -244,7 +240,7 @@ package de.popforge.audio.processor.bitboy.channels
 				if( ++phaseInt == len ) phaseInt = 0;
 				amp += wave[ phaseInt ] * alpha;
 				
-				sample = samples[i];
+				sample = samples[int( i + pointerIndex )];
 				sample.left += amp * volL;
 				sample.right += amp * volR;
 				
