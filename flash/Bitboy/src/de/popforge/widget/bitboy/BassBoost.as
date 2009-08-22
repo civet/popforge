@@ -32,8 +32,8 @@ package de.popforge.widget.bitboy
 		{
 			this.rate = rate;
 			
-			freq = 120;
-			dB = 5;
+			freq = 240;
+			dB = 3;
 			
 			init();
 		}

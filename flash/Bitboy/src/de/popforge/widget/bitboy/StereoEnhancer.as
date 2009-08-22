@@ -36,30 +36,42 @@ package de.popforge.widget.bitboy
 			var n: int = samples.length;
 			
 			var stream: Sample;
-			var readIndex: int;
-			var offset: int = rate / 55;
+			
+			var readL: int;
+			var offsetL: int = 44.1 * 20;
+			var readR: int;
+			var offsetR: int = 44.1 * 40;
+			
+			var l: Number;
+			var r: Number;
+			var m: Number;
 			
 			var dL: Number;
 			var dR: Number;
 			
-			for( var i: int = 0 ; i < n ; i++ )
+			for( var i: int = 0 ; i < n ; ++i )
 			{
 				stream = samples[i];
 				
-				delayL[writeIndex] = stream.left;
-				delayR[writeIndex] = stream.right;
+				l = stream.left;
+				r = stream.right;
+
+				m = ( l + r ) * .5;
 				
-				readIndex = writeIndex - offset;
-				if( readIndex < 0 ) readIndex += 0xffff;
+				readL = writeIndex - offsetL;
+				if( readL < 0 ) readL += 0xffff;
 				
-				dL = delayL[readIndex] * .25;
-				dR = delayR[readIndex] * .25;
+				readR = writeIndex - offsetR;
+				if( readR < 0 ) readR += 0xffff;
 				
-				stream.right += dL;
-				stream.left += dR;
+				dL = delayL[readL] * .5;
+				dR = delayR[readR] * .5;
+
+				delayL[writeIndex] = l + dR * .3;
+				delayR[writeIndex] = r + dL * .3;
 				
-				delayL[writeIndex] += dL;
-				delayR[writeIndex] += dR;
+				stream.left = dR + m;
+				stream.right = dL + m;
 				
 				if( ++writeIndex == 0xffff )
 					writeIndex = 0;
