@@ -5,7 +5,7 @@
 <booleanAttribute key="KILL_PREVIUOS_VIEWER" value="false"/>
 <stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
 <stringAttribute key="MAIN_CLASS" value="src/DemoCubicVR.as"/>
-<stringAttribute key="OUTPUT" value="DemoCubicVR.swf"/>
+<stringAttribute key="OUTPUT" value="bin/DemoCubicVR.swf"/>
 <booleanAttribute key="PASS_CP" value="true"/>
 <booleanAttribute key="PASS_MAIN_CLASS" value="true"/>
 <booleanAttribute key="PASS_RSLS" value="false"/>
