@@ -17,7 +17,7 @@
 <stringAttribute key="PROJECT_NAME" value="Popforge"/>
 <stringAttribute key="PUBLISHER_ID" value=""/>
 <booleanAttribute key="START_SWF_ENABLED" value="true"/>
-<stringAttribute key="START_SWF_LOCATION" value="DemoCubicVR.swf"/>
+<stringAttribute key="START_SWF_LOCATION" value="bin/DemoCubicVR.swf"/>
 <stringAttribute key="START_SWF_WITH" value="Adobe Flash Player"/>
 <booleanAttribute key="USE_PROJECT_COMPILER_ARGUMENTS" value="true"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
